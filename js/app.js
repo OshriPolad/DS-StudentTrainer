@@ -30,9 +30,13 @@ function el(tag, className, text) {
    Used everywhere we display Hebrew prose that may contain code or math. */
 function bidi(s) {
   if (typeof s !== 'string') return s;
-  // ֐-׿ = Hebrew block. Wrap non-Hebrew runs that contain a letter/digit.
-  return s.replace(/[^֐-׿\n]+/g, function (run) {
-    return /[A-Za-z0-9]/.test(run) ? '⁦' + run + '⁩' : run;  // LRI … PDI
+  // Isolate compact LTR code/math TOKENS — O(n), std::sort, log₂(n), 2i+1, (i-1)/2 —
+  // and leave clause punctuation (commas, ; = ← → —) in the RTL flow. Wrapping whole
+  // non-Hebrew runs (the old approach) let commas/parens between clauses reorder and
+  // land in the wrong place; isolating tight tokens fixes that. ⁦…⁩ = LRI…PDI.
+  var re = /[A-Za-z0-9√(\[][A-Za-z0-9()\[\]{}._\/:²³₀-₉√+ \-]*[A-Za-z0-9)\]²³₀-₉√]|[A-Za-z0-9²³₀-₉√]/g;
+  return s.replace(re, function (m) {
+    return /[A-Za-z0-9]/.test(m) ? '⁦' + m.trim() + '⁩' : m;
   });
 }
 
