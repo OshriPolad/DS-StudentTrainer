@@ -36,6 +36,7 @@
       <button class="nav-btn active" data-mode="home">📝 שאלות</button>
       <button class="nav-btn" data-mode="viz">🎬 הדמיות</button>
       <button class="nav-btn" data-mode="complexity">⏱️ סיבוכיות</button>
+      <button class="nav-btn" data-mode="cheatsheet">📄 דף נוסחאות</button>
     </nav>
   </header>
 
@@ -49,6 +50,8 @@
       </p>
       <div id="topic-list" class="topic-grid"></div>
       <button id="mixed-btn" class="btn btn-primary btn-block">🎲 מבחן מעורב — כל הנושאים</button>
+      <!-- NOTE: shown only when there are past mistakes; app.js sets its label/count. -->
+      <button id="mistakes-btn" class="btn btn-review btn-block" hidden></button>
       <div id="progress-summary" class="progress-summary"></div>
     </section>
 
@@ -135,6 +138,86 @@
         </div>
         <button id="cx-back" class="btn btn-ghost btn-block">← כל התרגילים</button>
       </div>
+    </section>
+
+    <!-- ======================= CHEAT SHEET ======================= -->
+    <section id="cheatsheet" class="screen hidden" dir="rtl">
+      <p class="intro">דף נוסחאות לחזרה מהירה לפני המבחן. כל הסיבוכיות ב-Big-O.</p>
+
+      <h3 class="cheat-h">מבני נתונים — סיבוכיות זמן</h3>
+      <div class="cheat-scroll">
+        <table class="cheat-table">
+          <thead><tr><th>מבנה</th><th>גישה / חיפוש</th><th>הכנסה</th><th>מחיקה</th></tr></thead>
+          <tbody>
+            <tr><td>מערך דינמי</td><td>גישה <b class="ltr">O(1)</b> · חיפוש <b class="ltr">O(n)</b></td><td class="ltr">O(1)* בסוף</td><td class="ltr">O(n) · O(1) בסוף</td></tr>
+            <tr><td>רשימה מקושרת</td><td class="ltr">O(n)</td><td class="ltr">O(1) בראש</td><td class="ltr">O(1) עם מצביע</td></tr>
+            <tr><td>מחסנית (Stack)</td><td class="ltr">O(1) top</td><td class="ltr">O(1) push</td><td class="ltr">O(1) pop</td></tr>
+            <tr><td>תור (Queue)</td><td class="ltr">O(1) front</td><td class="ltr">O(1) enqueue</td><td class="ltr">O(1) dequeue</td></tr>
+            <tr><td>עץ חיפוש מאוזן (AVL)</td><td class="ltr">O(log n)</td><td class="ltr">O(log n)</td><td class="ltr">O(log n)</td></tr>
+            <tr><td>ערמה בינארית</td><td class="ltr">O(1) מין/מקס</td><td class="ltr">O(log n)</td><td class="ltr">O(log n) extract</td></tr>
+            <tr><td>טבלת גיבוב</td><td class="ltr">O(1)* · O(n) גרוע</td><td class="ltr">O(1)*</td><td class="ltr">O(1)*</td></tr>
+            <tr><td>רשימת דילוגים</td><td class="ltr">O(log n)†</td><td class="ltr">O(log n)†</td><td class="ltr">O(log n)†</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="cheat-note">* ממוצע / משוערך &nbsp;·&nbsp; † צפוי (הסתברותי) &nbsp;·&nbsp; בניית ערמה ממערך: <b class="ltr">O(n)</b></p>
+
+      <h3 class="cheat-h">מיונים</h3>
+      <div class="cheat-scroll">
+        <table class="cheat-table">
+          <thead><tr><th>אלגוריתם</th><th>טוב</th><th>ממוצע</th><th>גרוע</th><th>מקום</th><th>יציב?</th></tr></thead>
+          <tbody>
+            <tr><td>מיון בועות</td><td class="ltr">O(n)</td><td class="ltr">O(n²)</td><td class="ltr">O(n²)</td><td class="ltr">O(1)</td><td>כן</td></tr>
+            <tr><td>מיון בחירה</td><td class="ltr">O(n²)</td><td class="ltr">O(n²)</td><td class="ltr">O(n²)</td><td class="ltr">O(1)</td><td>לא</td></tr>
+            <tr><td>מיון הכנסה</td><td class="ltr">O(n)</td><td class="ltr">O(n²)</td><td class="ltr">O(n²)</td><td class="ltr">O(1)</td><td>כן</td></tr>
+            <tr><td>מיון מיזוג</td><td class="ltr">O(n log n)</td><td class="ltr">O(n log n)</td><td class="ltr">O(n log n)</td><td class="ltr">O(n)</td><td>כן</td></tr>
+            <tr><td>מיון מהיר</td><td class="ltr">O(n log n)</td><td class="ltr">O(n log n)</td><td class="ltr">O(n²)</td><td class="ltr">O(log n)</td><td>לא</td></tr>
+            <tr><td>מיון ערמה</td><td class="ltr">O(n log n)</td><td class="ltr">O(n log n)</td><td class="ltr">O(n log n)</td><td class="ltr">O(1)</td><td>לא</td></tr>
+            <tr><td>מיון מנייה</td><td class="ltr">O(n+k)</td><td class="ltr">O(n+k)</td><td class="ltr">O(n+k)</td><td class="ltr">O(k)</td><td>כן</td></tr>
+            <tr><td>מיון בסיס</td><td class="ltr">O(d(n+k))</td><td class="ltr">O(d(n+k))</td><td class="ltr">O(d(n+k))</td><td class="ltr">O(n+k)</td><td>כן</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="cheat-note">חסם תחתון למיון השוואתי: <b class="ltr">Ω(n log n)</b>. מיוני מנייה/בסיס עוקפים אותו כי אינם משווים.</p>
+
+      <h3 class="cheat-h">חיפושים</h3>
+      <div class="cheat-scroll">
+        <table class="cheat-table">
+          <thead><tr><th>חיפוש</th><th>זמן</th><th>דורש</th></tr></thead>
+          <tbody>
+            <tr><td>סדרתי (ליניארי)</td><td class="ltr">O(n)</td><td>שום דבר</td></tr>
+            <tr><td>בינארי</td><td class="ltr">O(log n)</td><td>מערך ממוין + גישה אקראית</td></tr>
+            <tr><td>אינטרפולציה</td><td class="ltr">O(log log n)* · O(n) גרוע</td><td>ממוין + פיזור אחיד</td></tr>
+            <tr><td>טבלת גיבוב</td><td class="ltr">O(1)*</td><td>פונקציית גיבוב טובה</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="cheat-h">סדר גדילת פונקציות (מהמהיר לאיטי)</h3>
+      <p class="cheat-growth ltr" dir="ltr">O(1) &lt; O(log n) &lt; O(√n) &lt; O(n) &lt; O(n log n) &lt; O(n²) &lt; O(2ⁿ) &lt; O(n!)</p>
+
+      <h3 class="cheat-h">עצי AVL — רוטציות</h3>
+      <div class="cheat-scroll">
+        <table class="cheat-table">
+          <thead><tr><th>מקרה</th><th>תיקון</th></tr></thead>
+          <tbody>
+            <tr><td class="ltr">LL (כבד שמאל-שמאל)</td><td>רוטציה ימנית בודדת</td></tr>
+            <tr><td class="ltr">RR (כבד ימין-ימין)</td><td>רוטציה שמאלית בודדת</td></tr>
+            <tr><td class="ltr">LR (שמאל-ימין)</td><td>כפולה: שמאל על הבן, ואז ימין</td></tr>
+            <tr><td class="ltr">RL (ימין-שמאל)</td><td>כפולה: ימין על הבן, ואז שמאל</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="cheat-note">מקדם איזון תקין: <b class="ltr">{-1, 0, +1}</b>. כלל: מסובבים בכיוון ההפוך לצד הכבד.</p>
+
+      <h3 class="cheat-h">עובדות מפתח</h3>
+      <ul class="cheat-facts">
+        <li><b>ניתוח משוערך O(1):</b> push_back למערך דינמי, הגדלת מונה בינארי, תור עם שתי מחסניות.</li>
+        <li><b>מעבר תוכי (in-order) על BST</b> נותן את המפתחות בסדר ממוין.</li>
+        <li><b>ערמה:</b> בן שמאלי <span class="ltr">2i+1</span>, בן ימני <span class="ltr">2i+2</span>, אב <span class="ltr">(i-1)/2</span> (אינדוקס מ-0).</li>
+        <li><b>BFS</b> משתמש בתור · <b>DFS</b> משתמש במחסנית.</li>
+        <li><b>מתי מה:</b> גישה אקראית ← מערך · הכנסות בקצוות ← רשימה/תור/מחסנית · חיפוש עם סדר ← עץ מאוזן · חיפוש מהיר בלי סדר ← גיבוב.</li>
+      </ul>
     </section>
 
   </main>

@@ -276,3 +276,42 @@ body {
 .results-message,
 .viz-title,
 .cx-overall-big { unicode-bidi: plaintext; }
+
+/* =========================================================================
+   v3 ADDITIONS — mistakes-review button + cheat sheet.
+   ========================================================================= */
+
+/* review-mistakes button (stands out from the primary/ghost buttons) */
+.btn-review { background: #b45309; color: #fff; }
+.btn-review:hover { background: #92400e; }
+
+/* ---------- Cheat sheet ---------- */
+#cheatsheet .intro { text-align: start; }
+.cheat-h {
+  font-size: 1.05rem; font-weight: 700; color: var(--primary);
+  margin: 22px 0 10px; text-align: start;
+}
+.cheat-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 6px; }
+.cheat-table {
+  width: 100%; border-collapse: collapse; font-size: 0.85rem;
+  background: var(--surface); border-radius: 10px; overflow: hidden;
+}
+.cheat-table th, .cheat-table td {
+  border: 1px solid var(--surface-2); padding: 8px 10px; text-align: start; vertical-align: top;
+}
+.cheat-table thead th { background: var(--surface-2); color: var(--text); font-weight: 700; white-space: nowrap; }
+.cheat-table td { color: var(--text); }
+.cheat-table tbody tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+/* force code / Big-O fragments to stay left-to-right inside RTL cells */
+.ltr { unicode-bidi: isolate; direction: ltr; }
+b.ltr, span.ltr { display: inline-block; }
+
+.cheat-note { font-size: 0.8rem; color: var(--text-dim); margin: 4px 0 8px; text-align: start; }
+.cheat-growth {
+  font-family: "SF Mono", Consolas, monospace; font-size: 0.9rem;
+  background: var(--code-bg); border: 1px solid var(--surface-2);
+  border-radius: 8px; padding: 12px 14px; overflow-x: auto; color: var(--text);
+}
+.cheat-facts { margin: 8px 18px 8px 0; padding: 0; }
+.cheat-facts li { margin: 8px 0; line-height: 1.55; text-align: start; }
+.cheat-facts b { color: var(--text); }

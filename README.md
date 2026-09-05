@@ -48,6 +48,10 @@ Three study modes, all in Hebrew (for Israeli CS students), with C++ code sample
 - **Hebrew, done right (RTL)** — questions, options, and explanations are in
   Hebrew and render right-to-left, while C++ code and Big-O notation stay
   left-to-right (handled with Unicode bidi isolates).
+- **🔁 Mistakes-only review** — replays just the questions you got wrong; each
+  one drops off the list the moment you answer it correctly, so revision compounds.
+- **📄 Cheat sheet** — a one-page Hebrew reference: complexity tables for every
+  structure, a sorting table, searches, growth order, and the AVL rotation rules.
 - **Works on phone & laptop**, responsive from a single codebase.
 - **Installable & offline (PWA)** — "Add to Home Screen" for studying anywhere.
 - **Progress tracking** — your best score per topic, saved locally.
