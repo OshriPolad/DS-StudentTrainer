@@ -1,0 +1,71 @@
+{
+  "topic": "Hashing",
+  "topicHe": "טבלאות גיבוב (Hashing)",
+  "description": "Hash tables, collision resolution (chaining vs. open addressing / closed hashing), load factor, and running times.",
+  "questions": [
+    {
+      "id": "ha-01",
+      "difficulty": "easy",
+      "question": "What is the average-case time complexity (זמן ריצה) of insert, search, and delete in a hash table with a good hash function and bounded load factor?",
+      "options": ["O(1)", "O(log n)", "O(n)", "O(n log n)"],
+      "answer": 0,
+      "explanation": "The entire point of hashing is expected O(1) for insert, search, and delete — the hash function jumps directly to the right bucket. This assumes a good (uniform) hash function and a load factor kept below a constant. The WORST case is O(n) if all keys collide into one bucket, so exams distinguish 'average/expected O(1)' from 'worst-case O(n)'."
+    },
+    {
+      "id": "ha-02",
+      "difficulty": "medium",
+      "question": "What is the difference between 'separate chaining' and 'open addressing' (closed hashing) for collision resolution?",
+      "options": ["Chaining stores colliding keys in a linked list per bucket; open addressing stores all keys in the array itself and probes for the next free slot", "They are two names for the same thing", "Chaining uses no hash function; open addressing does", "Open addressing can only store integers"],
+      "answer": 0,
+      "explanation": "Separate chaining: each bucket holds a pointer to a linked list (or similar) of all keys that hashed there — the table can hold more entries than slots. Open addressing (a.k.a. closed hashing): every key lives directly in the array, and on collision you PROBE for another open slot (linear, quadratic, or double hashing). Open addressing has better cache behavior and no pointer overhead, but it cannot exceed load factor 1 and needs careful deletion (tombstones)."
+    },
+    {
+      "id": "ha-03",
+      "difficulty": "medium",
+      "question": "What is the load factor (α) of a hash table, and why does it matter?",
+      "options": ["α = (number of stored elements) / (number of buckets); higher α means more collisions and slower operations", "α = table size in bytes; it affects memory only", "α = the hash function's output range", "α = number of comparisons per insert; always 1"],
+      "answer": 0,
+      "explanation": "Load factor α = n / m (elements ÷ buckets). It measures how full the table is. As α grows, collisions become more frequent and operations slow down. To keep expected O(1) performance, implementations RESIZE (rehash into a bigger table) once α crosses a threshold — for open addressing typically around 0.7, since performance degrades sharply as the table nears full."
+    },
+    {
+      "id": "ha-04",
+      "difficulty": "hard",
+      "question": "In open addressing with LINEAR probing, what problem arises and what is it called?",
+      "options": ["Primary clustering — long runs of occupied slots form and grow, increasing probe lengths", "Stack overflow", "The hash function stops working", "Automatic infinite loops on every insert"],
+      "answer": 0,
+      "explanation": "Linear probing checks slot h, h+1, h+2, ... on collision. This causes PRIMARY CLUSTERING: once a run of filled slots forms, any key hashing anywhere into that run extends it, and clusters merge, making probe sequences longer and longer. Quadratic probing reduces (but doesn't fully eliminate) this by spreading probes out; double hashing avoids primary clustering by using a second hash to determine the step size."
+    },
+    {
+      "id": "ha-05",
+      "difficulty": "medium",
+      "question": "In open addressing, why can't you simply set a deleted slot back to 'empty'?",
+      "options": ["It would break probe sequences, making later keys unreachable; you must use a 'deleted'/tombstone marker instead", "Because memory can't be freed", "Because deletion is not allowed in hash tables", "Because it changes the hash function"],
+      "answer": 0,
+      "explanation": "In open addressing, a search stops when it hits an EMPTY slot. If you marked a deleted slot as empty, a search for a key that probed PAST that slot during insertion would now stop early and wrongly report 'not found'. The fix is a special DELETED (tombstone) marker: searches skip over it and continue probing, while inserts may reuse it. Chaining doesn't have this problem — you just remove the node from the list."
+    },
+    {
+      "id": "ha-06",
+      "difficulty": "medium",
+      "question": "With separate chaining and load factor α, what is the expected number of elements examined in an unsuccessful search?",
+      "options": ["About α (the average chain length)", "About n", "About log n", "Exactly 1 always"],
+      "answer": 0,
+      "explanation": "With chaining, each bucket's chain holds on average α = n/m elements. An unsuccessful search must scan the entire chain of the bucket it hashes to, so it examines about α elements on average. As long as α is kept O(1) (by resizing), search stays expected O(1). This is the formal reason the load factor must be bounded."
+    },
+    {
+      "id": "ha-07",
+      "difficulty": "easy",
+      "question": "Which of these is the most important property of a GOOD hash function?",
+      "options": ["It distributes keys uniformly across buckets (minimizing collisions) and is fast to compute", "It always returns 0", "It is cryptographically unbreakable for all uses", "It maps every key to a unique bucket with zero collisions guaranteed"],
+      "answer": 0,
+      "explanation": "A good hash function spreads keys as uniformly as possible over the buckets so collisions are rare, and it must be fast (computed in O(1)). Zero collisions is generally impossible unless you know all keys in advance (perfect hashing); by the pigeonhole principle, if there are more possible keys than buckets, collisions must be able to occur. Cryptographic strength is only needed for security use cases, not general hash tables."
+    },
+    {
+      "id": "ha-08",
+      "difficulty": "hard",
+      "question": "You need a data structure with expected O(1) lookup by key but you must also frequently list all keys in SORTED order. Is a hash table a good fit?",
+      "options": ["No — hash tables give O(1) lookup but scatter keys with no order, so sorted iteration costs O(n log n); a balanced BST (O(log n) ops, ordered) fits better", "Yes, hash tables iterate in sorted order for free", "Yes, hash tables are always best", "No, because hash tables can't do lookups"],
+      "answer": 0,
+      "explanation": "Hash tables deliberately scatter keys to avoid collisions, so there is NO usable order among them — to list keys sorted you'd have to extract all n and sort them (O(n log n)). If ordered traversal is a core requirement, a balanced BST (like std::map / a red-black tree) is the right structure: O(log n) operations but keys are always kept in sorted order (in-order traversal is O(n)). Choosing between hash table and balanced tree based on whether you need ORDER is a classic design question."
+    }
+  ]
+}

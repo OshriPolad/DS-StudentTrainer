@@ -1,0 +1,90 @@
+{
+  "topic": "Linked Lists",
+  "topicHe": "רשימות מקושרות",
+  "description": "Singly/doubly linked lists, stack-via-list, finding the middle, and cycle detection. Code shown in C++.",
+  "questions": [
+    {
+      "id": "ll-01",
+      "difficulty": "easy",
+      "question": "A stack implemented with a singly linked list performs push and pop at which end, and at what cost?",
+      "options": ["At the head, O(1) each", "At the tail, O(1) each", "At the head, O(n) each", "At the tail, O(n) each"],
+      "answer": 0,
+      "explanation": "A stack is LIFO (last-in, first-out). The cheapest O(1) spot in a singly linked list is the HEAD — both insert (push_front) and remove (pop_front) touch only the head pointer. So we treat the head as the top of the stack: push = insert at head, pop = remove head. Using the tail would force an O(n) walk on pop (to find the new tail), so the head is the correct choice."
+    },
+    {
+      "id": "ll-02",
+      "difficulty": "easy",
+      "question": "In this C++ node, what does the 'next' pointer of the LAST node in a singly linked list hold?",
+      "code": "struct Node {\n    int data;\n    Node* next;\n};",
+      "options": ["nullptr", "A pointer back to the head", "A copy of its own address", "An uninitialized garbage value (always)"],
+      "answer": 0,
+      "explanation": "By convention, the last node's next is nullptr — that is exactly how traversal code knows it has reached the end (while (curr != nullptr)). If it pointed back to the head it would be a circular list, not a standard singly linked list. Forgetting to set the tail's next to nullptr is a very common bug that causes traversal to run off into garbage memory."
+    },
+    {
+      "id": "ll-03",
+      "difficulty": "medium",
+      "question": "What is printed / returned by this function that finds the middle of a linked list, and what technique does it use?",
+      "code": "Node* middle(Node* head) {\n    Node* slow = head;\n    Node* fast = head;\n    while (fast != nullptr && fast->next != nullptr) {\n        slow = slow->next;\n        fast = fast->next->next;\n    }\n    return slow;\n}",
+      "options": ["The middle node, using the slow/fast (tortoise-hare) two-pointer technique in O(n)", "The last node, in O(n)", "The middle node, but only after two full passes O(2n)", "The head node, in O(1)"],
+      "answer": 0,
+      "explanation": "This is the two-pointer 'tortoise and hare' trick. 'fast' moves two steps for every one step of 'slow'. When fast reaches the end, slow has traveled exactly half the distance, so it sits at the middle. It finds the middle in a SINGLE pass — O(n) time, O(1) extra space — without ever counting the length first. For an even-length list this returns the second of the two middle nodes."
+    },
+    {
+      "id": "ll-04",
+      "difficulty": "medium",
+      "question": "Which algorithm detects whether a singly linked list contains a cycle (loop) using O(1) extra memory?",
+      "options": ["Floyd's cycle detection (slow/fast pointers)", "Storing every visited node in a hash set", "Reversing the list twice", "Binary search over the nodes"],
+      "answer": 0,
+      "explanation": "Floyd's algorithm (the 'tortoise and hare') uses two pointers moving at different speeds. If there is a cycle, the fast pointer eventually laps the slow one and they meet — proving a loop exists. It uses only two pointers → O(1) space, O(n) time. The hash-set approach also works and is O(n) time, but it uses O(n) EXTRA space, so it fails the 'O(1) memory' requirement. That space difference is the usual exam distinction."
+    },
+    {
+      "id": "ll-05",
+      "difficulty": "medium",
+      "question": "In Floyd's cycle detection, when do the slow and fast pointers meet?",
+      "options": ["Somewhere inside the cycle, if and only if a cycle exists", "Always at the head of the list", "Always at the exact start of the cycle", "Only if the list length is even"],
+      "answer": 0,
+      "explanation": "If a cycle exists, once both pointers are inside it the fast pointer closes the gap by one node per step and must eventually land on the slow pointer — they meet at some node inside the cycle (not necessarily the cycle's start). If there is NO cycle, fast reaches nullptr and the loop ends without a meeting. To find the exact START of the cycle you need a second phase: reset one pointer to the head and advance both one step at a time until they meet again."
+    },
+    {
+      "id": "ll-06",
+      "difficulty": "easy",
+      "question": "What is the time complexity (זמן ריצה) of searching for a value in a singly linked list of n nodes?",
+      "options": ["O(1)", "O(log n)", "O(n)", "O(n^2)"],
+      "answer": 2,
+      "explanation": "Linked lists have no random access — to find a value you must start at the head and follow next pointers one by one until you find it or hit nullptr. In the worst case that is all n nodes → O(n). Unlike a sorted array, you cannot binary-search a linked list, because you can't jump to the middle in O(1)."
+    },
+    {
+      "id": "ll-07",
+      "difficulty": "hard",
+      "question": "What does this C++ function do to the list?",
+      "code": "Node* mystery(Node* head) {\n    Node* prev = nullptr;\n    Node* curr = head;\n    while (curr != nullptr) {\n        Node* nxt = curr->next;\n        curr->next = prev;\n        prev = curr;\n        curr = nxt;\n    }\n    return prev;\n}",
+      "options": ["Reverses the linked list in place, O(n) time O(1) space", "Deletes the whole list", "Duplicates every node", "Sorts the list"],
+      "answer": 0,
+      "explanation": "This is the standard in-place iterative list reversal. It walks the list once, flipping each node's next pointer to point at the PREVIOUS node. The 'nxt' temp saves the rest of the list before we overwrite curr->next. At the end, 'prev' is the new head (the old tail). It runs in O(n) time and O(1) extra space. Memorize this pattern — it's one of the most frequently asked linked-list questions."
+    },
+    {
+      "id": "ll-08",
+      "difficulty": "medium",
+      "question": "Compared to a singly linked list, what does a DOUBLY linked list give you?",
+      "options": ["O(1) deletion of a node when you already have a pointer to it", "O(1) random access by index", "O(log n) search", "Lower memory usage per node"],
+      "answer": 0,
+      "explanation": "A doubly linked list stores both next and prev pointers, so given a pointer to a node you can splice it out in O(1) (you can reach its predecessor directly). In a singly linked list you'd need the previous node, forcing an O(n) search. The trade-offs: a doubly linked list uses MORE memory per node (an extra pointer), and it still has NO random access (index lookup is O(n)) and NO faster search."
+    },
+    {
+      "id": "ll-09",
+      "difficulty": "easy",
+      "question": "What is the time complexity (זמן ריצה) of inserting a new node AFTER a given node, when you already hold a pointer to that node?",
+      "options": ["O(1)", "O(n)", "O(log n)", "O(n^2)"],
+      "answer": 0,
+      "explanation": "If you already have a pointer to the node, inserting after it is just a couple of pointer rewrites (new_node->next = node->next; node->next = new_node;) — a constant number of operations → O(1). The O(n) cost only appears when you first have to SEARCH for the position. 'Already have the pointer' is the key phrase that makes it O(1)."
+    },
+    {
+      "id": "ll-10",
+      "difficulty": "hard",
+      "question": "You must detect a cycle but are told extra memory is completely free/unlimited and code simplicity matters most. Which approach is simplest and still O(n) time?",
+      "options": ["Hash set of visited node addresses", "Floyd's two-pointer algorithm", "Reverse the list and compare", "Recursion with memoization"],
+      "answer": 0,
+      "explanation": "When O(n) extra space is acceptable, the hash-set method is the simplest to write correctly: walk the list, and for each node check if its address is already in the set — if yes, there's a cycle; otherwise insert it. It's O(n) time and O(n) space. Floyd's is more space-efficient (O(1)) but trickier to reason about. This question tests that you can pick the right tool given the CONSTRAINTS, not just the 'best' one in the abstract."
+    }
+  ]
+}

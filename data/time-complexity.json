@@ -1,0 +1,112 @@
+{
+  "topic": "Time Complexity",
+  "topicHe": "זמן ריצה / ניתוח סיבוכיות",
+  "description": "Analyze the running time (זמן ריצה) of code and data-structure operations. Given a snippet, pick the tight Big-O bound.",
+  "questions": [
+    {
+      "id": "tc-01",
+      "difficulty": "easy",
+      "question": "What is the time complexity (זמן ריצה) of the following loop?",
+      "code": "int sum = 0;\nfor (int i = 0; i < n; i++) {\n    sum += i;\n}",
+      "options": ["O(1)", "O(log n)", "O(n)", "O(n^2)"],
+      "answer": 2,
+      "explanation": "The loop runs exactly n times, doing O(1) work per iteration, so the total is O(n) — linear time. A single loop bounded by n is the textbook example of linear running time. Only if the loop bound changed multiplicatively (e.g. i *= 2) would it become logarithmic."
+    },
+    {
+      "id": "tc-02",
+      "difficulty": "easy",
+      "question": "What is the time complexity (זמן ריצה) of this nested loop?",
+      "code": "for (int i = 0; i < n; i++) {\n    for (int j = 0; j < n; j++) {\n        cout << i * j;\n    }\n}",
+      "options": ["O(n)", "O(n log n)", "O(n^2)", "O(2^n)"],
+      "answer": 2,
+      "explanation": "The outer loop runs n times, and for EACH outer iteration the inner loop runs n times. Total iterations = n × n = n². Two independent nested loops both bounded by n give O(n²) — quadratic time. This is the classic shape you see in bubble sort, selection sort, and comparing every pair of elements."
+    },
+    {
+      "id": "tc-03",
+      "difficulty": "medium",
+      "question": "What is the time complexity (זמן ריצה) of the following loop?",
+      "code": "for (int i = 1; i < n; i = i * 2) {\n    cout << i;\n}",
+      "options": ["O(n)", "O(log n)", "O(sqrt(n))", "O(n log n)"],
+      "answer": 1,
+      "explanation": "i doubles every iteration: 1, 2, 4, 8, ... It stops once i ≥ n. The number of doublings needed to reach n is log₂(n), so the loop runs about log n times → O(log n). The rule of thumb: when the loop variable is MULTIPLIED (or divided) by a constant each step, the running time is logarithmic. This is exactly why binary search is O(log n)."
+    },
+    {
+      "id": "tc-04",
+      "difficulty": "medium",
+      "question": "What is the time complexity (זמן ריצה) of this code?",
+      "code": "for (int i = 0; i < n; i++) {\n    for (int j = 1; j < n; j = j * 2) {\n        cout << i << j;\n    }\n}",
+      "options": ["O(n^2)", "O(n)", "O(n log n)", "O(log n)"],
+      "answer": 2,
+      "explanation": "The outer loop is O(n) (runs n times). The inner loop multiplies j by 2 each step, so it runs O(log n) times. Because the inner loop runs fully for each outer iteration, you multiply: n × log n = O(n log n). This is the running time of efficient comparison sorts like merge sort and heapsort."
+    },
+    {
+      "id": "tc-05",
+      "difficulty": "medium",
+      "question": "What is the tight time complexity (זמן ריצה) of this loop?",
+      "code": "int j = 0;\nfor (int i = 0; i < n; i++) {\n    while (j < n && arr[j] < arr[i]) {\n        j++;\n    }\n}",
+      "options": ["O(n^2)", "O(n)", "O(n log n)", "O(log n)"],
+      "answer": 1,
+      "explanation": "This is a classic trap. It LOOKS like O(n²) because of the nested loops, but look at j: it is declared OUTSIDE the outer loop and is never reset. Across the entire run, j only ever increases, and it can increase at most n times total. So the inner while loop does at most n steps in total across ALL outer iterations. Outer loop: O(n). Inner work summed over the whole run: O(n). Total: O(n). This 'amortized' counting argument is a favorite exam question."
+    },
+    {
+      "id": "tc-06",
+      "difficulty": "easy",
+      "question": "What is the average-case time complexity (זמן ריצה) of searching for a value in a hash table with good, uniform hashing?",
+      "options": ["O(1)", "O(log n)", "O(n)", "O(n log n)"],
+      "answer": 0,
+      "explanation": "With a good hash function and a bounded load factor, hashing gives O(1) average-case lookup, insert, and delete — this is the whole reason hash tables exist. Be careful: the WORST case is O(n) (if every key collides into one bucket/chain), but on average, expected constant time. Exams often ask specifically for 'average case' vs 'worst case' here."
+    },
+    {
+      "id": "tc-07",
+      "difficulty": "medium",
+      "question": "What is the time complexity (זמן ריצה) of this recursive function?",
+      "code": "int f(int n) {\n    if (n <= 1) return 1;\n    return f(n - 1) + f(n - 1);\n}",
+      "options": ["O(n)", "O(n^2)", "O(2^n)", "O(log n)"],
+      "answer": 2,
+      "explanation": "Each call spawns TWO recursive calls, and the depth of recursion is n. The number of calls doubles at each level: 1, 2, 4, 8, ..., forming a binary tree of height n with about 2^n nodes → O(2^n), exponential. Contrast with f(n-1) called only once, which would be O(n). Branching factor 2 with depth n is the signature of exponential time."
+    },
+    {
+      "id": "tc-08",
+      "difficulty": "hard",
+      "question": "What is the time complexity (זמן ריצה) of this loop?",
+      "code": "for (int i = 0; i < n; i++) {\n    for (int j = 0; j < i; j++) {\n        cout << j;\n    }\n}",
+      "options": ["O(n)", "O(n^2)", "O(n log n)", "O(2^n)"],
+      "answer": 1,
+      "explanation": "The inner loop runs i times, and i grows: 0 + 1 + 2 + ... + (n-1). That sum equals n(n-1)/2, which is O(n²). Even though the inner loop isn't a full n each time, the sum of an arithmetic series up to n is still quadratic. Dropping the constant ½ and the lower-order term gives O(n²)."
+    },
+    {
+      "id": "tc-09",
+      "difficulty": "easy",
+      "question": "Accessing an element by index in a C++ std::vector (or a raw array), e.g. arr[i], has what time complexity (זמן ריצה)?",
+      "options": ["O(1)", "O(n)", "O(log n)", "O(n^2)"],
+      "answer": 0,
+      "explanation": "Arrays and std::vector store elements in contiguous memory, so the address of arr[i] is computed directly as base + i × element_size — a single arithmetic step, independent of n. That is O(1) random access. This is arrays' key advantage over linked lists, where reaching index i costs O(n) because you must walk the pointers."
+    },
+    {
+      "id": "tc-10",
+      "difficulty": "medium",
+      "question": "What is the time complexity (זמן ריצה) of the outer computation below?",
+      "code": "for (int i = 0; i < n; i++) {\n    for (int j = n; j > 1; j = j / 2) {\n        cout << i;\n    }\n}",
+      "options": ["O(n)", "O(n log n)", "O(n^2)", "O(log n)"],
+      "answer": 1,
+      "explanation": "The inner loop DIVIDES j by 2 each step (n, n/2, n/4, ... down to 1), which takes O(log n) iterations. The outer loop runs n times. Multiply: n × log n = O(n log n). Note that halving and doubling both give a logarithmic count — the direction doesn't matter, only that it's multiplicative."
+    },
+    {
+      "id": "tc-11",
+      "difficulty": "hard",
+      "question": "What is the tight time complexity (זמן ריצה) of this loop in terms of n?",
+      "code": "for (int i = 1; i * i <= n; i++) {\n    cout << i;\n}",
+      "options": ["O(n)", "O(log n)", "O(sqrt(n))", "O(n^2)"],
+      "answer": 2,
+      "explanation": "The loop continues while i×i ≤ n, i.e. while i ≤ √n. So it runs about √n times → O(√n). This pattern shows up in trial-division primality testing and in some factorization loops. Recognizing that the condition i*i <= n means i <= sqrt(n) is the key insight."
+    },
+    {
+      "id": "tc-12",
+      "difficulty": "medium",
+      "question": "Inserting at the front (push_front) of a singly linked list has what time complexity (זמן ריצה)?",
+      "options": ["O(1)", "O(n)", "O(log n)", "O(n^2)"],
+      "answer": 0,
+      "explanation": "Inserting at the head only requires creating a node and repointing the head — a fixed number of pointer operations regardless of list length → O(1). This is a core strength of linked lists. (Inserting at the TAIL is O(n) for a singly linked list without a tail pointer, because you must first walk to the end.)"
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "topic": "Sorting",
+  "topicHe": "מיון",
+  "description": "Comparison sorts vs. non-comparison sorts, quicksort partition schemes (Hoare vs. Lomuto), bucket sort, and their running times.",
+  "questions": [
+    {
+      "id": "so-01",
+      "difficulty": "medium",
+      "question": "What is the average and worst-case time complexity (זמן ריצה) of Quicksort?",
+      "options": ["Average O(n log n), worst O(n^2)", "Average O(n^2), worst O(n log n)", "Both O(n log n)", "Both O(n^2)"],
+      "answer": 0,
+      "explanation": "Quicksort averages O(n log n) because a good pivot splits the array roughly in half each time (log n levels × O(n) partition work). Its worst case is O(n²), which happens when the pivot is consistently the smallest or largest element (e.g. an already-sorted array with a naive first/last-element pivot), producing lopsided partitions. Randomized or median-of-three pivots make the worst case very unlikely in practice."
+    },
+    {
+      "id": "so-02",
+      "difficulty": "hard",
+      "question": "What is a key behavioral difference between the Lomuto and Hoare partition schemes in Quicksort?",
+      "options": ["Hoare does fewer swaps on average and uses two pointers moving inward; Lomuto is simpler but does more swaps", "Lomuto is always faster than Hoare", "Hoare cannot handle duplicate elements at all", "Lomuto guarantees O(n log n) worst case"],
+      "answer": 0,
+      "explanation": "Lomuto's scheme uses a single scanning index and typically picks the LAST element as pivot; it's easy to code but performs more swaps. Hoare's original scheme uses TWO pointers that move toward each other and swap out-of-place pairs; it does about 3× fewer swaps on average and is generally more efficient. A subtlety: in Hoare's scheme the pivot does NOT necessarily end up in its final sorted position after partitioning, whereas in Lomuto it does — this changes how the recursive calls are indexed."
+    },
+    {
+      "id": "so-03",
+      "difficulty": "medium",
+      "question": "What is the guaranteed worst-case time complexity (זמן ריצה) of Merge Sort?",
+      "options": ["O(n log n)", "O(n^2)", "O(n)", "O(log n)"],
+      "answer": 0,
+      "explanation": "Merge sort always splits the array in half (log n levels) and merges in linear time per level → O(n log n) in the BEST, AVERAGE, and WORST case. That guaranteed bound is its big advantage over quicksort. Its downside is that the standard version needs O(n) extra space for merging, whereas quicksort sorts in place."
+    },
+    {
+      "id": "so-04",
+      "difficulty": "hard",
+      "question": "Why can comparison-based sorts NEVER beat O(n log n) in the worst case?",
+      "options": ["Because distinguishing n! possible orderings by yes/no comparisons requires at least log2(n!) = Ω(n log n) comparisons", "Because arrays are stored contiguously", "Because recursion always costs log n", "They can — O(n) comparison sorts exist"],
+      "answer": 0,
+      "explanation": "Any comparison sort can be modeled as a decision tree where each internal node is one comparison. There are n! possible input orderings, so the tree needs at least n! leaves. A binary tree with n! leaves has height at least log₂(n!), and by Stirling's approximation log₂(n!) = Θ(n log n). Since height = worst-case number of comparisons, no comparison sort can do better than Ω(n log n). This is a famous lower-bound proof."
+    },
+    {
+      "id": "so-05",
+      "difficulty": "medium",
+      "question": "Bucket sort and counting/radix sort can run in O(n) time. How do they get around the O(n log n) comparison lower bound?",
+      "options": ["They are NOT comparison sorts — they use the values themselves as array indices / distribute into buckets", "They use faster comparisons", "They only work on already-sorted data", "They secretly call quicksort"],
+      "answer": 0,
+      "explanation": "The Ω(n log n) bound only applies to sorts that decide order purely by COMPARING pairs of elements. Bucket, counting, and radix sort instead use the numeric value of each key directly — e.g. as an index into a bucket array — which sidesteps comparisons entirely. The catch: they need assumptions about the input (a known, bounded range or uniform distribution), so they are not general-purpose replacements for quicksort/merge sort."
+    },
+    {
+      "id": "so-06",
+      "difficulty": "medium",
+      "question": "What is the average-case time complexity (זמן ריצה) of Bucket Sort when the n inputs are uniformly distributed over a range and spread into n buckets?",
+      "options": ["O(n)", "O(n log n)", "O(n^2)", "O(log n)"],
+      "answer": 0,
+      "explanation": "With uniformly distributed input spread across n buckets, each bucket holds O(1) elements on average, so sorting the buckets and concatenating them is O(n) expected time. However, if the distribution is skewed and most elements land in one bucket, it degrades toward the cost of the inner sort (often O(n²) or O(n log n)). The O(n) result depends critically on the uniform-distribution assumption."
+    },
+    {
+      "id": "so-07",
+      "difficulty": "easy",
+      "question": "What is the time complexity (זמן ריצה) of Heapsort, and is it in-place?",
+      "options": ["O(n log n) in all cases, and in-place (O(1) extra space)", "O(n^2) worst case, in-place", "O(n log n), but needs O(n) extra space", "O(n), in-place"],
+      "answer": 0,
+      "explanation": "Heapsort builds a heap (O(n)) then extracts the max n times, each extraction costing O(log n) → O(n log n) overall, guaranteed in best/average/worst case. It sorts IN PLACE using only O(1) extra space, unlike merge sort. Its practical downside versus quicksort is poorer cache locality (it jumps around the array), so it's often a bit slower in practice despite the same asymptotic bound."
+    },
+    {
+      "id": "so-08",
+      "difficulty": "medium",
+      "question": "What does it mean for a sorting algorithm to be STABLE?",
+      "options": ["Equal elements keep their original relative order after sorting", "It never crashes", "It always runs in O(n log n)", "It sorts in place"],
+      "answer": 0,
+      "explanation": "A stable sort preserves the relative order of records with equal keys. This matters when sorting by one field while keeping an earlier ordering as a tiebreaker (e.g. sort by last name, keeping first-name order within ties). Merge sort and insertion sort are stable; the standard in-place quicksort and heapsort are NOT stable. Stability is a correctness property, separate from time complexity."
+    },
+    {
+      "id": "so-09",
+      "difficulty": "easy",
+      "question": "What is the worst-case time complexity (זמן ריצה) of Bubble Sort, Selection Sort, and Insertion Sort?",
+      "options": ["O(n^2)", "O(n log n)", "O(n)", "O(log n)"],
+      "answer": 0,
+      "explanation": "All three simple sorts are O(n²) in the worst case because they use nested loops comparing/moving elements. Note the nuance: insertion sort is O(n) on an ALREADY-SORTED array (best case) and is efficient for small or nearly-sorted inputs, while selection sort is always Θ(n²) regardless of input. For large random data, O(n log n) sorts win decisively."
+    },
+    {
+      "id": "so-10",
+      "difficulty": "hard",
+      "question": "Given an already-sorted array and Quicksort using the LAST element as the pivot (naive Lomuto), what running time (זמן ריצה) results and why?",
+      "options": ["O(n^2), because every partition is maximally unbalanced (one side empty)", "O(n log n), because the data is sorted", "O(n), because it's already sorted", "O(log n)"],
+      "answer": 0,
+      "explanation": "With a sorted array and last-element pivot, each partition puts everything on one side and nothing on the other — the recursion depth becomes n instead of log n, and each level still does O(n) work, giving O(n²). This is quicksort's classic worst case. The fix is randomizing the pivot or using median-of-three, which makes such degenerate splits astronomically unlikely."
+    }
+  ]
+}

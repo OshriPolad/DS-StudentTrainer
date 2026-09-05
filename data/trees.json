@@ -1,0 +1,88 @@
+{
+  "topic": "Trees & Heaps",
+  "topicHe": "עצים וערמות",
+  "description": "Binary trees, Binary Search Trees (BST), AVL balancing, and binary heaps. Includes running-time and property questions.",
+  "questions": [
+    {
+      "id": "tr-01",
+      "difficulty": "easy",
+      "question": "What property defines a Binary Search Tree (BST)?",
+      "options": ["For every node: all keys in the left subtree are smaller, all keys in the right subtree are larger", "Every node has exactly two children", "All leaves are at the same depth", "The tree is always perfectly balanced"],
+      "answer": 0,
+      "explanation": "The BST invariant is about ORDER: for any node, everything in its left subtree is less than it, and everything in its right subtree is greater. This must hold recursively for every node, not just the root — a common trap is a tree that looks locally correct but violates the rule with a distant ancestor. This ordering is what lets you search in O(height) by going left or right at each step."
+    },
+    {
+      "id": "tr-02",
+      "difficulty": "medium",
+      "question": "What is the time complexity (זמן ריצה) of search in a BALANCED binary search tree, and in a DEGENERATE (unbalanced) one?",
+      "options": ["Balanced: O(log n); degenerate: O(n)", "Both O(log n)", "Balanced: O(1); degenerate: O(log n)", "Both O(n)"],
+      "answer": 0,
+      "explanation": "Search cost in a BST is O(height). When the tree is balanced, the height is about log₂(n), so search is O(log n). But if you insert already-sorted data into a plain BST, it degenerates into a linked list of height n, and search becomes O(n). This exact failure mode is WHY self-balancing trees like AVL and red-black trees exist — they guarantee O(log n) height."
+    },
+    {
+      "id": "tr-03",
+      "difficulty": "medium",
+      "question": "This C++ function checks whether a binary tree is a valid BST. Why is passing min/max bounds necessary?",
+      "code": "bool isBST(Node* node, long minV, long maxV) {\n    if (node == nullptr) return true;\n    if (node->key <= minV || node->key >= maxV) return false;\n    return isBST(node->left,  minV, node->key)\n        && isBST(node->right, node->key, maxV);\n}",
+      "options": ["Because a node must be valid against ALL its ancestors, not just its parent", "Because recursion needs a base case", "To count the number of nodes", "To make it run in O(1)"],
+      "answer": 0,
+      "explanation": "A naive check that only compares a node to its immediate children is WRONG: a node in the right subtree of the root must be greater than the root, even though the root is not its parent. By carrying down a (min, max) range that tightens at each step, each node is validated against every ancestor constraint. Going left tightens the max to the current key; going right tightens the min. This runs in O(n) and is the correct way to validate a BST."
+    },
+    {
+      "id": "tr-04",
+      "difficulty": "medium",
+      "question": "An in-order traversal of a valid Binary Search Tree visits the keys in what order?",
+      "options": ["Sorted ascending order", "Sorted descending order", "Level by level", "Random order"],
+      "answer": 0,
+      "explanation": "In-order traversal is Left → Node → Right. Because a BST puts smaller keys on the left and larger on the right, this visits keys in ascending sorted order. This gives another elegant way to CHECK a BST: do an in-order traversal and verify the sequence is strictly increasing. It's also how you print a BST's contents sorted for free."
+    },
+    {
+      "id": "tr-05",
+      "difficulty": "hard",
+      "question": "What is the definition of the balance factor of a node in an AVL tree, and what values keep the tree valid?",
+      "options": ["balance = height(left) - height(right); must be in {-1, 0, +1}", "balance = number of children; must be exactly 2", "balance = depth of the node; must be < log n", "balance = key value; must be positive"],
+      "answer": 0,
+      "explanation": "An AVL tree is a self-balancing BST where, for every node, the balance factor = height(left subtree) − height(right subtree) must be −1, 0, or +1. If an insert or delete pushes any node's balance factor to ±2, the tree performs ROTATIONS (LL, RR, LR, RL) to restore balance. Keeping every node within ±1 guarantees the height stays O(log n), so all operations remain O(log n)."
+    },
+    {
+      "id": "tr-06",
+      "difficulty": "hard",
+      "question": "After inserting into an AVL tree, a node becomes 'left-heavy because of an insertion in the left child's LEFT subtree' (Left-Left case). Which rotation fixes it?",
+      "options": ["A single RIGHT rotation", "A single LEFT rotation", "A left-then-right double rotation", "No rotation needed"],
+      "answer": 0,
+      "explanation": "The Left-Left (LL) case is fixed by a single RIGHT rotation about the unbalanced node. Mnemonic: rotate in the OPPOSITE direction of the heavy side — heavy on the left ⇒ rotate right. The symmetric Right-Right (RR) case needs a single left rotation. The 'zig-zag' cases (Left-Right and Right-Left) need a DOUBLE rotation: first rotate the child to convert it into an LL/RR case, then rotate the parent."
+    },
+    {
+      "id": "tr-07",
+      "difficulty": "medium",
+      "question": "A binary MIN-heap is stored in an array. For the element at index i (0-based), where are its children?",
+      "options": ["Left child at 2i+1, right child at 2i+2", "Left child at 2i, right child at 2i+1", "Children at i-1 and i+1", "Left child at i/2, right child at i/2 + 1"],
+      "answer": 0,
+      "explanation": "A binary heap is a complete binary tree packed into an array with NO pointers. For 0-based indexing: left child = 2i+1, right child = 2i+2, and parent = (i-1)/2. (If the array were 1-based, it would be 2i, 2i+1, and i/2.) This implicit array layout is why heaps are so memory-efficient and cache-friendly compared to pointer-based trees."
+    },
+    {
+      "id": "tr-08",
+      "difficulty": "medium",
+      "question": "What are the time complexities (זמן ריצה) of insert and extract-min on a binary heap, and of peeking at the minimum?",
+      "options": ["insert O(log n), extract-min O(log n), peek-min O(1)", "all three O(log n)", "insert O(1), extract-min O(1), peek-min O(1)", "insert O(n), extract-min O(log n), peek-min O(1)"],
+      "answer": 0,
+      "explanation": "In a min-heap the minimum is always at the root (index 0), so peeking is O(1). Insert appends at the end then 'sifts up' along the height → O(log n). Extract-min removes the root, moves the last element to the top, then 'sifts down' → O(log n). This mix — O(1) access to the min but O(log n) updates — is exactly what makes heaps the standard priority-queue implementation."
+    },
+    {
+      "id": "tr-09",
+      "difficulty": "hard",
+      "question": "What is the time complexity (זמן ריצה) of BUILDING a heap from an unsorted array of n elements using the bottom-up build-heap procedure?",
+      "options": ["O(n)", "O(n log n)", "O(log n)", "O(n^2)"],
+      "answer": 0,
+      "explanation": "Surprisingly, build-heap (heapify from the bottom up, calling sift-down on each internal node from the last parent up to the root) is O(n), NOT O(n log n). The reason: most nodes are near the bottom and sift down only a tiny distance; the cost sums to a convergent series bounded by O(n). A common wrong answer is O(n log n), which is what you'd get from inserting n elements one at a time — the bottom-up build is strictly better."
+    },
+    {
+      "id": "tr-10",
+      "difficulty": "easy",
+      "question": "What is the height of a balanced binary tree (like an AVL tree) containing n nodes?",
+      "options": ["Θ(log n)", "Θ(n)", "Θ(sqrt(n))", "Θ(n log n)"],
+      "answer": 0,
+      "explanation": "A balanced binary tree roughly doubles the number of nodes at each level, so a tree of n nodes has height about log₂(n) → Θ(log n). This logarithmic height is the source of every O(log n) operation on balanced trees. Contrast with a degenerate (linked-list-shaped) tree whose height is Θ(n)."
+    }
+  ]
+}
