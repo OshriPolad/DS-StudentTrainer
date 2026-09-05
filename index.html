@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<!--
+  =====================================================================
+  index.html — the single page of the app (this is a Single Page App).
+  NOTE: There is only ONE .html file. JavaScript swaps which <section>
+  is visible, so it FEELS like multiple screens without page reloads.
+  Structure of this file:
+    1. <head>  — metadata, links to CSS, PWA manifest.
+    2. <header> — app title + live countdown to your exam.
+    3. Three <section> screens: #home, #quiz, #results (only one shown at a time).
+    4. <script> tags at the bottom load the JS (order matters: quiz.js then app.js).
+  =====================================================================
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <!-- NOTE: this viewport tag is what makes the page responsive on your phone. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0f172a" />
+  <title>DS Exam Trainer</title>
+
+  <!-- NOTE: link to our stylesheet (all visual styling lives in css/style.css). -->
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- NOTE: the PWA manifest lets you "Add to Home Screen" on your phone. -->
+  <link rel="manifest" href="manifest.json" />
+
+  <!-- NOTE: reuse the app icon as the browser-tab favicon. -->
+  <link rel="icon" href="icons/icon-192.png" />
+</head>
+
+<body>
+  <!-- ============================ HEADER ============================ -->
+  <header class="app-header">
+    <div class="header-inner">
+      <h1>DS Exam Trainer <span class="he">מאמן למבחן</span></h1>
+      <!-- NOTE: app.js fills this countdown in, based on the exam date set in app.js -->
+      <div id="countdown" class="countdown" aria-live="polite"></div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- ======================= SCREEN 1: HOME ======================= -->
+    <section id="home" class="screen">
+      <p class="intro">
+        Pick a topic to drill, or take a mixed quiz across everything.
+        Each question is multiple-choice; after you answer you get a full
+        explanation of <em>why</em>.
+      </p>
+
+      <!-- NOTE: app.js generates one card per topic inside this container. -->
+      <div id="topic-list" class="topic-grid"></div>
+
+      <button id="mixed-btn" class="btn btn-primary btn-block">
+        🎲 Mixed quiz — all topics
+      </button>
+
+      <!-- NOTE: shows saved progress (best scores) read from localStorage. -->
+      <div id="progress-summary" class="progress-summary"></div>
+    </section>
+
+    <!-- ======================= SCREEN 2: QUIZ ======================= -->
+    <section id="quiz" class="screen hidden">
+      <!-- Top bar: progress through the quiz + running score -->
+      <div class="quiz-bar">
+        <span id="q-progress" class="q-progress"></span>
+        <span id="q-score" class="q-score"></span>
+      </div>
+      <div class="progress-track"><div id="progress-fill" class="progress-fill"></div></div>
+
+      <div class="question-topic" id="q-topic"></div>
+      <h2 class="question-text" id="q-text"></h2>
+
+      <!-- NOTE: <pre><code> shows C++ code snippets in monospace. Hidden when a question has no code. -->
+      <pre id="q-code" class="code-block hidden"><code></code></pre>
+
+      <!-- NOTE: app.js injects the four answer buttons here. -->
+      <div id="q-options" class="options"></div>
+
+      <!-- NOTE: the wide explanation appears here AFTER you answer. -->
+      <div id="feedback" class="feedback hidden">
+        <div id="feedback-verdict" class="feedback-verdict"></div>
+        <div id="feedback-explanation" class="feedback-explanation"></div>
+        <button id="next-btn" class="btn btn-primary btn-block">Next →</button>
+      </div>
+
+      <button id="quit-btn" class="btn btn-ghost">← Back to topics</button>
+    </section>
+
+    <!-- ====================== SCREEN 3: RESULTS ===================== -->
+    <section id="results" class="screen hidden">
+      <h2>Quiz complete 🎯</h2>
+      <div id="results-score" class="results-score"></div>
+      <div id="results-message" class="results-message"></div>
+      <button id="retry-btn" class="btn btn-primary btn-block">Try again</button>
+      <button id="home-btn" class="btn btn-ghost btn-block">Back to topics</button>
+    </section>
+
+  </main>
+
+  <footer class="app-footer">
+    Built for Oshri · Data Structures revision · <span id="q-count"></span> questions loaded
+  </footer>
+
+  <!--
+    NOTE: script order matters.
+    quiz.js defines the "Quiz" engine (the logic).
+    app.js wires the engine to the buttons/screens (the UI controller).
+    defer = run after HTML is parsed.
+  -->
+  <script src="js/quiz.js" defer></script>
+  <script src="js/app.js" defer></script>
+
+  <!-- NOTE: registers the service worker so the app works OFFLINE. See js/... and sw.js -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('sw.js').catch(function (err) {
+          console.log('Service worker registration skipped:', err);
+        });
+      });
+    }
+  </script>
+</body>
+</html>

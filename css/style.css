@@ -1,0 +1,153 @@
+/* =========================================================================
+   style.css — ALL the visual styling for the app.
+   NOTE: organized top-to-bottom as:
+     1. CSS variables (colors/spacing) — change these to re-theme the whole app.
+     2. Base / reset.
+     3. Layout (header, container, footer).
+     4. Components (buttons, cards, code blocks, options, feedback).
+     5. Responsive tweaks for small phone screens.
+   ========================================================================= */
+
+/* ---------- 1. THEME VARIABLES ------------------------------------------ */
+/* NOTE: define a color once here, use it everywhere via var(--name).
+   Want a different look? Edit these values only. */
+:root {
+  --bg:            #0f172a;   /* page background (dark navy) */
+  --surface:       #1e293b;   /* cards / raised panels */
+  --surface-2:     #334155;   /* hover / secondary surface */
+  --text:          #e2e8f0;   /* main text */
+  --text-dim:      #94a3b8;   /* secondary text */
+  --primary:       #6366f1;   /* accent (indigo) */
+  --primary-dark:  #4f46e5;
+  --correct:       #22c55e;   /* green for right answers */
+  --wrong:         #ef4444;   /* red for wrong answers */
+  --code-bg:       #0b1120;   /* code block background */
+  --radius:        14px;
+  --gap:           16px;
+}
+
+/* ---------- 2. BASE / RESET --------------------------------------------- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* utility: hide a screen/element. app.js toggles this class. */
+.hidden { display: none !important; }
+
+.he { font-size: 0.75em; color: var(--text-dim); font-weight: 400; }
+
+/* ---------- 3. LAYOUT ---------------------------------------------------- */
+.app-header {
+  background: linear-gradient(135deg, var(--primary-dark), #7c3aed);
+  padding: 18px 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+}
+.header-inner { max-width: 720px; margin: 0 auto; display: flex;
+  justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+.app-header h1 { font-size: 1.25rem; color: #fff; }
+
+.countdown {
+  background: rgba(255,255,255,0.15);
+  padding: 6px 12px; border-radius: 999px;
+  font-size: 0.85rem; font-weight: 600; color: #fff; white-space: nowrap;
+}
+
+.container { max-width: 720px; width: 100%; margin: 0 auto;
+  padding: 20px 16px; flex: 1; }
+
+.app-footer { text-align: center; color: var(--text-dim);
+  font-size: 0.8rem; padding: 16px; }
+
+.intro { color: var(--text-dim); margin-bottom: 20px; }
+
+/* ---------- 4. COMPONENTS ----------------------------------------------- */
+
+/* --- Topic cards (home screen) --- */
+.topic-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap); margin-bottom: var(--gap); }
+.topic-card {
+  background: var(--surface); border: 1px solid var(--surface-2);
+  border-radius: var(--radius); padding: 18px; cursor: pointer;
+  transition: transform 0.12s ease, border-color 0.12s ease; text-align: left;
+  color: var(--text); font: inherit;
+}
+.topic-card:hover { transform: translateY(-2px); border-color: var(--primary); }
+.topic-card .t-title { font-size: 1.05rem; font-weight: 600; }
+.topic-card .t-title-he { font-size: 0.8rem; color: var(--text-dim); }
+.topic-card .t-count { font-size: 0.8rem; color: var(--primary); margin-top: 8px; }
+
+/* --- Buttons --- */
+.btn { font: inherit; font-weight: 600; border: none; border-radius: var(--radius);
+  padding: 14px 18px; cursor: pointer; transition: background 0.12s ease, opacity 0.12s ease; }
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-dark); }
+.btn-ghost { background: transparent; color: var(--text-dim); }
+.btn-ghost:hover { color: var(--text); }
+.btn-block { display: block; width: 100%; margin-top: 12px; }
+
+/* --- Quiz bar / progress --- */
+.quiz-bar { display: flex; justify-content: space-between; font-size: 0.85rem;
+  color: var(--text-dim); margin-bottom: 8px; }
+.q-score { font-weight: 600; color: var(--text); }
+.progress-track { height: 6px; background: var(--surface-2); border-radius: 999px; overflow: hidden; margin-bottom: 20px; }
+.progress-fill { height: 100%; width: 0%; background: var(--primary); transition: width 0.25s ease; }
+
+.question-topic { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--primary); margin-bottom: 6px; }
+.question-text { font-size: 1.15rem; margin-bottom: 16px; }
+
+/* --- Code block (C++ snippets) --- */
+.code-block {
+  background: var(--code-bg); border: 1px solid var(--surface-2);
+  border-radius: 10px; padding: 14px 16px; margin-bottom: 18px;
+  overflow-x: auto;  /* NOTE: lets long code scroll sideways instead of breaking the layout */
+  font-family: "SF Mono", "Fira Code", Consolas, monospace;
+  font-size: 0.85rem; color: #e2e8f0; line-height: 1.5;
+}
+.code-block code { white-space: pre; }
+
+/* --- Answer options --- */
+.options { display: flex; flex-direction: column; gap: 10px; }
+.option {
+  background: var(--surface); border: 2px solid var(--surface-2);
+  border-radius: 10px; padding: 14px 16px; text-align: left; cursor: pointer;
+  color: var(--text); font: inherit; transition: border-color 0.1s ease, background 0.1s ease;
+  display: flex; align-items: center; gap: 12px;
+}
+.option:hover:not(:disabled) { border-color: var(--primary); }
+.option .letter { font-weight: 700; color: var(--primary); min-width: 20px; }
+/* states applied by app.js after answering */
+.option.correct { border-color: var(--correct); background: rgba(34,197,94,0.12); }
+.option.wrong   { border-color: var(--wrong);   background: rgba(239,68,68,0.12); }
+.option:disabled { cursor: default; }
+
+/* --- Feedback / explanation --- */
+.feedback { margin-top: 20px; background: var(--surface); border-radius: var(--radius);
+  padding: 18px; border: 1px solid var(--surface-2); }
+.feedback-verdict { font-weight: 700; font-size: 1.05rem; margin-bottom: 10px; }
+.feedback-verdict.ok  { color: var(--correct); }
+.feedback-verdict.no  { color: var(--wrong); }
+.feedback-explanation { color: var(--text); }
+
+/* --- Results screen --- */
+.results-score { font-size: 3rem; font-weight: 800; text-align: center; margin: 20px 0 8px; }
+.results-message { text-align: center; color: var(--text-dim); margin-bottom: 20px; }
+
+/* --- Progress summary (home) --- */
+.progress-summary { margin-top: 24px; font-size: 0.85rem; color: var(--text-dim); }
+.progress-summary .row { display: flex; justify-content: space-between;
+  padding: 6px 0; border-bottom: 1px solid var(--surface-2); }
+
+/* ---------- 5. RESPONSIVE (small phones) -------------------------------- */
+@media (max-width: 460px) {
+  .topic-grid { grid-template-columns: 1fr; }  /* NOTE: stack cards in one column on narrow screens */
+  .app-header h1 { font-size: 1.1rem; }
+  .question-text { font-size: 1.05rem; }
+}
