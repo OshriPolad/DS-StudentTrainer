@@ -1,51 +1,73 @@
 /* =========================================================================
-   app.js — THE UI CONTROLLER (connects the Quiz engine to the screen).
+   app.js — THE APP CONTROLLER + ROUTER.
    -------------------------------------------------------------------------
-   NOTE: This file does all the DOM work — reading data files, building
-   buttons, switching screens, reacting to clicks. It uses the Quiz class
-   from quiz.js as its "brain". Read this top-to-bottom:
-     1. CONFIG          — things you might edit (exam date).
-     2. STATE           — variables the app remembers while running.
-     3. init()          — startup: load data, draw the home screen.
-     4. Screen helpers  — showScreen(), and one function per screen.
-     5. Quiz flow        — start → render question → answer → feedback → next → results.
-     6. Progress storage — save/read best scores in the browser (localStorage).
+   Responsibilities:
+     1. Top navigation between the three modes (Quiz / Visualize / Complexity).
+     2. The Quiz mode itself (home, question flow, results).
+     3. Booting the Visualize and Complexity modules (defined in viz.js and
+        complexity.js) once at startup.
+
+   Shared helpers ($, el) live here and are used by the other modules too.
    ========================================================================= */
 
-/* ---------- 1. CONFIG ---------------------------------------------------- */
-/* NOTE: change these two lines when you move on to the OOP exam. */
-const EXAM_NAME = 'Data Structures';
-const EXAM_DATE = new Date('2026-09-17T09:00:00');  // מבני נתונים final
-
-/* ---------- 2. STATE ----------------------------------------------------- */
-let topicsData = [];   // array of { id, title, titleHe, questions:[...] }
-let quiz = null;       // the currently active Quiz object (or null on home)
-
-/* tiny helper: document.getElementById, shortened */
+/* ---------- SHARED HELPERS (used across app.js, viz.js, complexity.js) --- */
 const $ = (id) => document.getElementById(id);
 
-/* SECURITY NOTE: create an element and set its text via textContent (never
-   innerHTML). textContent treats the string as plain text, so even if a
-   question ever contained characters like < or a <script> tag, it is shown
-   literally and can NEVER execute. We build all dynamic UI this way to stay
-   safe against XSS, including if questions are ever loaded from a remote source. */
+/* SECURITY NOTE: build elements with textContent, never innerHTML, so data
+   can never be interpreted as HTML/JS (XSS-safe). */
 function el(tag, className, text) {
   const node = document.createElement(tag);
   if (className) node.className = className;
-  if (text !== undefined) node.textContent = text;   // safe: plain text only
+  if (text !== undefined) node.textContent = text;
   return node;
 }
 
-/* ---------- 3. STARTUP --------------------------------------------------- */
-/* NOTE: async because we fetch JSON files, which takes a moment. */
+/* BIDI HELPER: Hebrew is right-to-left, but embedded code / math / Big-O
+   (e.g. "5 < 15", "O(n log n)", "i ≤ √n") is left-to-right. Without help, the
+   bidi algorithm mirrors '<' '>' and reorders numbers, so "5 < 15" can show as
+   "5 > 15". This wraps each run of non-Hebrew characters that contains a
+   letter/digit in Unicode isolate marks (U+2066 … U+2069), forcing it LTR.
+   Used everywhere we display Hebrew prose that may contain code or math. */
+function bidi(s) {
+  if (typeof s !== 'string') return s;
+  // ֐-׿ = Hebrew block. Wrap non-Hebrew runs that contain a letter/digit.
+  return s.replace(/[^֐-׿\n]+/g, function (run) {
+    return /[A-Za-z0-9]/.test(run) ? '⁦' + run + '⁩' : run;  // LRI … PDI
+  });
+}
+
+/* ---------- STATE ------------------------------------------------------- */
+let topicsData = [];
+let quiz = null;
+let TOPIC_HE = {};   // maps a question's English "topic" to the Hebrew label for display
+
+/* ---------- NAVIGATION between the three modes -------------------------- */
+/* Each mode has one "landing" screen id. */
+const MODE_LANDING = { home: 'home', viz: 'viz', complexity: 'complexity' };
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach((s) => s.classList.add('hidden'));
+  $(id).classList.remove('hidden');
+  window.scrollTo(0, 0);
+}
+
+function switchMode(mode) {
+  showScreen(MODE_LANDING[mode]);
+  document.querySelectorAll('.nav-btn').forEach((b) =>
+    b.classList.toggle('active', b.dataset.mode === mode)
+  );
+}
+
+/* ---------- STARTUP ----------------------------------------------------- */
 async function init() {
-  startCountdown();
+  // wire the top nav
+  document.querySelectorAll('.nav-btn').forEach((btn) =>
+    btn.addEventListener('click', () => switchMode(btn.dataset.mode))
+  );
 
+  // load quiz data
   try {
-    // Step 1: load the master topic list.
     const topicsFile = await fetch('data/topics.json').then((r) => r.json());
-
-    // Step 2: load every topic's question file (in parallel with Promise.all).
     topicsData = await Promise.all(
       topicsFile.topics.map(async (t) => {
         const data = await fetch(t.file).then((r) => r.json());
@@ -53,98 +75,67 @@ async function init() {
       })
     );
   } catch (err) {
-    // NOTE: fetch() of local files fails if you open index.html directly
-    // as a file:// URL. You must serve the folder over http (see README).
-    $('topic-list').innerHTML =
-      '<p style="color:#ef4444">Could not load questions. Are you running a local server? See README.md.</p>';
+    $('topic-list').textContent =
+      'לא ניתן לטעון את השאלות. האם השרת המקומי רץ? ראו README.md.';
     console.error(err);
-    return;
   }
 
-  // Step 3: draw the home screen.
+  // build the English-topic → Hebrew-label map for the small topic tag
+  topicsData.forEach((t) => {
+    if (t.questions[0] && t.questions[0].topic) TOPIC_HE[t.questions[0].topic] = t.titleHe;
+  });
+
   renderHome();
   renderProgress();
-
-  // footer question count
   const totalQ = topicsData.reduce((sum, t) => sum + t.questions.length, 0);
   $('q-count').textContent = totalQ;
 
-  // wire up the static buttons that always exist
+  // static quiz buttons
   $('mixed-btn').addEventListener('click', startMixedQuiz);
   $('next-btn').addEventListener('click', goNext);
-  $('quit-btn').addEventListener('click', goHome);
+  $('quit-btn').addEventListener('click', () => switchMode('home'));
   $('retry-btn').addEventListener('click', () => startQuiz(quiz.questions, quiz.label));
-  $('home-btn').addEventListener('click', goHome);
+  $('home-btn').addEventListener('click', () => switchMode('home'));
+
+  // boot the other two modes (defined in their own files)
+  if (window.Viz) Viz.init();
+  if (window.Complexity) Complexity.init();
 }
 
-/* ---------- 4. SCREEN HELPERS ------------------------------------------- */
-/* Only one <section class="screen"> is visible at a time. */
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach((s) => s.classList.add('hidden'));
-  $(id).classList.remove('hidden');
-  window.scrollTo(0, 0);
-}
-
-function goHome() {
-  quiz = null;
-  renderProgress();
-  showScreen('home');
-}
-
-/* Build one card per topic on the home screen. */
+/* ---------- QUIZ MODE --------------------------------------------------- */
 function renderHome() {
   const list = $('topic-list');
-  list.innerHTML = '';
+  list.textContent = '';
   topicsData.forEach((topic) => {
-    // build the card with safe DOM nodes (no innerHTML) — see el() note above
     const card = el('button', 'topic-card');
     card.appendChild(el('div', 't-title', topic.title));
     card.appendChild(el('div', 't-title-he', topic.titleHe));
-    card.appendChild(el('div', 't-count', topic.questions.length + ' questions'));
-    // NOTE: clicking a card starts a quiz of just that topic.
+    card.appendChild(el('div', 't-count', topic.questions.length + ' שאלות'));
     card.addEventListener('click', () => startQuiz(shuffle(topic.questions), topic.title));
     list.appendChild(card);
   });
 }
 
-/* Countdown ribbon in the header. Recomputes every hour is overkill; once is fine. */
-function startCountdown() {
-  const ms = EXAM_DATE - new Date();
-  const days = Math.ceil(ms / (1000 * 60 * 60 * 24));
-  const el = $('countdown');
-  if (days > 1)      el.textContent = '📅 ' + days + ' days to ' + EXAM_NAME;
-  else if (days === 1) el.textContent = '📅 Tomorrow: ' + EXAM_NAME;
-  else if (days === 0) el.textContent = '📅 Exam is today — good luck!';
-  else                 el.textContent = '✅ ' + EXAM_NAME + ' done';
-}
-
-/* ---------- 5. QUIZ FLOW ------------------------------------------------- */
 function startMixedQuiz() {
-  // flatten every topic's questions into one big pool, then shuffle.
   const all = topicsData.flatMap((t) => t.questions);
-  startQuiz(shuffle(all), 'Mixed');
+  startQuiz(shuffle(all), 'מעורב');
 }
 
-/* Create a new Quiz and show the first question.
-   `questions` = array of question objects, `label` = what to call this run. */
 function startQuiz(questions, label) {
   quiz = new Quiz(questions);
-  quiz.label = label;           // remember for the "Try again" button
+  quiz.label = label;
   renderQuestion();
   showScreen('quiz');
 }
 
-/* Draw the current question, its (optional) code, and the four options. */
 function renderQuestion() {
   const q = quiz.current();
-
   $('q-progress').textContent = quiz.progressLabel();
-  $('q-score').textContent = 'Score: ' + quiz.score;
+  $('q-score').textContent = 'ניקוד: ' + quiz.score;
   $('progress-fill').style.width = (quiz.progressFraction() * 100) + '%';
-  $('q-topic').textContent = q.topic || quiz.label;
-  $('q-text').textContent = q.question;
+  $('q-topic').textContent = TOPIC_HE[q.topic] || quiz.label;
+  $('q-text').textContent = bidi(q.question);
 
-  // code block: show only if this question has a code snippet
   const codeBox = $('q-code');
   if (q.code) {
     codeBox.querySelector('code').textContent = q.code;
@@ -153,103 +144,76 @@ function renderQuestion() {
     codeBox.classList.add('hidden');
   }
 
-  // build the answer buttons fresh each time
   const optionsBox = $('q-options');
-  optionsBox.innerHTML = '';
+  optionsBox.textContent = '';
   const letters = ['A', 'B', 'C', 'D', 'E'];
   q.options.forEach((text, i) => {
-    // safe DOM construction (no innerHTML) — the option text is set as textContent
     const btn = el('button', 'option');
     btn.appendChild(el('span', 'letter', letters[i]));
-    btn.appendChild(el('span', null, text));
+    btn.appendChild(el('span', null, bidi(text)));
     btn.addEventListener('click', () => handleAnswer(i));
     optionsBox.appendChild(btn);
   });
 
-  // hide last question's feedback
   $('feedback').classList.add('hidden');
 }
 
-/* Runs when the user picks an option. */
 function handleAnswer(choiceIndex) {
   const result = quiz.answer(choiceIndex);
-  if (!result) return;   // already answered — ignore
-
+  if (!result) return;
   const optionButtons = $('q-options').querySelectorAll('.option');
   optionButtons.forEach((btn, i) => {
-    btn.disabled = true;                                  // lock all options
-    if (i === result.correctIndex) btn.classList.add('correct');   // always mark the right one
+    btn.disabled = true;
+    if (i === result.correctIndex) btn.classList.add('correct');
     if (i === result.chosenIndex && !result.isCorrect) btn.classList.add('wrong');
   });
-
-  // running score update
-  $('q-score').textContent = 'Score: ' + quiz.score;
-
-  // show the wide explanation
+  $('q-score').textContent = 'ניקוד: ' + quiz.score;
   const verdict = $('feedback-verdict');
-  verdict.textContent = result.isCorrect ? '✓ Correct!' : '✗ Not quite';
+  verdict.textContent = result.isCorrect ? '✓ נכון!' : '✗ לא מדויק';
   verdict.className = 'feedback-verdict ' + (result.isCorrect ? 'ok' : 'no');
-  $('feedback-explanation').textContent = result.explanation;
+  $('feedback-explanation').textContent = bidi(result.explanation);
   $('feedback').classList.remove('hidden');
 }
 
-/* "Next →" button: advance, or finish. */
 function goNext() {
-  const hasMore = quiz.next();
-  if (hasMore) {
-    renderQuestion();
-  } else {
-    showResults();
-  }
+  if (quiz.next()) renderQuestion();
+  else showResults();
 }
 
-/* Final screen with the score. */
 function showResults() {
   const pct = quiz.percent();
   $('results-score').textContent = quiz.score + ' / ' + quiz.total + '  (' + pct + '%)';
-
   let msg;
-  if (pct === 100)      msg = 'Perfect run. You know this cold. 💪';
-  else if (pct >= 80)   msg = 'Strong. Review the ones you missed and you are exam-ready.';
-  else if (pct >= 60)   msg = 'Good base. Redo this topic tomorrow to lock it in.';
-  else                  msg = 'Early days — read the explanations, then run it again.';
+  if (pct === 100)    msg = 'ריצה מושלמת. אתה שולט בזה. 💪';
+  else if (pct >= 80) msg = 'חזק. עבור על מה שפספסת ואתה מוכן למבחן.';
+  else if (pct >= 60) msg = 'בסיס טוב. חזור על הנושא מחר כדי לקבע אותו.';
+  else                msg = 'ההתחלה — קרא את ההסברים, ואז נסה שוב.';
   $('results-message').textContent = msg;
-
   saveProgress(quiz.label, pct);
   showScreen('results');
 }
 
-/* ---------- 6. PROGRESS STORAGE (localStorage) --------------------------- */
-/* NOTE: localStorage keeps small data in the browser between visits.
-   Everything is wrapped in try/catch because some browsers/modes block it —
-   the app must still work if storage is unavailable. */
+/* ---------- PROGRESS STORAGE (localStorage) ----------------------------- */
 const STORAGE_KEY = 'ds-trainer-best';
 
 function saveProgress(label, pct) {
   try {
     const best = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-    // keep only the HIGHEST score seen for each quiz label
     if (!best[label] || pct > best[label]) {
       best[label] = pct;
       localStorage.setItem(STORAGE_KEY, JSON.stringify(best));
     }
-  } catch (e) {
-    console.log('localStorage unavailable — progress not saved.');
-  }
+  } catch (e) { console.log('localStorage unavailable — progress not saved.'); }
 }
 
 function renderProgress() {
   const box = $('progress-summary');
   let best = {};
-  try {
-    best = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-  } catch (e) { /* ignore */ }
-
+  try { best = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch (e) { /* ignore */ }
   const labels = Object.keys(best);
-  box.textContent = '';                       // clear safely
+  box.textContent = '';
   if (labels.length === 0) return;
-
-  box.appendChild(el('strong', null, 'Your best scores'));
+  box.appendChild(el('strong', null, 'התוצאות הטובות ביותר שלך'));
   labels.forEach((label) => {
     const row = el('div', 'row');
     row.appendChild(el('span', null, label));
@@ -258,5 +222,5 @@ function renderProgress() {
   });
 }
 
-/* ---------- GO! ---------------------------------------------------------- */
+/* ---------- GO! --------------------------------------------------------- */
 init();

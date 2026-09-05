@@ -14,7 +14,7 @@
 
 /* NOTE: bump this version string whenever you change app files, so the
    service worker knows to refresh its cache instead of serving stale files. */
-const CACHE_VERSION = 'ds-trainer-v1';
+const CACHE_VERSION = 'ds-trainer-v2';
 
 /* The files that make up the whole app. */
 const FILES_TO_CACHE = [
@@ -23,13 +23,17 @@ const FILES_TO_CACHE = [
   './css/style.css',
   './js/quiz.js',
   './js/app.js',
+  './js/viz.js',
+  './js/viz-ops.js',
+  './js/complexity.js',
   './manifest.json',
   './data/topics.json',
   './data/time-complexity.json',
   './data/linked-lists.json',
   './data/trees.json',
   './data/sorting.json',
-  './data/hashing.json'
+  './data/hashing.json',
+  './data/complexity.json'
 ];
 
 /* INSTALL: pre-cache everything. */

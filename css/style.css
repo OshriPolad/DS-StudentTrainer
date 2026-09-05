@@ -151,3 +151,128 @@ body {
   .app-header h1 { font-size: 1.1rem; }
   .question-text { font-size: 1.05rem; }
 }
+
+/* =========================================================================
+   v2 ADDITIONS — top navigation, Visualize mode, Complexity trainer.
+   ========================================================================= */
+
+/* ---------- Top navigation (mode switcher) ---------- */
+.app-nav {
+  max-width: 720px;
+  margin: 12px auto 0;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;            /* scroll on very narrow phones instead of wrapping */
+}
+.nav-btn {
+  font: inherit; font-weight: 600; white-space: nowrap;
+  background: rgba(255,255,255,0.12); color: #fff;
+  border: none; border-radius: 999px; padding: 8px 16px; cursor: pointer;
+  transition: background 0.12s ease;
+}
+.nav-btn:hover { background: rgba(255,255,255,0.22); }
+.nav-btn.active { background: #fff; color: var(--primary-dark); }
+
+/* ---------- Visualize mode ---------- */
+.viz-player { }
+.viz-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 12px; text-align: center; }
+.viz-stage {
+  background: var(--code-bg); border: 1px solid var(--surface-2);
+  border-radius: var(--radius); padding: 12px; margin-bottom: 14px;
+  min-height: 200px; display: flex; align-items: center; justify-content: center;
+  overflow-x: auto;
+}
+.viz-stage svg { max-width: 100%; height: auto; }
+.viz-caption {
+  background: var(--surface); border: 1px solid var(--surface-2);
+  border-left: 4px solid var(--primary);
+  border-radius: 10px; padding: 14px 16px; margin-bottom: 14px;
+  min-height: 60px; color: var(--text); line-height: 1.55;
+}
+.viz-controls { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.viz-controls .btn { flex: 0 0 auto; }
+.viz-step { color: var(--text-dim); font-size: 0.85rem; font-weight: 600; }
+.btn:disabled { opacity: 0.4; cursor: default; }
+
+/* ---------- Complexity trainer ---------- */
+.cx-list { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 12px; }
+.cx-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+.cx-title { font-size: 1.05rem; font-weight: 700; }
+.cx-progress { color: var(--text-dim); font-size: 0.85rem; font-weight: 600; }
+
+.cx-code {
+  background: var(--code-bg); border: 1px solid var(--surface-2);
+  border-radius: 10px; padding: 10px; margin-bottom: 16px; overflow-x: auto;
+}
+.cx-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 6px 8px; border-radius: 8px; white-space: nowrap;
+}
+.cx-row.current { background: rgba(99,102,241,0.15); outline: 1px solid var(--primary); }
+.cx-row.correct { background: rgba(34,197,94,0.10); }
+.cx-row.wrong   { background: rgba(239,68,68,0.10); }
+
+.cx-slot {
+  flex: 0 0 96px; text-align: right;
+  font-family: "SF Mono", Consolas, monospace; font-size: 0.8rem;
+  color: var(--text-dim); border-right: 2px solid var(--surface-2); padding-right: 10px;
+}
+.cx-slot.filled { color: var(--primary); font-weight: 700; }
+.cx-slot.verdict { font-weight: 700; }
+.cx-slot.verdict.ok { color: var(--correct); border-right-color: var(--correct); }
+.cx-slot.verdict.no { color: var(--wrong);   border-right-color: var(--wrong); }
+.cx-line {
+  font-family: "SF Mono", "Fira Code", Consolas, monospace;
+  font-size: 0.85rem; color: var(--text); white-space: pre;
+}
+
+.cx-prompt { color: var(--text-dim); font-size: 0.85rem; margin-bottom: 10px; }
+.cx-verdict { font-weight: 700; margin-bottom: 8px; }
+.cx-verdict.ok { color: var(--correct); }
+.cx-verdict.no { color: var(--wrong); }
+.cx-your { color: var(--text-dim); font-size: 0.85rem; margin-bottom: 8px; }
+.cx-explain { color: var(--text); line-height: 1.55; margin-bottom: 12px; }
+
+.cx-review { margin-top: 8px; }
+.cx-overall {
+  background: var(--surface); border: 1px solid var(--surface-2);
+  border-radius: var(--radius); padding: 18px; margin-bottom: 12px;
+}
+.cx-overall-line { color: var(--text-dim); font-size: 0.9rem; }
+.cx-overall-big { font-size: 1.3rem; font-weight: 800; color: var(--primary); margin: 6px 0 10px; }
+
+@media (max-width: 460px) {
+  .cx-slot { flex-basis: 78px; }
+}
+
+/* =========================================================================
+   HEBREW / RTL SUPPORT.
+   NOTE: `unicode-bidi: plaintext` makes each text block choose its own
+   direction from its content (like dir="auto"): Hebrew sentences render
+   right-to-left, while C++ code and Big-O notation stay left-to-right.
+   `text-align: start` then aligns Hebrew to the right, English to the left.
+   Code blocks are deliberately NOT included here — they must stay LTR.
+   ========================================================================= */
+.intro,
+.question-text,
+.feedback-explanation,
+.feedback-verdict,
+.viz-caption,
+.cx-explain,
+.cx-verdict,
+.cx-your,
+.cx-prompt,
+.cx-overall-line,
+.cx-title,
+.t-title,
+.t-title-he,
+.t-count,
+.progress-summary .row {
+  unicode-bidi: plaintext;
+  text-align: start;
+}
+.option > span { unicode-bidi: plaintext; }
+/* keep these centered but still direction-aware */
+.results-message,
+.viz-title,
+.cx-overall-big { unicode-bidi: plaintext; }

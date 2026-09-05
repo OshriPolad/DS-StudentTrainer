@@ -1,118 +1,156 @@
 <!DOCTYPE html>
 <!--
   =====================================================================
-  index.html — the single page of the app (this is a Single Page App).
-  NOTE: There is only ONE .html file. JavaScript swaps which <section>
-  is visible, so it FEELS like multiple screens without page reloads.
-  Structure of this file:
-    1. <head>  — metadata, links to CSS, PWA manifest.
-    2. <header> — app title + live countdown to your exam.
-    3. Three <section> screens: #home, #quiz, #results (only one shown at a time).
-    4. <script> tags at the bottom load the JS (order matters: quiz.js then app.js).
+  index.html — the single page of the app (a Single Page App).
+  NOTE: One .html file. JavaScript shows/hides <section>s so it feels
+  like multiple screens with no page reloads.
+
+  The app has THREE modes, chosen from the top nav:
+    1. Quiz        — multiple-choice questions (#home / #quiz / #results).
+    2. Visualize   — step-by-step animated data-structure diagrams (#viz).
+    3. Complexity  — per-line time-complexity trainer (#complexity).
+
+  Scripts at the bottom load in dependency order.
   =====================================================================
 -->
-<html lang="en">
+<html lang="he">
 <head>
   <meta charset="UTF-8" />
-  <!-- NOTE: this viewport tag is what makes the page responsive on your phone. -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0f172a" />
-  <title>DS Exam Trainer</title>
+  <title>DS Trainer</title>
 
-  <!-- NOTE: link to our stylesheet (all visual styling lives in css/style.css). -->
   <link rel="stylesheet" href="css/style.css" />
-
-  <!-- NOTE: the PWA manifest lets you "Add to Home Screen" on your phone. -->
   <link rel="manifest" href="manifest.json" />
-
-  <!-- NOTE: reuse the app icon as the browser-tab favicon. -->
   <link rel="icon" href="icons/icon-192.png" />
 </head>
 
 <body>
-  <!-- ============================ HEADER ============================ -->
+  <!-- ============================ HEADER + NAV ============================ -->
   <header class="app-header">
     <div class="header-inner">
-      <h1>DS Exam Trainer <span class="he">מאמן למבחן</span></h1>
-      <!-- NOTE: app.js fills this countdown in, based on the exam date set in app.js -->
-      <div id="countdown" class="countdown" aria-live="polite"></div>
+      <h1>DS Trainer <span class="he">מאמן מבני נתונים</span></h1>
     </div>
+    <!-- NOTE: these buttons switch modes. app.js listens for clicks by data-mode. -->
+    <nav class="app-nav">
+      <button class="nav-btn active" data-mode="home">📝 שאלות</button>
+      <button class="nav-btn" data-mode="viz">🎬 הדמיות</button>
+      <button class="nav-btn" data-mode="complexity">⏱️ סיבוכיות</button>
+    </nav>
   </header>
 
   <main class="container">
 
-    <!-- ======================= SCREEN 1: HOME ======================= -->
+    <!-- ======================= QUIZ: HOME ======================= -->
     <section id="home" class="screen">
       <p class="intro">
-        Pick a topic to drill, or take a mixed quiz across everything.
-        Each question is multiple-choice; after you answer you get a full
-        explanation of <em>why</em>.
+        בחרו נושא לתרגול, או התחילו מבחן מעורב. כל שאלה היא אמריקאית;
+        אחרי שעונים מקבלים הסבר מלא <em>למה</em> זו התשובה הנכונה.
       </p>
-
-      <!-- NOTE: app.js generates one card per topic inside this container. -->
       <div id="topic-list" class="topic-grid"></div>
-
-      <button id="mixed-btn" class="btn btn-primary btn-block">
-        🎲 Mixed quiz — all topics
-      </button>
-
-      <!-- NOTE: shows saved progress (best scores) read from localStorage. -->
+      <button id="mixed-btn" class="btn btn-primary btn-block">🎲 מבחן מעורב — כל הנושאים</button>
       <div id="progress-summary" class="progress-summary"></div>
     </section>
 
-    <!-- ======================= SCREEN 2: QUIZ ======================= -->
+    <!-- ======================= QUIZ: QUESTION ======================= -->
     <section id="quiz" class="screen hidden">
-      <!-- Top bar: progress through the quiz + running score -->
       <div class="quiz-bar">
         <span id="q-progress" class="q-progress"></span>
         <span id="q-score" class="q-score"></span>
       </div>
       <div class="progress-track"><div id="progress-fill" class="progress-fill"></div></div>
-
       <div class="question-topic" id="q-topic"></div>
       <h2 class="question-text" id="q-text"></h2>
-
-      <!-- NOTE: <pre><code> shows C++ code snippets in monospace. Hidden when a question has no code. -->
       <pre id="q-code" class="code-block hidden"><code></code></pre>
-
-      <!-- NOTE: app.js injects the four answer buttons here. -->
       <div id="q-options" class="options"></div>
-
-      <!-- NOTE: the wide explanation appears here AFTER you answer. -->
       <div id="feedback" class="feedback hidden">
         <div id="feedback-verdict" class="feedback-verdict"></div>
         <div id="feedback-explanation" class="feedback-explanation"></div>
-        <button id="next-btn" class="btn btn-primary btn-block">Next →</button>
+        <button id="next-btn" class="btn btn-primary btn-block">הבא →</button>
       </div>
-
-      <button id="quit-btn" class="btn btn-ghost">← Back to topics</button>
+      <button id="quit-btn" class="btn btn-ghost">← חזרה לנושאים</button>
     </section>
 
-    <!-- ====================== SCREEN 3: RESULTS ===================== -->
+    <!-- ======================= QUIZ: RESULTS ======================= -->
     <section id="results" class="screen hidden">
-      <h2>Quiz complete 🎯</h2>
+      <h2>סיימת את המבחן 🎯</h2>
       <div id="results-score" class="results-score"></div>
       <div id="results-message" class="results-message"></div>
-      <button id="retry-btn" class="btn btn-primary btn-block">Try again</button>
-      <button id="home-btn" class="btn btn-ghost btn-block">Back to topics</button>
+      <button id="retry-btn" class="btn btn-primary btn-block">נסה שוב</button>
+      <button id="home-btn" class="btn btn-ghost btn-block">חזרה לנושאים</button>
+    </section>
+
+    <!-- ======================= VISUALIZE ======================= -->
+    <section id="viz" class="screen hidden">
+      <p class="intro">
+        צפו במבנה נתונים עובד, שלב אחר שלב. בחרו פעולה ועברו בין השלבים —
+        כל שלב מסביר מה קורה ולמה.
+      </p>
+      <!-- operation picker (app/viz.js fills this) -->
+      <div id="viz-list" class="topic-grid"></div>
+
+      <!-- the player (hidden until an operation is picked) -->
+      <div id="viz-player" class="viz-player hidden">
+        <div class="viz-title" id="viz-title"></div>
+        <!-- the SVG drawing lives here -->
+        <div id="viz-stage" class="viz-stage"></div>
+        <!-- step caption / explanation -->
+        <div id="viz-caption" class="viz-caption"></div>
+        <div class="viz-controls">
+          <button id="viz-prev" class="btn btn-ghost">← הקודם</button>
+          <span id="viz-step" class="viz-step"></span>
+          <button id="viz-play" class="btn btn-ghost">▶ הפעל</button>
+          <button id="viz-next" class="btn btn-primary">הבא →</button>
+        </div>
+        <button id="viz-back" class="btn btn-ghost btn-block">← כל ההדמיות</button>
+      </div>
+    </section>
+
+    <!-- ======================= COMPLEXITY TRAINER ======================= -->
+    <section id="complexity" class="screen hidden">
+      <p class="intro" id="cx-intro">
+        קִראו את קוד ה-C++ ובחרו את זמן הריצה של <em>כל שורה</em>.
+        אחרי השורה האחרונה מתקבל סקירה שורה-אחר-שורה.
+      </p>
+      <!-- problem picker -->
+      <div id="cx-list" class="cx-list"></div>
+
+      <!-- the per-line trainer (hidden until a problem is picked) -->
+      <div id="cx-trainer" class="cx-trainer hidden">
+        <div class="cx-head">
+          <span id="cx-title" class="cx-title"></span>
+          <span id="cx-progress" class="cx-progress"></span>
+        </div>
+
+        <!-- the code, one row per line; app/complexity.js builds the rows -->
+        <div id="cx-code" class="cx-code"></div>
+
+        <!-- the 4 options for the CURRENT line -->
+        <div id="cx-options" class="options"></div>
+
+        <!-- shown during review: overall complexity + controls -->
+        <div id="cx-review" class="cx-review hidden">
+          <div id="cx-overall" class="cx-overall"></div>
+          <button id="cx-retry" class="btn btn-primary btn-block">תרגיל נוסף</button>
+        </div>
+        <button id="cx-back" class="btn btn-ghost btn-block">← כל התרגילים</button>
+      </div>
     </section>
 
   </main>
 
   <footer class="app-footer">
-    Built for Oshri · Data Structures revision · <span id="q-count"></span> questions loaded
+    DS Trainer · תרגול מבני נתונים · <span id="q-count"></span> שאלות
   </footer>
 
-  <!--
-    NOTE: script order matters.
-    quiz.js defines the "Quiz" engine (the logic).
-    app.js wires the engine to the buttons/screens (the UI controller).
-    defer = run after HTML is parsed.
-  -->
+  <!-- Scripts. Order matters: content + engines first, controller (app.js) last.
+       viz-ops.js defines the animation content and must load BEFORE viz.js. -->
   <script src="js/quiz.js" defer></script>
+  <script src="js/viz-ops.js" defer></script>
+  <script src="js/viz.js" defer></script>
+  <script src="js/complexity.js" defer></script>
   <script src="js/app.js" defer></script>
 
-  <!-- NOTE: registers the service worker so the app works OFFLINE. See js/... and sw.js -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {
