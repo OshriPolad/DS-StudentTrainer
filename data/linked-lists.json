@@ -6,85 +6,141 @@
     {
       "id": "ll-01",
       "difficulty": "easy",
-      "question": "A stack implemented with a singly linked list performs push and pop at which end, and at what cost?",
-      "options": ["At the head, O(1) each", "At the tail, O(1) each", "At the head, O(n) each", "At the tail, O(n) each"],
+      "question": "מחסנית הממומשת באמצעות רשימה מקושרת חד-כיוונית מבצעת push ו-pop באיזה קצה, ובאיזה זמן ריצה?",
+      "options": ["בראש, O(1) לכל אחד", "בזנב, O(1) לכל אחד", "בראש, O(n) לכל אחד", "בזנב, O(n) לכל אחד"],
       "answer": 0,
-      "explanation": "A stack is LIFO (last-in, first-out). The cheapest O(1) spot in a singly linked list is the HEAD — both insert (push_front) and remove (pop_front) touch only the head pointer. So we treat the head as the top of the stack: push = insert at head, pop = remove head. Using the tail would force an O(n) walk on pop (to find the new tail), so the head is the correct choice."
+      "explanation": "מחסנית פועלת לפי עקרון LIFO (last-in, first-out). המקום הזול ביותר, ב-O(1), ברשימה מקושרת חד-כיוונית הוא הראש — גם ההכנסה (push_front) וגם ההסרה (pop_front) נוגעות רק במצביע הראש. לכן אנו מתייחסים לראש כאל ראש המחסנית: push = הכנסה בראש, pop = הסרת הראש. שימוש בזנב היה מאלץ מעבר בעלות O(n) בעת ה-pop (כדי למצוא את הזנב החדש), ולכן הראש הוא הבחירה הנכונה."
     },
     {
       "id": "ll-02",
       "difficulty": "easy",
-      "question": "In this C++ node, what does the 'next' pointer of the LAST node in a singly linked list hold?",
+      "question": "בצומת ה-C++ הזה, מה מכיל המצביע 'next' של הצומת האחרון ברשימה מקושרת חד-כיוונית?",
       "code": "struct Node {\n    int data;\n    Node* next;\n};",
-      "options": ["nullptr", "A pointer back to the head", "A copy of its own address", "An uninitialized garbage value (always)"],
+      "options": ["nullptr", "מצביע חזרה אל הראש", "עותק של הכתובת של עצמו", "ערך זבל לא מאותחל (תמיד)"],
       "answer": 0,
-      "explanation": "By convention, the last node's next is nullptr — that is exactly how traversal code knows it has reached the end (while (curr != nullptr)). If it pointed back to the head it would be a circular list, not a standard singly linked list. Forgetting to set the tail's next to nullptr is a very common bug that causes traversal to run off into garbage memory."
+      "explanation": "לפי המוסכמה, ה-next של הצומת האחרון הוא nullptr — זה בדיוק האופן שבו קוד המעבר יודע שהגיע לסוף (while (curr != nullptr)). אילו היה מצביע חזרה אל הראש, זו הייתה רשימה מעגלית ולא רשימה מקושרת חד-כיוונית סטנדרטית. שכחה להגדיר את ה-next של הזנב ל-nullptr היא באג נפוץ מאוד שגורם למעבר לגלוש אל תוך זיכרון זבל."
     },
     {
       "id": "ll-03",
       "difficulty": "medium",
-      "question": "What is printed / returned by this function that finds the middle of a linked list, and what technique does it use?",
+      "question": "מה מודפס / מוחזר על ידי הפונקציה הזו שמוצאת את אמצע הרשימה המקושרת, ובאיזו טכניקה היא משתמשת?",
       "code": "Node* middle(Node* head) {\n    Node* slow = head;\n    Node* fast = head;\n    while (fast != nullptr && fast->next != nullptr) {\n        slow = slow->next;\n        fast = fast->next->next;\n    }\n    return slow;\n}",
-      "options": ["The middle node, using the slow/fast (tortoise-hare) two-pointer technique in O(n)", "The last node, in O(n)", "The middle node, but only after two full passes O(2n)", "The head node, in O(1)"],
+      "options": ["הצומת האמצעי, בעזרת טכניקת שני המצביעים האיטי/מהיר (צב-ארנב) ב-O(n)", "הצומת האחרון, ב-O(n)", "הצומת האמצעי, אך רק לאחר שני מעברים מלאים O(2n)", "צומת הראש, ב-O(1)"],
       "answer": 0,
-      "explanation": "This is the two-pointer 'tortoise and hare' trick. 'fast' moves two steps for every one step of 'slow'. When fast reaches the end, slow has traveled exactly half the distance, so it sits at the middle. It finds the middle in a SINGLE pass — O(n) time, O(1) extra space — without ever counting the length first. For an even-length list this returns the second of the two middle nodes."
+      "explanation": "זהו טריק שני המצביעים 'הצב והארנב'. 'fast' מתקדם בשני צעדים על כל צעד אחד של 'slow'. כאשר fast מגיע לסוף, slow עבר בדיוק חצי מהמרחק, ולכן הוא נמצא באמצע. הוא מוצא את האמצע במעבר יחיד — זמן ריצה O(n), מקום נוסף O(1) — מבלי לספור תחילה את האורך. עבור רשימה באורך זוגי הפונקציה מחזירה את השני מבין שני הצמתים האמצעיים."
     },
     {
       "id": "ll-04",
       "difficulty": "medium",
-      "question": "Which algorithm detects whether a singly linked list contains a cycle (loop) using O(1) extra memory?",
-      "options": ["Floyd's cycle detection (slow/fast pointers)", "Storing every visited node in a hash set", "Reversing the list twice", "Binary search over the nodes"],
+      "question": "איזה אלגוריתם מזהה האם רשימה מקושרת חד-כיוונית מכילה מעגל (לולאה) תוך שימוש ב-O(1) זיכרון נוסף?",
+      "options": ["אלגוריתם פלויד לזיהוי מעגל (מצביעים איטי/מהיר)", "שמירת כל צומת שביקרנו בו ב-hash set", "היפוך הרשימה פעמיים", "חיפוש בינארי על הצמתים"],
       "answer": 0,
-      "explanation": "Floyd's algorithm (the 'tortoise and hare') uses two pointers moving at different speeds. If there is a cycle, the fast pointer eventually laps the slow one and they meet — proving a loop exists. It uses only two pointers → O(1) space, O(n) time. The hash-set approach also works and is O(n) time, but it uses O(n) EXTRA space, so it fails the 'O(1) memory' requirement. That space difference is the usual exam distinction."
+      "explanation": "אלגוריתם פלויד ('הצב והארנב') משתמש בשני מצביעים הנעים במהירויות שונות. אם קיים מעגל, המצביע המהיר בסופו של דבר עוקף את האיטי בהקפה שלמה והם נפגשים — מה שמוכיח שקיימת לולאה. הוא משתמש בשני מצביעים בלבד ← מקום O(1), זמן ריצה O(n). גישת ה-hash set גם עובדת והיא בזמן ריצה O(n), אך היא משתמשת ב-O(n) מקום נוסף, ולכן אינה עומדת בדרישת 'זיכרון O(1)'. הבדל המקום הזה הוא ההבחנה המקובלת במבחנים."
     },
     {
       "id": "ll-05",
       "difficulty": "medium",
-      "question": "In Floyd's cycle detection, when do the slow and fast pointers meet?",
-      "options": ["Somewhere inside the cycle, if and only if a cycle exists", "Always at the head of the list", "Always at the exact start of the cycle", "Only if the list length is even"],
+      "question": "בזיהוי המעגל של פלויד, מתי נפגשים המצביע האיטי והמצביע המהיר?",
+      "options": ["אי-שם בתוך המעגל, אם ורק אם קיים מעגל", "תמיד בראש הרשימה", "תמיד בדיוק בתחילת המעגל", "רק אם אורך הרשימה זוגי"],
       "answer": 0,
-      "explanation": "If a cycle exists, once both pointers are inside it the fast pointer closes the gap by one node per step and must eventually land on the slow pointer — they meet at some node inside the cycle (not necessarily the cycle's start). If there is NO cycle, fast reaches nullptr and the loop ends without a meeting. To find the exact START of the cycle you need a second phase: reset one pointer to the head and advance both one step at a time until they meet again."
+      "explanation": "אם קיים מעגל, ברגע ששני המצביעים נמצאים בתוכו המצביע המהיר מקטין את הפער בצומת אחד בכל צעד, ובהכרח ינחת בסופו של דבר על המצביע האיטי — הם נפגשים באיזשהו צומת בתוך המעגל (לאו דווקא בתחילת המעגל). אם אין מעגל, fast מגיע ל-nullptr והלולאה מסתיימת ללא פגישה. כדי למצוא את נקודת ההתחלה המדויקת של המעגל דרוש שלב שני: מאפסים מצביע אחד חזרה לראש ומקדמים את שניהם צעד אחד בכל פעם עד שהם נפגשים שוב."
     },
     {
       "id": "ll-06",
       "difficulty": "easy",
-      "question": "What is the time complexity (זמן ריצה) of searching for a value in a singly linked list of n nodes?",
+      "question": "מהו זמן הריצה של חיפוש ערך ברשימה מקושרת חד-כיוונית בת n צמתים?",
       "options": ["O(1)", "O(log n)", "O(n)", "O(n^2)"],
       "answer": 2,
-      "explanation": "Linked lists have no random access — to find a value you must start at the head and follow next pointers one by one until you find it or hit nullptr. In the worst case that is all n nodes → O(n). Unlike a sorted array, you cannot binary-search a linked list, because you can't jump to the middle in O(1)."
+      "explanation": "לרשימות מקושרות אין גישה אקראית — כדי למצוא ערך יש להתחיל בראש ולעקוב אחר מצביעי next בזה אחר זה עד שמוצאים אותו או מגיעים ל-nullptr. במקרה הגרוע ביותר אלו כל n הצמתים ← O(n). בשונה ממערך ממוין, לא ניתן לבצע חיפוש בינארי ברשימה מקושרת, כיוון שאי אפשר לקפוץ לאמצע ב-O(1)."
     },
     {
       "id": "ll-07",
       "difficulty": "hard",
-      "question": "What does this C++ function do to the list?",
+      "question": "מה עושה פונקציית ה-C++ הזו לרשימה?",
       "code": "Node* mystery(Node* head) {\n    Node* prev = nullptr;\n    Node* curr = head;\n    while (curr != nullptr) {\n        Node* nxt = curr->next;\n        curr->next = prev;\n        prev = curr;\n        curr = nxt;\n    }\n    return prev;\n}",
-      "options": ["Reverses the linked list in place, O(n) time O(1) space", "Deletes the whole list", "Duplicates every node", "Sorts the list"],
+      "options": ["הופכת את הרשימה המקושרת במקום, זמן ריצה O(n) מקום O(1)", "מוחקת את כל הרשימה", "משכפלת כל צומת", "ממיינת את הרשימה"],
       "answer": 0,
-      "explanation": "This is the standard in-place iterative list reversal. It walks the list once, flipping each node's next pointer to point at the PREVIOUS node. The 'nxt' temp saves the rest of the list before we overwrite curr->next. At the end, 'prev' is the new head (the old tail). It runs in O(n) time and O(1) extra space. Memorize this pattern — it's one of the most frequently asked linked-list questions."
+      "explanation": "זהו היפוך רשימה איטרטיבי סטנדרטי במקום (in-place). הפונקציה עוברת על הרשימה פעם אחת, והופכת את מצביע ה-next של כל צומת כך שיצביע על הצומת הקודם. המשתנה הזמני 'nxt' שומר את שאר הרשימה לפני שאנו דורסים את curr->next. בסוף, 'prev' הוא הראש החדש (הזנב הישן). הפונקציה רצה בזמן ריצה O(n) ובמקום נוסף O(1). כדאי לשנן את התבנית הזו — זו אחת השאלות הנפוצות ביותר על רשימות מקושרות."
     },
     {
       "id": "ll-08",
       "difficulty": "medium",
-      "question": "Compared to a singly linked list, what does a DOUBLY linked list give you?",
-      "options": ["O(1) deletion of a node when you already have a pointer to it", "O(1) random access by index", "O(log n) search", "Lower memory usage per node"],
+      "question": "בהשוואה לרשימה מקושרת חד-כיוונית, מה נותנת לך רשימה מקושרת דו-כיוונית?",
+      "options": ["מחיקת צומת ב-O(1) כאשר כבר יש בידך מצביע אליו", "גישה אקראית ב-O(1) לפי אינדקס", "חיפוש ב-O(log n)", "צריכת זיכרון נמוכה יותר לכל צומת"],
       "answer": 0,
-      "explanation": "A doubly linked list stores both next and prev pointers, so given a pointer to a node you can splice it out in O(1) (you can reach its predecessor directly). In a singly linked list you'd need the previous node, forcing an O(n) search. The trade-offs: a doubly linked list uses MORE memory per node (an extra pointer), and it still has NO random access (index lookup is O(n)) and NO faster search."
+      "explanation": "רשימה מקושרת דו-כיוונית שומרת גם את מצביע next וגם את מצביע prev, ולכן בהינתן מצביע לצומת ניתן לנתק אותו ב-O(1) (אפשר להגיע ישירות אל הצומת שקודם לו). ברשימה מקושרת חד-כיוונית היית צריך את הצומת הקודם, מה שמאלץ חיפוש ב-O(n). התמורות: רשימה מקושרת דו-כיוונית צורכת יותר זיכרון לכל צומת (מצביע נוסף), ועדיין אין בה גישה אקראית (חיפוש לפי אינדקס הוא O(n)) ואין בה חיפוש מהיר יותר."
     },
     {
       "id": "ll-09",
       "difficulty": "easy",
-      "question": "What is the time complexity (זמן ריצה) of inserting a new node AFTER a given node, when you already hold a pointer to that node?",
+      "question": "מהו זמן הריצה של הכנסת צומת חדש אחרי צומת נתון, כאשר כבר יש בידך מצביע לצומת הזה?",
       "options": ["O(1)", "O(n)", "O(log n)", "O(n^2)"],
       "answer": 0,
-      "explanation": "If you already have a pointer to the node, inserting after it is just a couple of pointer rewrites (new_node->next = node->next; node->next = new_node;) — a constant number of operations → O(1). The O(n) cost only appears when you first have to SEARCH for the position. 'Already have the pointer' is the key phrase that makes it O(1)."
+      "explanation": "אם כבר יש בידך מצביע לצומת, ההכנסה אחריו היא רק כמה עדכוני מצביעים (new_node->next = node->next; node->next = new_node;) — מספר קבוע של פעולות ← O(1). עלות O(n) מופיעה רק כאשר צריך תחילה לחפש את המיקום. 'כבר יש בידך מצביע' הוא ביטוי המפתח שהופך את זה ל-O(1)."
     },
     {
       "id": "ll-10",
       "difficulty": "hard",
-      "question": "You must detect a cycle but are told extra memory is completely free/unlimited and code simplicity matters most. Which approach is simplest and still O(n) time?",
-      "options": ["Hash set of visited node addresses", "Floyd's two-pointer algorithm", "Reverse the list and compare", "Recursion with memoization"],
+      "question": "עליך לזהות מעגל, אך נאמר לך שזיכרון נוסף חופשי/בלתי מוגבל לחלוטין, ושפשטות הקוד היא הדבר החשוב ביותר. איזו גישה היא הפשוטה ביותר ועדיין בזמן ריצה O(n)?",
+      "options": ["hash set של כתובות הצמתים שביקרנו בהם", "אלגוריתם שני המצביעים של פלויד", "היפוך הרשימה והשוואה", "רקורסיה עם memoization"],
       "answer": 0,
-      "explanation": "When O(n) extra space is acceptable, the hash-set method is the simplest to write correctly: walk the list, and for each node check if its address is already in the set — if yes, there's a cycle; otherwise insert it. It's O(n) time and O(n) space. Floyd's is more space-efficient (O(1)) but trickier to reason about. This question tests that you can pick the right tool given the CONSTRAINTS, not just the 'best' one in the abstract."
+      "explanation": "כאשר מקום נוסף של O(n) מקובל, שיטת ה-hash set היא הפשוטה ביותר לכתיבה נכונה: עוברים על הרשימה, ולכל צומת בודקים האם הכתובת שלו כבר קיימת בקבוצה — אם כן, קיים מעגל; אחרת מכניסים אותה. זהו זמן ריצה O(n) ומקום O(n). האלגוריתם של פלויד חסכוני יותר במקום (O(1)) אך קשה יותר להבנה. השאלה הזו בוחנת האם אתה יודע לבחור את הכלי הנכון בהינתן האילוצים, ולא רק את ה'טוב ביותר' באופן מופשט."
+    },
+    {
+      "id": "ll-11",
+      "difficulty": "easy",
+      "question": "מהו זמן הריצה של גישה לאיבר ה-k-י של רשימה מקושרת חד-כיוונית לפי מיקום?",
+      "options": ["O(k)", "O(1)", "O(log k)", "O(n log n)"],
+      "answer": 0,
+      "explanation": "אין גישה אקראית — יש להתחיל בראש ולעקוב אחר next בדיוק k פעמים כדי להגיע לאינדקס k ← O(k), שהוא O(n) במקרה הגרוע ביותר. זו התמורה הבסיסית לעומת מערכים, שבהם arr[k] הוא O(1)."
+    },
+    {
+      "id": "ll-12",
+      "difficulty": "medium",
+      "question": "כיצד מוצאים את הצומת ה-k-י מהסוף של רשימה מקושרת חד-כיוונית במעבר יחיד?",
+      "options": ["שני מצביעים במרחק k זה מזה: מקדמים את המוביל ב-k, ואז מזיזים את שניהם עד שהמוביל מגיע לסוף", "מהפכים את הרשימה, ואז סופרים k", "ממיינים תחילה את הרשימה", "נדרשים שני מעברים מלאים, לא קיימת שיטה במעבר יחיד"],
+      "answer": 0,
+      "explanation": "משתמשים בשני מצביעים. מקדמים את המצביע ה'מוביל' ב-k צמתים קדימה. לאחר מכן מקדמים את שני המצביעים צעד אחד בכל פעם עד שהמוביל מגיע לסוף — המצביע ה'עוקב' נמצא כעת במרחק k צמתים מהסוף. מעבר אחד, זמן ריצה O(n), מקום O(1). רעיון שני המצביעים המבוסס על פער זה הוא תבנית ראיונות נפוצה מאוד."
+    },
+    {
+      "id": "ll-13",
+      "difficulty": "easy",
+      "question": "מהו זמן הריצה של מיזוג שתי רשימות מקושרות ממוינות בגדלים n ו-m לרשימה ממוינת אחת?",
+      "options": ["O(n + m)", "O(n * m)", "O((n+m) log(n+m))", "O(n log m)"],
+      "answer": 0,
+      "explanation": "עוברים על שתי הרשימות בעזרת שני מצביעים, ובכל פעם מחברים אל התוצאה את הצומת הנוכחי הקטן יותר. כל צומת משתי הרשימות מבוקר בדיוק פעם אחת ← O(n + m). שלב המיזוג הזה הוא לב לבו של מיון מיזוג (merge sort)."
+    },
+    {
+      "id": "ll-14",
+      "difficulty": "medium",
+      "question": "ברשימה מקושרת חד-כיוונית מעגלית, מה שונה בצומת האחרון?",
+      "options": ["ה-next שלו מצביע חזרה אל הראש במקום על nullptr", "יש לו שני מצביעי next", "הוא שומר את אורך הרשימה", "הוא מצביע על עצמו"],
+      "answer": 0,
+      "explanation": "ברשימה מקושרת מעגלית ה-next של הזנב מצביע אל הראש, ויוצר לולאה. זה שימושי לתזמון round-robin ולחוצצים (buffers). המלכוד: מעבר נאיבי מסוג 'while (curr != nullptr)' לעולם אינו מסתיים — יש לעצור כאשר חוזרים אל צומת ההתחלה."
+    },
+    {
+      "id": "ll-15",
+      "difficulty": "easy",
+      "question": "מהו זמן הריצה של הסרת צומת הראש של רשימה מקושרת חד-כיוונית?",
+      "options": ["O(1)", "O(n)", "O(log n)", "O(n^2)"],
+      "answer": 0,
+      "explanation": "פשוט מזיזים את head ל-head->next (ומשחררים את הצומת הישן) — מספר קבוע של פעולות ← O(1). הסרת הזנב, לעומת זאת, היא O(n) ברשימה מקושרת חד-כיוונית, כיוון שיש לעבור עד לצומת הלפני-אחרון כדי לעדכן את ה-next שלו."
+    },
+    {
+      "id": "ll-16",
+      "difficulty": "medium",
+      "question": "מתי מערך עדיף באופן מובהק על רשימה מקושרת?",
+      "options": ["כאשר דרושה גישה אקראית ב-O(1) לפי אינדקס או חיפוש בינארי", "כאשר מכניסים לעיתים קרובות בהתחלה", "כאשר הגודל משתנה באופן בלתי צפוי", "כאשר לעולם אין צורך בגישה לפי אינדקס"],
+      "answer": 0,
+      "explanation": "מערכים מספקים גישה ב-O(1) לכל אינדקס (זיכרון רציף), מה שגם מאפשר חיפוש בינארי על נתונים ממוינים (O(log n)). רשימות מקושרות אינן יכולות לעשות אף אחד מהשניים — הגעה לאינדקס k היא O(k). רשימות מקושרות מנצחות דווקא כאשר מבצעים הרבה הכנסות או מחיקות בהתחלה/באמצע בהינתן מצביע לצומת. יש לבחור את מבנה הנתונים לפי הפעולות שדרושות לך ביותר."
+    },
+    {
+      "id": "ll-17",
+      "difficulty": "hard",
+      "question": "מהו זמן הריצה של היפוך רשימה מקושרת חד-כיוונית באופן איטרטיבי?",
+      "options": ["זמן ריצה O(n), מקום O(1)", "זמן ריצה O(n^2)", "זמן ריצה O(n log n)", "זמן ריצה O(n), מקום O(n)"],
+      "answer": 0,
+      "explanation": "ההיפוך האיטרטיבי עובר על הרשימה פעם אחת, והופך את מצביע ה-next של כל צומת בעזרת שלושה מצביעים (prev, curr, next) ← זמן ריצה O(n) ומקום נוסף של O(1) בלבד. היפוך רקורסיבי הוא גם בזמן ריצה O(n), אך משתמש ב-O(n) מקום במחסנית."
     }
   ]
 }

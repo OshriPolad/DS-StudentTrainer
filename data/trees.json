@@ -6,83 +6,139 @@
     {
       "id": "tr-01",
       "difficulty": "easy",
-      "question": "What property defines a Binary Search Tree (BST)?",
-      "options": ["For every node: all keys in the left subtree are smaller, all keys in the right subtree are larger", "Every node has exactly two children", "All leaves are at the same depth", "The tree is always perfectly balanced"],
+      "question": "איזו תכונה מגדירה עץ חיפוש בינארי (BST)?",
+      "options": ["עבור כל צומת: כל המפתחות בתת-העץ השמאלי קטנים ממנו, וכל המפתחות בתת-העץ הימני גדולים ממנו", "לכל צומת יש בדיוק שני בנים", "כל העלים נמצאים באותו עומק", "העץ תמיד מאוזן באופן מושלם"],
       "answer": 0,
-      "explanation": "The BST invariant is about ORDER: for any node, everything in its left subtree is less than it, and everything in its right subtree is greater. This must hold recursively for every node, not just the root — a common trap is a tree that looks locally correct but violates the rule with a distant ancestor. This ordering is what lets you search in O(height) by going left or right at each step."
+      "explanation": "האינווריאנטה של BST עוסקת בסדר: עבור כל צומת, כל מה שנמצא בתת-העץ השמאלי שלו קטן ממנו, וכל מה שנמצא בתת-העץ הימני שלו גדול ממנו. תנאי זה חייב להתקיים רקורסיבית עבור כל צומת, לא רק עבור השורש — מלכודת נפוצה היא עץ שנראה תקין מקומית אך מפר את הכלל ביחס לאב-קדמון רחוק. סדר זה הוא שמאפשר לחפש בזמן O(height) על ידי פנייה שמאלה או ימינה בכל שלב."
     },
     {
       "id": "tr-02",
       "difficulty": "medium",
-      "question": "What is the time complexity (זמן ריצה) of search in a BALANCED binary search tree, and in a DEGENERATE (unbalanced) one?",
-      "options": ["Balanced: O(log n); degenerate: O(n)", "Both O(log n)", "Balanced: O(1); degenerate: O(log n)", "Both O(n)"],
+      "question": "מהו זמן הריצה של חיפוש בעץ חיפוש בינארי מאוזן, ומהו זמן הריצה בעץ מנוון (לא מאוזן)?",
+      "options": ["מאוזן: O(log n); מנוון: O(n)", "שניהם O(log n)", "מאוזן: O(1); מנוון: O(log n)", "שניהם O(n)"],
       "answer": 0,
-      "explanation": "Search cost in a BST is O(height). When the tree is balanced, the height is about log₂(n), so search is O(log n). But if you insert already-sorted data into a plain BST, it degenerates into a linked list of height n, and search becomes O(n). This exact failure mode is WHY self-balancing trees like AVL and red-black trees exist — they guarantee O(log n) height."
+      "explanation": "עלות החיפוש ב-BST היא O(height). כאשר העץ מאוזן, הגובה הוא בערך log₂(n), ולכן החיפוש הוא O(log n). אך אם מכניסים נתונים ממוינים מראש לתוך BST רגיל, הוא מתנוון לרשימה מקושרת בגובה n, והחיפוש הופך ל-O(n). מצב כשל זה בדיוק הוא הסיבה שקיימים עצים מאזנים-עצמית כמו AVL ועצים אדום-שחור — הם מבטיחים גובה O(log n)."
     },
     {
       "id": "tr-03",
       "difficulty": "medium",
-      "question": "This C++ function checks whether a binary tree is a valid BST. Why is passing min/max bounds necessary?",
+      "question": "פונקציית C++ זו בודקת האם עץ בינארי הוא BST תקין. מדוע הכרחי להעביר את חסמי min/max?",
       "code": "bool isBST(Node* node, long minV, long maxV) {\n    if (node == nullptr) return true;\n    if (node->key <= minV || node->key >= maxV) return false;\n    return isBST(node->left,  minV, node->key)\n        && isBST(node->right, node->key, maxV);\n}",
-      "options": ["Because a node must be valid against ALL its ancestors, not just its parent", "Because recursion needs a base case", "To count the number of nodes", "To make it run in O(1)"],
+      "options": ["מפני שצומת חייב להיות תקין ביחס לכל אבותיו-קדמוניו, לא רק ביחס לאביו הישיר", "מפני שרקורסיה זקוקה לתנאי עצירה", "כדי לספור את מספר הצמתים", "כדי לגרום לה לרוץ בזמן O(1)"],
       "answer": 0,
-      "explanation": "A naive check that only compares a node to its immediate children is WRONG: a node in the right subtree of the root must be greater than the root, even though the root is not its parent. By carrying down a (min, max) range that tightens at each step, each node is validated against every ancestor constraint. Going left tightens the max to the current key; going right tightens the min. This runs in O(n) and is the correct way to validate a BST."
+      "explanation": "בדיקה נאיבית שמשווה צומת רק לבניו הישירים היא שגויה: צומת בתת-העץ הימני של השורש חייב להיות גדול מהשורש, אף שהשורש אינו אביו. על ידי העברת טווח (min, max) שמתהדק בכל שלב, כל צומת נבדק מול כל אילוצי אבותיו-קדמוניו. פנייה שמאלה מהדקת את ה-max לערך המפתח (key) הנוכחי; פנייה ימינה מהדקת את ה-min. הפעולה רצה בזמן O(n) והיא הדרך הנכונה לאמת BST."
     },
     {
       "id": "tr-04",
       "difficulty": "medium",
-      "question": "An in-order traversal of a valid Binary Search Tree visits the keys in what order?",
-      "options": ["Sorted ascending order", "Sorted descending order", "Level by level", "Random order"],
+      "question": "מעבר תוכי (in-order) על עץ חיפוש בינארי תקין מבקר את המפתחות באיזה סדר?",
+      "options": ["בסדר ממוין עולה", "בסדר ממוין יורד", "רמה אחר רמה", "בסדר אקראי"],
       "answer": 0,
-      "explanation": "In-order traversal is Left → Node → Right. Because a BST puts smaller keys on the left and larger on the right, this visits keys in ascending sorted order. This gives another elegant way to CHECK a BST: do an in-order traversal and verify the sequence is strictly increasing. It's also how you print a BST's contents sorted for free."
+      "explanation": "מעבר תוכי (in-order) הוא שמאל → צומת → ימין. מכיוון ש-BST ממקם מפתחות קטנים משמאל וגדולים מימין, מעבר זה מבקר את המפתחות בסדר עולה ממוין. זה נותן דרך אלגנטית נוספת לבדוק BST: מבצעים מעבר תוכי (in-order) ומוודאים שהסדרה עולה ממש. כך גם ניתן להדפיס את תוכן ה-BST ממוין ללא עלות נוספת."
     },
     {
       "id": "tr-05",
       "difficulty": "hard",
-      "question": "What is the definition of the balance factor of a node in an AVL tree, and what values keep the tree valid?",
-      "options": ["balance = height(left) - height(right); must be in {-1, 0, +1}", "balance = number of children; must be exactly 2", "balance = depth of the node; must be < log n", "balance = key value; must be positive"],
+      "question": "מהי הגדרת מקדם האיזון של צומת בעץ AVL, ואילו ערכים שומרים על תקינות העץ?",
+      "options": ["balance = height(left) - height(right); חייב להיות בקבוצה {-1, 0, +1}", "balance = מספר הבנים; חייב להיות בדיוק 2", "balance = עומק הצומת; חייב להיות < log n", "balance = ערך המפתח; חייב להיות חיובי"],
       "answer": 0,
-      "explanation": "An AVL tree is a self-balancing BST where, for every node, the balance factor = height(left subtree) − height(right subtree) must be −1, 0, or +1. If an insert or delete pushes any node's balance factor to ±2, the tree performs ROTATIONS (LL, RR, LR, RL) to restore balance. Keeping every node within ±1 guarantees the height stays O(log n), so all operations remain O(log n)."
+      "explanation": "עץ AVL הוא BST מאזן-עצמית שבו, עבור כל צומת, מקדם האיזון = height(תת-עץ שמאלי) − height(תת-עץ ימני) חייב להיות −1, 0 או +1. אם הכנסה או מחיקה דוחפות את מקדם האיזון של צומת כלשהו ל-±2, העץ מבצע רוטציות (LL, RR, LR, RL) כדי לשחזר את האיזון. שמירה על כל צומת בטווח ±1 מבטיחה שהגובה נשאר O(log n), ולכן כל הפעולות נותרות O(log n)."
     },
     {
       "id": "tr-06",
       "difficulty": "hard",
-      "question": "After inserting into an AVL tree, a node becomes 'left-heavy because of an insertion in the left child's LEFT subtree' (Left-Left case). Which rotation fixes it?",
-      "options": ["A single RIGHT rotation", "A single LEFT rotation", "A left-then-right double rotation", "No rotation needed"],
+      "question": "לאחר הכנסה לעץ AVL, צומת הופך 'כבד משמאל בגלל הכנסה בתת-העץ השמאלי של הבן השמאלי' (מקרה Left-Left). איזו רוטציה מתקנת זאת?",
+      "options": ["רוטציה ימנית בודדת", "רוטציה שמאלית בודדת", "רוטציה כפולה שמאל-ואז-ימין", "אין צורך ברוטציה"],
       "answer": 0,
-      "explanation": "The Left-Left (LL) case is fixed by a single RIGHT rotation about the unbalanced node. Mnemonic: rotate in the OPPOSITE direction of the heavy side — heavy on the left ⇒ rotate right. The symmetric Right-Right (RR) case needs a single left rotation. The 'zig-zag' cases (Left-Right and Right-Left) need a DOUBLE rotation: first rotate the child to convert it into an LL/RR case, then rotate the parent."
+      "explanation": "מקרה Left-Left (LL) מתוקן על ידי רוטציה ימנית בודדת סביב הצומת הלא-מאוזן. כלל לזכירה: מסובבים בכיוון ההפוך לצד הכבד — כבד משמאל ⇒ מסובבים ימינה. המקרה הסימטרי Right-Right (RR) דורש רוטציה שמאלית בודדת. המקרים ה'זיג-זג' (Left-Right ו-Right-Left) דורשים רוטציה כפולה: תחילה מסובבים את הבן כדי להפוך אותו למקרה LL/RR, ואז מסובבים את האב."
     },
     {
       "id": "tr-07",
       "difficulty": "medium",
-      "question": "A binary MIN-heap is stored in an array. For the element at index i (0-based), where are its children?",
-      "options": ["Left child at 2i+1, right child at 2i+2", "Left child at 2i, right child at 2i+1", "Children at i-1 and i+1", "Left child at i/2, right child at i/2 + 1"],
+      "question": "ערמת מינימום בינארית מאוחסנת במערך. עבור האיבר באינדקס i (באינדוקס מבוסס-0), היכן נמצאים בניו?",
+      "options": ["בן שמאלי ב-2i+1, בן ימני ב-2i+2", "בן שמאלי ב-2i, בן ימני ב-2i+1", "בנים ב-i-1 וב-i+1", "בן שמאלי ב-i/2, בן ימני ב-i/2 + 1"],
       "answer": 0,
-      "explanation": "A binary heap is a complete binary tree packed into an array with NO pointers. For 0-based indexing: left child = 2i+1, right child = 2i+2, and parent = (i-1)/2. (If the array were 1-based, it would be 2i, 2i+1, and i/2.) This implicit array layout is why heaps are so memory-efficient and cache-friendly compared to pointer-based trees."
+      "explanation": "ערמה בינארית היא עץ בינארי מלא (complete) הדחוס לתוך מערך ללא מצביעים. עבור אינדוקס מבוסס-0: בן שמאלי = 2i+1, בן ימני = 2i+2, ואב = (i-1)/2. (אילו המערך היה מבוסס-1, ההצבעות היו 2i, 2i+1, ו-i/2.) פריסת מערך מרומזת זו היא הסיבה שערמות חסכוניות כל כך בזיכרון וידידותיות למטמון (cache) בהשוואה לעצים מבוססי-מצביעים."
     },
     {
       "id": "tr-08",
       "difficulty": "medium",
-      "question": "What are the time complexities (זמן ריצה) of insert and extract-min on a binary heap, and of peeking at the minimum?",
-      "options": ["insert O(log n), extract-min O(log n), peek-min O(1)", "all three O(log n)", "insert O(1), extract-min O(1), peek-min O(1)", "insert O(n), extract-min O(log n), peek-min O(1)"],
+      "question": "מהם זמני הריצה של הכנסה ושל שליפת-מינימום (extract-min) בערמה בינארית, ושל הצצה (peek) במינימום?",
+      "options": ["הכנסה O(log n), שליפת-מינימום O(log n), הצצה במינימום O(1)", "שלושתם O(log n)", "הכנסה O(1), שליפת-מינימום O(1), הצצה במינימום O(1)", "הכנסה O(n), שליפת-מינימום O(log n), הצצה במינימום O(1)"],
       "answer": 0,
-      "explanation": "In a min-heap the minimum is always at the root (index 0), so peeking is O(1). Insert appends at the end then 'sifts up' along the height → O(log n). Extract-min removes the root, moves the last element to the top, then 'sifts down' → O(log n). This mix — O(1) access to the min but O(log n) updates — is exactly what makes heaps the standard priority-queue implementation."
+      "explanation": "בערמת מינימום המינימום נמצא תמיד בשורש (אינדקס 0), ולכן ההצצה היא O(1). ההכנסה מוסיפה בסוף ואז 'מנפה כלפי מעלה' (sift up) לאורך הגובה → O(log n). שליפת-המינימום מסירה את השורש, מעבירה את האיבר האחרון לראש, ואז 'מנפה כלפי מטה' (sift down) → O(log n). שילוב זה — גישה O(1) למינימום אך עדכונים O(log n) — הוא בדיוק מה שהופך ערמות למימוש הסטנדרטי של תור עדיפויות (priority queue)."
     },
     {
       "id": "tr-09",
       "difficulty": "hard",
-      "question": "What is the time complexity (זמן ריצה) of BUILDING a heap from an unsorted array of n elements using the bottom-up build-heap procedure?",
+      "question": "מהו זמן הריצה של בניית ערמה ממערך לא ממוין של n איברים באמצעות פרוצדורת הבנייה מלמטה-למעלה (bottom-up build-heap)?",
       "options": ["O(n)", "O(n log n)", "O(log n)", "O(n^2)"],
       "answer": 0,
-      "explanation": "Surprisingly, build-heap (heapify from the bottom up, calling sift-down on each internal node from the last parent up to the root) is O(n), NOT O(n log n). The reason: most nodes are near the bottom and sift down only a tiny distance; the cost sums to a convergent series bounded by O(n). A common wrong answer is O(n log n), which is what you'd get from inserting n elements one at a time — the bottom-up build is strictly better."
+      "explanation": "באופן מפתיע, build-heap (בנייה מלמטה-למעלה, קריאה ל-sift-down על כל צומת פנימי מהאב האחרון ועד לשורש) היא O(n), ולא O(n log n). הסיבה: רוב הצמתים נמצאים קרוב לתחתית ומנופים כלפי מטה מרחק זעום בלבד; העלות מסתכמת לטור מתכנס החסום על ידי O(n). תשובה שגויה נפוצה היא O(n log n), שזה מה שמתקבל מהכנסת n איברים אחד-אחד — הבנייה מלמטה-למעלה טובה ממנו לחלוטין."
     },
     {
       "id": "tr-10",
       "difficulty": "easy",
-      "question": "What is the height of a balanced binary tree (like an AVL tree) containing n nodes?",
+      "question": "מהו גובהו של עץ בינארי מאוזן (כמו עץ AVL) המכיל n צמתים?",
       "options": ["Θ(log n)", "Θ(n)", "Θ(sqrt(n))", "Θ(n log n)"],
       "answer": 0,
-      "explanation": "A balanced binary tree roughly doubles the number of nodes at each level, so a tree of n nodes has height about log₂(n) → Θ(log n). This logarithmic height is the source of every O(log n) operation on balanced trees. Contrast with a degenerate (linked-list-shaped) tree whose height is Θ(n)."
+      "explanation": "עץ בינארי מאוזן בערך מכפיל את מספר הצמתים בכל רמה, ולכן עץ בעל n צמתים הוא בגובה של כ-log₂(n) → Θ(log n). גובה לוגריתמי זה הוא מקור כל פעולה בזמן O(log n) על עצים מאוזנים. בניגוד לכך, עץ מנוון (בצורת רשימה מקושרת) הוא בגובה Θ(n)."
+    },
+    {
+      "id": "tr-11",
+      "difficulty": "medium",
+      "question": "איזה מעבר על עץ בינארי מבקר צומת, ואז את תת-העץ השמאלי, ואז את תת-העץ הימני?",
+      "options": ["מעבר תחילי (pre-order)", "מעבר תוכי (in-order)", "מעבר סופי (post-order)", "מעבר לפי רמות (level-order)"],
+      "answer": 0,
+      "explanation": "מעבר תחילי (pre-order) = צומת → שמאל → ימין (שורש תחילה). מעבר תוכי (in-order) = שמאל → צומת → ימין (ממוין, עבור BST). מעבר סופי (post-order) = שמאל → ימין → צומת (בנים לפני האב — משמש למחיקה/שחרור של עץ). מעבר לפי רמות (level-order) = חיפוש לרוחב, רמה אחר רמה, באמצעות תור. הכרת הסדר שכל אחד מבקר בו היא שאלת מבחן קלאסית."
+    },
+    {
+      "id": "tr-12",
+      "difficulty": "hard",
+      "question": "כדי למחוק צומת ב-BST שיש לו שני בנים, במה מחליפים אותו?",
+      "options": ["בעוקב בסדר תוכי (in-order successor) שלו (הצומת הקטן ביותר בתת-העץ הימני) — או בקודם בסדר תוכי (in-order predecessor)", "תמיד בבנו השמאלי", "בשורש", "אי אפשר למחוק צומת כזה"],
+      "answer": 0,
+      "explanation": "מחליפים את ערך הצומת בעוקב בסדר תוכי שלו (המינימום של תת-העץ הימני) או בקודם בסדר תוכי (המקסימום של תת-העץ השמאלי), ואז מוחקים את צומת העוקב/הקודם ההוא (שיש לו לכל היותר בן אחד, מקרה קל). זה משמר את סדר ה-BST. צמתים בעלי 0 או 1 בנים הם מקרים מיוחדים פשוטים יותר."
+    },
+    {
+      "id": "tr-13",
+      "difficulty": "easy",
+      "question": "כמה צמתים יש בעץ בינארי מושלם (perfect) בגובה h? (גובה = מספר הקשתות במסלול הארוך ביותר משורש לעלה)",
+      "options": ["2^(h+1) - 1", "2^h", "h^2", "2h + 1"],
+      "answer": 0,
+      "explanation": "בעץ בינארי מושלם כל הרמות מלאות לחלוטין. רמה i מכילה 2^i צמתים, וסכום הרמות 0..h הוא 2^(h+1) − 1. לדוגמה, h=2 נותן 2³−1 = 7 צמתים. זו הסיבה שעץ בעל n צמתים הוא בגובה ≈ log₂(n)."
+    },
+    {
+      "id": "tr-14",
+      "difficulty": "medium",
+      "question": "גם עצי AVL וגם עצים אדום-שחור הם BST-ים מאזנים-עצמית. איזו הבטחה משותפת להם?",
+      "options": ["חיפוש, הכנסה ומחיקה בזמן O(log n) במקרה הגרוע ביותר", "חיפוש בזמן O(1)", "הם לעולם אינם זקוקים לרוטציות", "הם מאחסנים נתונים במערך"],
+      "answer": 0,
+      "explanation": "שניהם שומרים על גובה O(log n), ומבטיחים פעולות בזמן O(log n). ההבדל הוא פשרה: עצי AVL מאוזנים באופן קפדני יותר (חיפושים מהירים יותר) אך מבצעים יותר רוטציות בהכנסה/מחיקה; עצים אדום-שחור מאוזנים באופן רופף יותר (עדכונים מהירים יותר), וזו הסיבה ש-std::map וספריות רבות משתמשות בהם."
+    },
+    {
+      "id": "tr-15",
+      "difficulty": "easy",
+      "question": "בערמת מקסימום, היכן נמצא האיבר הגדול ביותר, ואיזו צורה חייבת להיות לעץ?",
+      "options": ["הגדול ביותר בשורש; העץ הוא עץ בינארי מלא (complete)", "הגדול ביותר בעלה; העץ הוא BST", "הגדול ביותר בשורש; העץ הוא עץ מלא (full) אך לא מאוזן", "הגדול ביותר בכל מקום; הצורה אינה משנה"],
+      "answer": 0,
+      "explanation": "ערמת מקסימום שומרת את המקסימום בשורש (כל אב ≥ בניו) וחייבת להיות עץ בינארי מלא (complete) — כל הרמות מלאות למעט אולי האחרונה, שמתמלאת משמאל לימין. שלמות זו היא שמאפשרת לדחוס אותו לתוך מערך ללא רווחים. שים לב: ערמה אינה BST — אין סדר שמאל/ימין בין אחים (siblings)."
+    },
+    {
+      "id": "tr-16",
+      "difficulty": "medium",
+      "question": "מעבר לפי רמות (level-order, חיפוש לרוחב) על עץ בינארי ממומש באמצעות איזה מבנה נתונים?",
+      "options": ["תור", "מחסנית", "טבלת גיבוב", "עץ אחר"],
+      "answer": 0,
+      "explanation": "מעבר לפי רמות/BFS משתמש בתור: מכניסים לתור את השורש, ואז שוב ושוב מוציאים מהתור צומת, מבקרים בו, ומכניסים לתור את בניו. כך מבקרים בצמתים רמה אחר רמה, משמאל לימין. (מעברים לעומק כמו תחילי/תוכי/סופי משתמשים במחסנית — במפורש, או במרומז דרך רקורסיה.)"
+    },
+    {
+      "id": "tr-17",
+      "difficulty": "hard",
+      "question": "מכניסים נתונים ממוינים מראש 1,2,3,4,5 לתוך BST רגיל (ללא איזון). מהי הצורה המתקבלת ומהי עלות החיפוש?",
+      "options": ["שרשרת מנוונת הנוטה ימינה (כמו רשימה מקושרת); חיפוש O(n)", "עץ מאוזן באופן מושלם; חיפוש O(log n)", "עץ מלא (complete); חיפוש O(1)", "עץ AVL; חיפוש O(log n)"],
+      "answer": 0,
+      "explanation": "כל ערך חדש גדול מכל הערכים שלפניו, ולכן הוא תמיד הולך ימינה — העץ הופך לשרשרת ישרה בגובה n, והחיפוש מתדרדר ל-O(n). זהו המקרה הגרוע ביותר עבור BST רגיל, והסיבה בדיוק לקיומם של עצים מאזנים-עצמית (AVL, אדום-שחור)."
     }
   ]
 }

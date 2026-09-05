@@ -1,0 +1,173 @@
+{
+  "_comment": "Per-line time-complexity problems. The learner picks the complexity of EACH line; overall = the dominant (largest) line. All code is C++.",
+  "problems": [
+    {
+      "id": "cx-1",
+      "title": "שורה אחת — פקודה בודדת",
+      "difficulty": "easy",
+      "overall": "O(1)",
+      "overallExplanation": "כל קטע הקוד הוא פקודה בודדת בזמן קבוע, ולכן זמן הריצה הכולל הוא O(1).",
+      "lines": [
+        {
+          "code": "int x = a + b;",
+          "options": ["O(1)", "O(n)", "O(log n)", "O(n^2)"],
+          "answer": 0,
+          "explanation": "השמה אריתמטית בודדת מתבצעת בדיוק פעם אחת, ללא תלות בגודל הקלט ← O(1) (זמן קבוע)."
+        }
+      ]
+    },
+    {
+      "id": "cx-2",
+      "title": "שורה אחת — לולאה פשוטה",
+      "difficulty": "easy",
+      "overall": "O(n)",
+      "overallExplanation": "לולאה אחת שרצה n פעמים עם עבודה בזמן O(1) בכל איטרציה ← O(n).",
+      "lines": [
+        {
+          "code": "for (int i = 0; i < n; i++) sum += arr[i];",
+          "options": ["O(1)", "O(n)", "O(log n)", "O(n^2)"],
+          "answer": 1,
+          "explanation": "גוף הלולאה רץ n פעמים, ובכל פעם מבצע עבודה קבועה (חיבור אחד). n × O(1) = O(n)."
+        }
+      ]
+    },
+    {
+      "id": "cx-3",
+      "title": "שתי שורות — פקודה + לולאה",
+      "difficulty": "easy",
+      "overall": "O(n)",
+      "overallExplanation": "סך הכול = O(1) + O(n). שומרים רק את המונח הדומיננטי ← O(n).",
+      "lines": [
+        {
+          "code": "int mx = arr[0];",
+          "options": ["O(1)", "O(n)", "O(log n)", "O(n^2)"],
+          "answer": 0,
+          "explanation": "השמה אחת ← O(1)."
+        },
+        {
+          "code": "for (int i = 1; i < n; i++) if (arr[i] > mx) mx = arr[i];",
+          "options": ["O(1)", "O(n)", "O(n log n)", "O(n^2)"],
+          "answer": 1,
+          "explanation": "הלולאה רצה כ־n פעמים עם עבודה קבועה בכל איטרציה ← O(n)."
+        }
+      ]
+    },
+    {
+      "id": "cx-4",
+      "title": "שתי שורות — לולאה מול לולאה מקוננת",
+      "difficulty": "medium",
+      "overall": "O(n^2)",
+      "overallExplanation": "סך הכול = O(n) + O(n²). הלולאה המקוננת דומיננטית ← O(n²).",
+      "lines": [
+        {
+          "code": "for (int i = 0; i < n; i++) a[i] = 0;",
+          "options": ["O(1)", "O(n)", "O(log n)", "O(n^2)"],
+          "answer": 1,
+          "explanation": "לולאה בודדת על n איברים ← O(n)."
+        },
+        {
+          "code": "for (int j = 0; j < n; j++) for (int k = 0; k < n; k++) b[j][k] = 0;",
+          "options": ["O(n)", "O(n log n)", "O(n^2)", "O(2^n)"],
+          "answer": 2,
+          "explanation": "שתי לולאות מקוננות, שכל אחת רצה n פעמים ← n × n = O(n²)."
+        }
+      ]
+    },
+    {
+      "id": "cx-5",
+      "title": "שלוש שורות — ליניארי מול לוגריתמי",
+      "difficulty": "medium",
+      "overall": "O(n)",
+      "overallExplanation": "סך הכול = O(1) + O(n) + O(log n). המונח הליניארי דומיננטי ← O(n).",
+      "lines": [
+        {
+          "code": "int s = 0;",
+          "options": ["O(1)", "O(n)", "O(log n)", "O(n^2)"],
+          "answer": 0,
+          "explanation": "השמה אחת ← O(1)."
+        },
+        {
+          "code": "for (int i = 0; i < n; i++) s += i;",
+          "options": ["O(1)", "O(n)", "O(log n)", "O(n^2)"],
+          "answer": 1,
+          "explanation": "הלולאה רצה n פעמים, עם עבודה קבועה בכל איטרציה ← O(n)."
+        },
+        {
+          "code": "for (int i = 1; i < n; i *= 2) cout << i;",
+          "options": ["O(n)", "O(log n)", "O(sqrt(n))", "O(n log n)"],
+          "answer": 1,
+          "explanation": "i מוכפל פי 2 בכל צעד (1,2,4,8,...), ומגיע ל־n אחרי כ־log₂(n) צעדים ← O(log n). משתנה לולאה כפלי = לוגריתמי."
+        }
+      ]
+    },
+    {
+      "id": "cx-6",
+      "title": "שלוש שורות — מיון + חיפוש",
+      "difficulty": "medium",
+      "overall": "O(n log n)",
+      "overallExplanation": "סך הכול = O(n log n) + O(n log n) + O(1). שני המונחים n·log n דומיננטיים ← O(n log n).",
+      "lines": [
+        {
+          "code": "sort(arr, arr + n);",
+          "options": ["O(n)", "O(n log n)", "O(n^2)", "O(log n)"],
+          "answer": 1,
+          "explanation": "std::sort הוא מיון מבוסס־השוואות בזמן O(n log n) (introsort)."
+        },
+        {
+          "code": "for (int i = 0; i < n; i++) found |= binary_search(arr, arr + n, q[i]);",
+          "options": ["O(n)", "O(log n)", "O(n log n)", "O(n^2)"],
+          "answer": 2,
+          "explanation": "הלולאה רצה n פעמים; כל binary_search על מערך ממוין הוא O(log n). n × log n = O(n log n)."
+        },
+        {
+          "code": "return found;",
+          "options": ["O(1)", "O(n)", "O(log n)", "O(n^2)"],
+          "answer": 0,
+          "explanation": "החזרת ערך היא פעולה בודדת בזמן קבוע ← O(1)."
+        }
+      ]
+    },
+    {
+      "id": "cx-7",
+      "title": "מתקדם — לולאה מקוננת מול לולאה לוגריתמית",
+      "difficulty": "hard",
+      "overall": "O(n^2)",
+      "overallExplanation": "סך הכול = O(n²) + O(log n). המונח הריבועי דומיננטי ← O(n²).",
+      "lines": [
+        {
+          "code": "for (int i = 0; i < n; i++) for (int j = 0; j < n; j++) sum += grid[i][j];",
+          "options": ["O(n)", "O(n log n)", "O(n^2)", "O(2^n)"],
+          "answer": 2,
+          "explanation": "שתי לולאות מקוננות על n ← O(n²). סכימה של רשת בגודל n×n היא ריבועית מעצם טבעה."
+        },
+        {
+          "code": "for (int i = 1; i < n; i *= 2) cout << i;",
+          "options": ["O(n)", "O(log n)", "O(sqrt(n))", "O(n^2)"],
+          "answer": 1,
+          "explanation": "צעד כפלי ← רץ כ־log₂(n) פעמים ← O(log n)."
+        }
+      ]
+    },
+    {
+      "id": "cx-8",
+      "title": "מכשיל — מלכודת הזמן המשוערך",
+      "difficulty": "hard",
+      "overall": "O(n)",
+      "overallExplanation": "זה נראה כמו O(n²), אבל j לעולם אינו מאותחל מחדש ורק גדל (לכל היותר n פעמים בסך הכול). לכן לולאת ה־while הפנימית מבצעת לכל היותר n צעדים לאורך כל הריצה כולה ← O(n).",
+      "lines": [
+        {
+          "code": "int j = 0;",
+          "options": ["O(1)", "O(n)", "O(log n)", "O(n^2)"],
+          "answer": 0,
+          "explanation": "השמה אחת ← O(1)."
+        },
+        {
+          "code": "for (int i = 0; i < n; i++) while (j < n && a[j] < a[i]) j++;",
+          "options": ["O(n^2)", "O(n)", "O(n log n)", "O(log n)"],
+          "answer": 1,
+          "explanation": "המלכודת הקלאסית. j מוכרז מחוץ ללולאה ולעולם אינו מאותחל מחדש — הוא רק גדל, לכל היותר n פעמים בסך הכול. לכן לולאת ה־while הפנימית רצה לכל היותר n צעדים לאורך כל האיטרציות יחד, ולא בכל איטרציה בנפרד. לולאה חיצונית O(n) + פנימית O(n) בסך הכול = O(n). זהו טיעון של ניתוח משוערך."
+        }
+      ]
+    }
+  ]
+}

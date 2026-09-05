@@ -6,107 +6,174 @@
     {
       "id": "tc-01",
       "difficulty": "easy",
-      "question": "What is the time complexity (זמן ריצה) of the following loop?",
+      "question": "מהו זמן הריצה (זמן ריצה) של הלולאה הבאה?",
       "code": "int sum = 0;\nfor (int i = 0; i < n; i++) {\n    sum += i;\n}",
       "options": ["O(1)", "O(log n)", "O(n)", "O(n^2)"],
       "answer": 2,
-      "explanation": "The loop runs exactly n times, doing O(1) work per iteration, so the total is O(n) — linear time. A single loop bounded by n is the textbook example of linear running time. Only if the loop bound changed multiplicatively (e.g. i *= 2) would it become logarithmic."
+      "explanation": "הלולאה רצה בדיוק n פעמים, ובכל איטרציה מבצעת עבודה של O(1), ולכן הסך הכולל הוא O(n) — זמן לינארי. לולאה בודדת החסומה על ידי n היא הדוגמה הקלאסית מהספר לזמן ריצה לינארי. רק אם חסם הלולאה היה משתנה בכפל (למשל i *= 2) הוא היה הופך ללוגריתמי."
     },
     {
       "id": "tc-02",
       "difficulty": "easy",
-      "question": "What is the time complexity (זמן ריצה) of this nested loop?",
+      "question": "מהו זמן הריצה (זמן ריצה) של הלולאה המקוננת הבאה?",
       "code": "for (int i = 0; i < n; i++) {\n    for (int j = 0; j < n; j++) {\n        cout << i * j;\n    }\n}",
       "options": ["O(n)", "O(n log n)", "O(n^2)", "O(2^n)"],
       "answer": 2,
-      "explanation": "The outer loop runs n times, and for EACH outer iteration the inner loop runs n times. Total iterations = n × n = n². Two independent nested loops both bounded by n give O(n²) — quadratic time. This is the classic shape you see in bubble sort, selection sort, and comparing every pair of elements."
+      "explanation": "הלולאה החיצונית רצה n פעמים, ועבור כל איטרציה חיצונית הלולאה הפנימית רצה n פעמים. סך האיטרציות = n × n = n². שתי לולאות מקוננות בלתי תלויות שחסומות שתיהן על ידי n נותנות O(n²) — זמן ריבועי. זוהי הצורה הקלאסית שרואים במיון בועות (bubble sort), במיון בחירה (selection sort), ובהשוואת כל זוג איברים זה לזה."
     },
     {
       "id": "tc-03",
       "difficulty": "medium",
-      "question": "What is the time complexity (זמן ריצה) of the following loop?",
+      "question": "מהו זמן הריצה (זמן ריצה) של הלולאה הבאה?",
       "code": "for (int i = 1; i < n; i = i * 2) {\n    cout << i;\n}",
       "options": ["O(n)", "O(log n)", "O(sqrt(n))", "O(n log n)"],
       "answer": 1,
-      "explanation": "i doubles every iteration: 1, 2, 4, 8, ... It stops once i ≥ n. The number of doublings needed to reach n is log₂(n), so the loop runs about log n times → O(log n). The rule of thumb: when the loop variable is MULTIPLIED (or divided) by a constant each step, the running time is logarithmic. This is exactly why binary search is O(log n)."
+      "explanation": "i מוכפל בכל איטרציה: 1, 2, 4, 8, ... הלולאה נעצרת ברגע ש-i ≥ n. מספר ההכפלות הדרוש כדי להגיע ל-n הוא log₂(n), ולכן הלולאה רצה בערך log n פעמים ← O(log n). כלל האצבע: כאשר משתנה הלולאה מוכפל (או מחולק) בקבוע בכל צעד, זמן הריצה הוא לוגריתמי. זוהי בדיוק הסיבה לכך שחיפוש בינארי הוא O(log n)."
     },
     {
       "id": "tc-04",
       "difficulty": "medium",
-      "question": "What is the time complexity (זמן ריצה) of this code?",
+      "question": "מהו זמן הריצה (זמן ריצה) של הקוד הבא?",
       "code": "for (int i = 0; i < n; i++) {\n    for (int j = 1; j < n; j = j * 2) {\n        cout << i << j;\n    }\n}",
       "options": ["O(n^2)", "O(n)", "O(n log n)", "O(log n)"],
       "answer": 2,
-      "explanation": "The outer loop is O(n) (runs n times). The inner loop multiplies j by 2 each step, so it runs O(log n) times. Because the inner loop runs fully for each outer iteration, you multiply: n × log n = O(n log n). This is the running time of efficient comparison sorts like merge sort and heapsort."
+      "explanation": "הלולאה החיצונית היא O(n) (רצה n פעמים). הלולאה הפנימית מכפילה את j ב-2 בכל צעד, ולכן היא רצה O(log n) פעמים. מכיוון שהלולאה הפנימית רצה במלואה עבור כל איטרציה חיצונית, מכפילים: n × log n = O(n log n). זהו זמן הריצה של מיוני השוואה יעילים כמו מיון מיזוג (merge sort) ומיון ערמה (heapsort)."
     },
     {
       "id": "tc-05",
       "difficulty": "medium",
-      "question": "What is the tight time complexity (זמן ריצה) of this loop?",
+      "question": "מהו זמן הריצה ההדוק (זמן ריצה) של הלולאה הבאה?",
       "code": "int j = 0;\nfor (int i = 0; i < n; i++) {\n    while (j < n && arr[j] < arr[i]) {\n        j++;\n    }\n}",
       "options": ["O(n^2)", "O(n)", "O(n log n)", "O(log n)"],
       "answer": 1,
-      "explanation": "This is a classic trap. It LOOKS like O(n²) because of the nested loops, but look at j: it is declared OUTSIDE the outer loop and is never reset. Across the entire run, j only ever increases, and it can increase at most n times total. So the inner while loop does at most n steps in total across ALL outer iterations. Outer loop: O(n). Inner work summed over the whole run: O(n). Total: O(n). This 'amortized' counting argument is a favorite exam question."
+      "explanation": "זוהי מלכודת קלאסית. זה נראה כמו O(n²) בגלל הלולאות המקוננות, אבל התבוננו ב-j: הוא מוכרז מחוץ ללולאה החיצונית ולעולם אינו מאותחל מחדש. לאורך כל הריצה, j רק גדל, והוא יכול לגדול לכל היותר n פעמים בסך הכול. לכן הלולאה הפנימית while מבצעת לכל היותר n צעדים בסך הכול על פני כל האיטרציות החיצוניות. לולאה חיצונית: O(n). העבודה הפנימית מסוכמת על פני כל הריצה: O(n). סך הכול: O(n). טיעון הספירה ה'משוערך' הזה הוא שאלת מבחן אהובה."
     },
     {
       "id": "tc-06",
       "difficulty": "easy",
-      "question": "What is the average-case time complexity (זמן ריצה) of searching for a value in a hash table with good, uniform hashing?",
+      "question": "מהו זמן הריצה במקרה הממוצע (זמן ריצה) של חיפוש ערך בטבלת גיבוב (hash table) עם פונקציית גיבוב טובה ואחידה?",
       "options": ["O(1)", "O(log n)", "O(n)", "O(n log n)"],
       "answer": 0,
-      "explanation": "With a good hash function and a bounded load factor, hashing gives O(1) average-case lookup, insert, and delete — this is the whole reason hash tables exist. Be careful: the WORST case is O(n) (if every key collides into one bucket/chain), but on average, expected constant time. Exams often ask specifically for 'average case' vs 'worst case' here."
+      "explanation": "עם פונקציית גיבוב טובה ומקדם עומס חסום, גיבוב נותן חיפוש, הכנסה ומחיקה בזמן O(1) במקרה הממוצע — זו כל הסיבה לקיומן של טבלאות גיבוב. שימו לב: המקרה הגרוע ביותר הוא O(n) (אם כל המפתחות מתנגשים לתא/שרשרת יחידה), אך בממוצע הזמן הצפוי הוא קבוע. מבחנים שואלים לעתים קרובות באופן ספציפי על 'המקרה הממוצע' לעומת 'המקרה הגרוע ביותר' כאן."
     },
     {
       "id": "tc-07",
       "difficulty": "medium",
-      "question": "What is the time complexity (זמן ריצה) of this recursive function?",
+      "question": "מהו זמן הריצה (זמן ריצה) של הפונקציה הרקורסיבית הבאה?",
       "code": "int f(int n) {\n    if (n <= 1) return 1;\n    return f(n - 1) + f(n - 1);\n}",
       "options": ["O(n)", "O(n^2)", "O(2^n)", "O(log n)"],
       "answer": 2,
-      "explanation": "Each call spawns TWO recursive calls, and the depth of recursion is n. The number of calls doubles at each level: 1, 2, 4, 8, ..., forming a binary tree of height n with about 2^n nodes → O(2^n), exponential. Contrast with f(n-1) called only once, which would be O(n). Branching factor 2 with depth n is the signature of exponential time."
+      "explanation": "כל קריאה מולידה שתי קריאות רקורסיביות, ועומק הרקורסיה הוא n. מספר הקריאות מוכפל בכל רמה: 1, 2, 4, 8, ..., ויוצר עץ בינארי בגובה n עם כ-2^n צמתים ← O(2^n), מעריכי. השוו לקריאה יחידה ל-f(n-1), שהייתה נותנת O(n). גורם הסתעפות 2 עם עומק n הוא החתימה של זמן ריצה מעריכי."
     },
     {
       "id": "tc-08",
       "difficulty": "hard",
-      "question": "What is the time complexity (זמן ריצה) of this loop?",
+      "question": "מהו זמן הריצה (זמן ריצה) של הלולאה הבאה?",
       "code": "for (int i = 0; i < n; i++) {\n    for (int j = 0; j < i; j++) {\n        cout << j;\n    }\n}",
       "options": ["O(n)", "O(n^2)", "O(n log n)", "O(2^n)"],
       "answer": 1,
-      "explanation": "The inner loop runs i times, and i grows: 0 + 1 + 2 + ... + (n-1). That sum equals n(n-1)/2, which is O(n²). Even though the inner loop isn't a full n each time, the sum of an arithmetic series up to n is still quadratic. Dropping the constant ½ and the lower-order term gives O(n²)."
+      "explanation": "הלולאה הפנימית רצה i פעמים, ו-i גדל: 0 + 1 + 2 + ... + (n-1). סכום זה שווה ל-n(n-1)/2, שהוא O(n²). אף על פי שהלולאה הפנימית אינה מבצעת n פעמים מלאות בכל פעם, סכום סדרה חשבונית עד n עדיין ריבועי. השמטת הקבוע ½ והאיבר מסדר נמוך יותר נותנת O(n²)."
     },
     {
       "id": "tc-09",
       "difficulty": "easy",
-      "question": "Accessing an element by index in a C++ std::vector (or a raw array), e.g. arr[i], has what time complexity (זמן ריצה)?",
+      "question": "לגישה לאיבר לפי אינדקס ב-std::vector של C++ (או במערך גולמי), למשל arr[i], יש איזה זמן ריצה (זמן ריצה)?",
       "options": ["O(1)", "O(n)", "O(log n)", "O(n^2)"],
       "answer": 0,
-      "explanation": "Arrays and std::vector store elements in contiguous memory, so the address of arr[i] is computed directly as base + i × element_size — a single arithmetic step, independent of n. That is O(1) random access. This is arrays' key advantage over linked lists, where reaching index i costs O(n) because you must walk the pointers."
+      "explanation": "מערכים ו-std::vector מאחסנים איברים בזיכרון רציף, ולכן הכתובת של arr[i] מחושבת ישירות כ-base + i × element_size — צעד חשבוני יחיד, בלתי תלוי ב-n. זוהי גישה אקראית של O(1). זהו היתרון המרכזי של מערכים על פני רשימות מקושרות, שבהן הגעה לאינדקס i עולה O(n) מכיוון שיש ללכת לאורך המצביעים."
     },
     {
       "id": "tc-10",
       "difficulty": "medium",
-      "question": "What is the time complexity (זמן ריצה) of the outer computation below?",
+      "question": "מהו זמן הריצה (זמן ריצה) של החישוב החיצוני שלהלן?",
       "code": "for (int i = 0; i < n; i++) {\n    for (int j = n; j > 1; j = j / 2) {\n        cout << i;\n    }\n}",
       "options": ["O(n)", "O(n log n)", "O(n^2)", "O(log n)"],
       "answer": 1,
-      "explanation": "The inner loop DIVIDES j by 2 each step (n, n/2, n/4, ... down to 1), which takes O(log n) iterations. The outer loop runs n times. Multiply: n × log n = O(n log n). Note that halving and doubling both give a logarithmic count — the direction doesn't matter, only that it's multiplicative."
+      "explanation": "הלולאה הפנימית מחלקת את j ב-2 בכל צעד (n, n/2, n/4, ... עד 1), מה שלוקח O(log n) איטרציות. הלולאה החיצונית רצה n פעמים. מכפילים: n × log n = O(n log n). שימו לב שחצייה והכפלה נותנות שתיהן ספירה לוגריתמית — הכיוון אינו משנה, אלא רק העובדה שזה כפלי."
     },
     {
       "id": "tc-11",
       "difficulty": "hard",
-      "question": "What is the tight time complexity (זמן ריצה) of this loop in terms of n?",
+      "question": "מהו זמן הריצה ההדוק (זמן ריצה) של הלולאה הבאה במונחים של n?",
       "code": "for (int i = 1; i * i <= n; i++) {\n    cout << i;\n}",
       "options": ["O(n)", "O(log n)", "O(sqrt(n))", "O(n^2)"],
       "answer": 2,
-      "explanation": "The loop continues while i×i ≤ n, i.e. while i ≤ √n. So it runs about √n times → O(√n). This pattern shows up in trial-division primality testing and in some factorization loops. Recognizing that the condition i*i <= n means i <= sqrt(n) is the key insight."
+      "explanation": "הלולאה נמשכת כל עוד i×i ≤ n, כלומר כל עוד i ≤ √n. לכן היא רצה בערך √n פעמים ← O(√n). דפוס זה מופיע בבדיקת ראשוניות בשיטת חלוקת ניסיון (trial division) ובחלק מלולאות הפירוק לגורמים. ההבנה שהתנאי i*i <= n משמעו i <= sqrt(n) היא התובנה המרכזית."
     },
     {
       "id": "tc-12",
       "difficulty": "medium",
-      "question": "Inserting at the front (push_front) of a singly linked list has what time complexity (זמן ריצה)?",
+      "question": "להכנסה בראש (push_front) של רשימה מקושרת חד-כיוונית יש איזה זמן ריצה (זמן ריצה)?",
       "options": ["O(1)", "O(n)", "O(log n)", "O(n^2)"],
       "answer": 0,
-      "explanation": "Inserting at the head only requires creating a node and repointing the head — a fixed number of pointer operations regardless of list length → O(1). This is a core strength of linked lists. (Inserting at the TAIL is O(n) for a singly linked list without a tail pointer, because you must first walk to the end.)"
+      "explanation": "הכנסה בראש דורשת רק יצירת צומת ומיקום מחדש של הראש — מספר קבוע של פעולות מצביע ללא תלות באורך הרשימה ← O(1). זהו חוזק מרכזי של רשימות מקושרות. (הכנסה בזנב היא O(n) עבור רשימה מקושרת חד-כיוונית ללא מצביע זנב, מכיוון שיש ללכת תחילה עד הסוף.)"
+    },
+    {
+      "id": "tc-13",
+      "difficulty": "medium",
+      "question": "שתי לולאות נפרדות (לא מקוננות) רצות זו אחר זו. מהו זמן הריצה הכולל (זמן ריצה)?",
+      "code": "for (int i = 0; i < n; i++) cout << a[i];\nfor (int j = 0; j < n; j++) cout << b[j];",
+      "options": ["O(n)", "O(n^2)", "O(2^n)", "O(log n)"],
+      "answer": 0,
+      "explanation": "לולאות עוקבות מתחברות בחיבור: O(n) + O(n) = O(2n) = O(n). קבועים מושמטים. רק לולאות מקוננות מתרבות בכפל. טעות נפוצה היא לקרוא לזה O(n²) — זה היה דורש לולאה אחת בתוך השנייה."
+    },
+    {
+      "id": "tc-14",
+      "difficulty": "medium",
+      "question": "מהו זמן הריצה (זמן ריצה) של הלולאה המקוננת הכפולה הזו על פני שני גדלים n ו-m?",
+      "code": "for (int i = 0; i < n; i++)\n    for (int j = 0; j < m; j++)\n        work();",
+      "options": ["O(n * m)", "O(n + m)", "O(n^2)", "O(max(n, m))"],
+      "answer": 0,
+      "explanation": "הלולאה הפנימית רצה m פעמים עבור כל אחת מ-n האיטרציות החיצוניות ← n × m = O(n·m). רק אם m שווה ל-n זה מצטמצם ל-O(n²). יש לשמור על n ו-m נפרדים אלא אם נאמר שהם שווים."
+    },
+    {
+      "id": "tc-15",
+      "difficulty": "hard",
+      "question": "נוסחת הנסיגה T(n) = 2·T(n/2) + O(n) מתארת איזה אלגוריתם, ולמה היא נפתרת?",
+      "options": ["מיון מיזוג (merge sort) ← O(n log n)", "חיפוש בינארי ← O(log n)", "סריקה ליניארית ← O(n)", "רקורסיה נאיבית ← O(2^n)"],
+      "answer": 0,
+      "explanation": "T(n) = 2T(n/2) + O(n) היא מיון מיזוג (merge sort): שני חצאים באופן רקורסיבי (2T(n/2)) בתוספת מיזוג של O(n). על פי משפט המאסטר (Master Theorem) זה O(n log n). ישנן log n רמות, וכל אחת מבצעת עבודה כוללת של O(n)."
+    },
+    {
+      "id": "tc-16",
+      "difficulty": "hard",
+      "question": "למה נפתרת נוסחת הנסיגה T(n) = T(n/2) + O(1)?",
+      "options": ["O(log n)", "O(n)", "O(n log n)", "O(1)"],
+      "answer": 0,
+      "explanation": "כל צעד חוצה את הבעיה ומבצע עבודה קבועה — זהו חיפוש בינארי. חצייה של n עד 1 לוקחת log₂(n) צעדים ← O(log n). השוו ל-T(n)=2T(n/2)+O(1) שהיה נותן O(n)."
+    },
+    {
+      "id": "tc-17",
+      "difficulty": "hard",
+      "question": "מהו זמן הריצה הכולל (זמן ריצה) של הלולאה הבאה?",
+      "code": "for (int i = n; i > 0; i /= 2)\n    for (int j = 0; j < i; j++)\n        work();",
+      "options": ["O(n)", "O(n log n)", "O(n^2)", "O(log n)"],
+      "answer": 0,
+      "explanation": "הלולאה הפנימית רצה i פעמים, ו-i נחצה בכל סבב: n + n/2 + n/4 + ... זוהי סדרה הנדסית המסתכמת בערך ל-2n ← O(n). תשובה שגויה מפתה היא O(n log n), אך הלולאה הפנימית המצטמצמת הופכת את הסך הכולל ללינארי, ולא ללינארי-לוגריתמי."
+    },
+    {
+      "id": "tc-18",
+      "difficulty": "medium",
+      "question": "להוספת איבר יחיד למערך דינמי (כמו std::vector::push_back) שמכפיל מדי פעם את הקיבולת שלו יש איזה זמן ריצה משוערך (זמן ריצה)?",
+      "options": ["O(1) amortized", "O(n) always", "O(log n)", "O(n^2)"],
+      "answer": 0,
+      "explanation": "רוב פעולות ה-push_back הן O(1). מדי פעם ה-vector מלא וחייב להעתיק את כל n האיברים לחוצץ גדול יותר (O(n)), אבל מכיוון שהקיבולת מוכפלת, ההעתקות היקרות הללו נדירות מספיק כך שהעלות הממוצעת לכל push_back היא O(1) — 'זמן קבוע משוערך'. פעולת push_back יחידה יכולה להיות O(n) במקרה הגרוע ביותר, אך הממוצע על פני פעולות רבות הוא O(1)."
+    },
+    {
+      "id": "tc-19",
+      "difficulty": "medium",
+      "question": "מהי סיבוכיות המקום (space complexity) של פונקציה רקורסיבית שקוראת לעצמה פעם אחת ומבצעת רקורסיה עד עומק n (למשל סכימת רשימה באופן רקורסיבי)?",
+      "options": ["O(n) — the call stack holds n frames", "O(1)", "O(log n)", "O(n^2)"],
+      "answer": 0,
+      "explanation": "גם אם כל קריאה מבצעת עבודה של O(1), רקורסיה עד עומק n שומרת n מסגרות מחסנית חיות בו-זמנית, ולכן היא משתמשת ב-O(n) מקום (ומסתכנת בגלישת מחסנית עבור n גדול). זו הסיבה לכך שגרסה איטרטיבית, או ביטול קריאת זנב (tail-call elimination), יכולים להיות עדיפים. סיבוכיות זמן ומקום הן שאלות נפרדות — תמיד בדקו מה נשאל."
+    },
+    {
+      "id": "tc-20",
+      "difficulty": "easy",
+      "question": "מהו זמן הריצה (זמן ריצה) של מציאת המקסימום במערך לא ממוין של n איברים?",
+      "options": ["O(n)", "O(1)", "O(log n)", "O(n log n)"],
+      "answer": 0,
+      "explanation": "ללא סדר שאפשר לנצל, יש לבחון כל איבר לפחות פעם אחת כדי לוודא שנמצא המקסימום ← O(n). (במערך ממוין זה היה O(1) — פשוט לוקחים את האיבר האחרון/הראשון. בערמת מקסימום (max-heap), המקסימום נמצא בשורש, גם כן O(1).)"
     }
   ]
 }
