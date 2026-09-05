@@ -315,3 +315,59 @@ b.ltr, span.ltr { display: inline-block; }
 .cheat-facts { margin: 8px 18px 8px 0; padding: 0; }
 .cheat-facts li { margin: 8px 0; line-height: 1.55; text-align: start; }
 .cheat-facts b { color: var(--text); }
+
+/* =========================================================================
+   v4 ADDITIONS — Learn Journey (guided lessons).
+   ========================================================================= */
+.learn-progress { margin-bottom: 16px; }
+.lp-count { font-size: 0.85rem; color: var(--text-dim); margin-bottom: 6px; text-align: start; }
+
+.learn-list { display: flex; flex-direction: column; gap: 10px; }
+.lesson-card {
+  display: flex; align-items: center; gap: 14px; width: 100%;
+  background: var(--surface); border: 1px solid var(--surface-2);
+  border-radius: var(--radius); padding: 14px 16px; cursor: pointer;
+  color: var(--text); font: inherit; text-align: start;
+  transition: transform 0.12s ease, border-color 0.12s ease;
+}
+.lesson-card:hover { transform: translateY(-2px); border-color: var(--primary); }
+.lesson-check {
+  flex: 0 0 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface-2); color: var(--text); font-weight: 700; font-size: 0.9rem;
+}
+.lesson-card.done { border-color: var(--correct); }
+.lesson-card.done .lesson-check { background: var(--correct); color: #06210f; }
+.lesson-card-title { font-weight: 600; unicode-bidi: plaintext; text-align: start; }
+
+/* lesson view */
+.lesson-head { display: flex; flex-direction: column; gap: 2px; margin-bottom: 16px; }
+.lesson-num { font-size: 0.8rem; color: var(--primary); font-weight: 700; }
+.lesson-title { font-size: 1.25rem; font-weight: 800; unicode-bidi: plaintext; text-align: start; }
+
+.lesson-section { margin-bottom: 8px; }
+.lesson-p {
+  color: var(--text); line-height: 1.7; margin-bottom: 12px;
+  unicode-bidi: plaintext; text-align: start;
+}
+.lesson-h {
+  font-size: 1.02rem; font-weight: 700; color: var(--primary);
+  margin: 20px 0 10px; text-align: start;
+}
+.lesson-keypoints { margin: 0 18px 8px 0; padding: 0; }
+.lesson-keypoints li {
+  margin: 8px 0; line-height: 1.6; unicode-bidi: plaintext; text-align: start;
+}
+
+/* embedded animation inside a lesson */
+.lesson-anim {
+  margin: 14px 0 6px; padding: 12px;
+  background: rgba(255,255,255,0.02); border: 1px solid var(--surface-2); border-radius: var(--radius);
+}
+.lp-tabs { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 10px; }
+.lp-tab {
+  font: inherit; font-size: 0.8rem; font-weight: 600; white-space: nowrap;
+  background: var(--surface); color: var(--text-dim);
+  border: 1px solid var(--surface-2); border-radius: 999px; padding: 6px 12px; cursor: pointer;
+}
+.lp-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }

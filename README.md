@@ -34,8 +34,12 @@ can read it and understand how each piece fits together.
 
 ## 🚀 Features
 
-Three study modes, all in Hebrew (for Israeli CS students), with C++ code samples:
+Study modes, all in Hebrew (for Israeli CS students), with C++ code samples:
 
+- **📚 Learn Journey** — an ordered path through Data Structures from
+  foundations to advanced. Each lesson has an easy explanation, the relevant
+  animation embedded, the time complexity explained, and key points — with
+  per-lesson progress tracking.
 - **📝 Quiz** — **86 questions across 5 topics** (time complexity, linked lists,
   trees & heaps, sorting, hashing). Multiple-choice; every question ends with a
   detailed explanation of *why*, including the common traps.

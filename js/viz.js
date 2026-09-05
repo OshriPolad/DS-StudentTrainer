@@ -260,7 +260,15 @@ const Viz = (function () {
     $('viz-list').classList.remove('hidden');
   }
 
-  return { init: init };
+  // find an operation by its stable id (used by the Learn Journey)
+  function byId(id) { return OPERATIONS.find((op) => op.id === id) || null; }
+
+  return {
+    init: init,
+    operations: OPERATIONS,   // the full list (Visualize mode uses this)
+    byId: byId,               // look up one animation by id
+    renderFrame: renderFrame  // turn a frame into an SVG string (reused by Learn)
+  };
 })();
 
 window.Viz = Viz;

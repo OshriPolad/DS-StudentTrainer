@@ -44,7 +44,7 @@ let QUESTIONS_BY_ID = {};   // id -> question object, for the "mistakes only" mo
 
 /* ---------- NAVIGATION between the three modes -------------------------- */
 /* Each mode has one "landing" screen id. */
-const MODE_LANDING = { home: 'home', viz: 'viz', complexity: 'complexity', cheatsheet: 'cheatsheet' };
+const MODE_LANDING = { learn: 'learn', home: 'home', viz: 'viz', complexity: 'complexity', cheatsheet: 'cheatsheet' };
 
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach((s) => s.classList.add('hidden'));
@@ -104,9 +104,10 @@ async function init() {
   $('retry-btn').addEventListener('click', () => startQuiz(quiz.questions, quiz.label));
   $('home-btn').addEventListener('click', () => switchMode('home'));
 
-  // boot the other two modes (defined in their own files)
+  // boot the other modes (defined in their own files)
   if (window.Viz) Viz.init();
   if (window.Complexity) Complexity.init();
+  if (window.Learn) Learn.init();
 }
 
 /* ---------- QUIZ MODE --------------------------------------------------- */

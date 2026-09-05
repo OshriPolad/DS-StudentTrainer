@@ -33,6 +33,7 @@
     </div>
     <!-- NOTE: these buttons switch modes. app.js listens for clicks by data-mode. -->
     <nav class="app-nav">
+      <button class="nav-btn" data-mode="learn">📚 מסלול למידה</button>
       <button class="nav-btn active" data-mode="home">📝 שאלות</button>
       <button class="nav-btn" data-mode="viz">🎬 הדמיות</button>
       <button class="nav-btn" data-mode="complexity">⏱️ סיבוכיות</button>
@@ -140,6 +141,47 @@
       </div>
     </section>
 
+    <!-- ======================= LEARN JOURNEY ======================= -->
+    <section id="learn" class="screen hidden" dir="rtl">
+      <p class="intro">
+        מסלול הלמידה — הדרך ללמוד מבני נתונים מהיסודות ועד הסוף. כל שיעור כולל הסבר פשוט,
+        הדמיה, וסיבוכיות הזמן מוסברת. עברו לפי הסדר וסמנו כל שיעור שסיימתם.
+      </p>
+      <div id="learn-progress" class="learn-progress"></div>
+      <div id="learn-list" class="learn-list"></div>
+
+      <!-- a single lesson (hidden until one is opened) -->
+      <div id="learn-lesson" class="learn-lesson hidden">
+        <div class="lesson-head">
+          <span id="lesson-num" class="lesson-num"></span>
+          <span id="lesson-title" class="lesson-title"></span>
+        </div>
+
+        <div id="lesson-concept" class="lesson-section"></div>
+
+        <!-- embedded animation player (hidden for lessons without an animation) -->
+        <div id="lesson-anim" class="lesson-anim hidden">
+          <div id="lp-tabs" class="lp-tabs hidden"></div>
+          <div id="lp-stage" class="viz-stage"></div>
+          <div id="lp-caption" class="viz-caption"></div>
+          <div class="viz-controls">
+            <button id="lp-prev" class="btn btn-ghost">← הקודם</button>
+            <span id="lp-step" class="viz-step"></span>
+            <button id="lp-next" class="btn btn-primary">הבא →</button>
+          </div>
+        </div>
+
+        <h4 class="lesson-h">⏱️ סיבוכיות זמן</h4>
+        <div id="lesson-complexity" class="lesson-section"></div>
+
+        <h4 class="lesson-h">📌 נקודות מפתח</h4>
+        <ul id="lesson-keypoints" class="lesson-keypoints"></ul>
+
+        <button id="lesson-complete" class="btn btn-primary btn-block"></button>
+        <button id="lesson-back" class="btn btn-ghost btn-block">← חזרה למסלול</button>
+      </div>
+    </section>
+
     <!-- ======================= CHEAT SHEET ======================= -->
     <section id="cheatsheet" class="screen hidden" dir="rtl">
       <p class="intro">דף נוסחאות לחזרה מהירה לפני המבחן. כל הסיבוכיות ב-Big-O.</p>
@@ -232,6 +274,8 @@
   <script src="js/viz-ops.js" defer></script>
   <script src="js/viz.js" defer></script>
   <script src="js/complexity.js" defer></script>
+  <script src="js/learn-content.js" defer></script>
+  <script src="js/learn.js" defer></script>
   <script src="js/app.js" defer></script>
 
   <script>

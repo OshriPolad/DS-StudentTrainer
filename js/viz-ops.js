@@ -239,6 +239,14 @@
     ]
   };
 
+  // stable ids so the Learn Journey can reference animations by name
+  stackOp.id = 'stack'; queueOp.id = 'queue'; circularQueueOp.id = 'circular-queue';
+  listInsertOp.id = 'list-insert'; listTraverseOp.id = 'list-traverse';
+  dynArrayOp.id = 'dyn-array'; binarySearchOp.id = 'binary-search';
+  bstInsertOp.id = 'bst-insert'; bstSearchOp.id = 'bst-search';
+  avlSingleOp.id = 'avl-single'; avlDoubleOp.id = 'avl-double';
+  heapInsertOp.id = 'heap-insert'; heapExtractOp.id = 'heap-extract'; bubbleOp.id = 'bubble';
+
   window.VIZ_OPERATIONS = [
     stackOp, queueOp, circularQueueOp, listInsertOp, listTraverseOp,
     dynArrayOp, binarySearchOp,
