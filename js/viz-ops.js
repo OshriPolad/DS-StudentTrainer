@@ -22,6 +22,9 @@
     ({ caption, kind: 'list', model: { nodes: values.map((v) => ({ val: v })), pointers: pointers || {}, highlight: highlight || {} } });
   const bars = (caption, values, highlight) =>
     ({ caption, kind: 'bars', model: { values: values.slice(), highlight: highlight || {} } });
+  // array frame with index labels + pointer labels above ({index: 'front'} etc.)
+  const arr = (caption, values, pointers, highlight) =>
+    ({ caption, kind: 'array', model: { values: values.slice(), pointers: pointers || {}, highlight: highlight || {} } });
   function heap(caption, arr, highlight) {
     const nodes = {};
     arr.forEach((v, i) => {
@@ -155,7 +158,63 @@
   }
   const bubbleOp = { title: 'מיון בועות', titleHe: 'Bubble sort', frames: bubbleSortFrames() };
 
+  /* 9) QUEUE — enqueue & dequeue (FIFO) */
+  const queueOp = {
+    title: 'תור — הכנסה והוצאה (enqueue & dequeue)', titleHe: 'Queue',
+    frames: [
+      arr('תור עובד בשיטת FIFO — הנכנס ראשון יוצא ראשון. מוסיפים בזנב (rear), מוציאים מהראש (front).', [10], { 0: 'front / rear' }, { 0: GOOD }),
+      arr('enqueue(20): האיבר החדש נוסף בזנב. front נשאר על הוותיק ביותר.', [10, 20], { 0: 'front', 1: 'rear' }, { 1: GOOD }),
+      arr('enqueue(30): שוב נוסף בזנב. הסדר נשמר: 10 נכנס ראשון ולכן יֵצא ראשון.', [10, 20, 30], { 0: 'front', 2: 'rear' }, { 2: GOOD }),
+      arr('dequeue(): מוציאים את הראש (10) — הוותיק ביותר. front מתקדם ל-20.', [20, 30], { 0: 'front', 1: 'rear' }, { 0: ACTIVE }),
+      arr('dequeue(): מוציאים 20. תמיד יוצא מי שנכנס ראשון (FIFO).', [30], { 0: 'front / rear' }, { 0: ACTIVE }),
+      arr('נשאר 30. כל enqueue וכל dequeue נגעו רק בקצה אחד → O(1).', [30], { 0: 'front / rear' }, {})
+    ]
+  };
+
+  /* 10) CIRCULAR QUEUE — the pointers wrap around with % m */
+  const E = '·';
+  const circularQueueOp = {
+    title: 'תור מעגלי — עטיפה עם מודולו (%)', titleHe: 'Circular queue',
+    frames: [
+      arr('תור מעגלי במערך בגודל 5. כשמצביע מגיע לסוף הוא "עוטף" חזרה ל-0 בעזרת % 5. נתחיל למלא.', [E, E, E, E, E], { 0: 'front / rear' }, {}),
+      arr('enqueue(A), enqueue(B), enqueue(C): כל אחד נוסף במקום rear, ו-rear מתקדם.', ['A', 'B', 'C', E, E], { 0: 'front', 3: 'rear' }, { 0: GOOD, 1: GOOD, 2: GOOD }),
+      arr('dequeue() פעמיים: front מתקדם ומדלג על A ואז B. המשבצות 0,1 מתפנות.', [E, E, 'C', E, E], { 2: 'front', 3: 'rear' }, { 2: ACTIVE }),
+      arr('enqueue(D), enqueue(E): rear ממלא את מקומות 3 ו-4 ומגיע לסוף המערך.', [E, E, 'C', 'D', 'E'], { 2: 'front', 0: 'rear' }, { 3: GOOD, 4: GOOD }),
+      arr('enqueue(F): rear היה ב-4, ו-(4+1) % 5 = 0 → F "עוטף" למשבצת 0 שהתפנתה! כך לא מבזבזים מקום.', ['F', E, 'C', 'D', 'E'], { 2: 'front', 1: 'rear' }, { 0: GOOD }),
+      arr('זה הכוח של התור המעגלי: המערך מתנהג כמו טבעת, וכל פעולה נשארת O(1).', ['F', E, 'C', 'D', 'E'], { 2: 'front', 1: 'rear' }, {})
+    ]
+  };
+
+  /* 11) DYNAMIC ARRAY — growth by doubling (amortized O(1)) */
+  const dynArrayOp = {
+    title: 'מערך דינמי — הכפלת קיבולת (זמן משוערך)', titleHe: 'Dynamic array',
+    frames: [
+      arr('מערך דינמי מנהל קיבולת (capacity). נתחיל עם קיבולת 2, גודל 0. push_back מוסיף בסוף.', [E, E], { 0: 'capacity=2' }, {}),
+      arr('push_back(5): נכתב במשבצת הפנויה. size=1. O(1).', [5, E], {}, { 0: GOOD }),
+      arr('push_back(8): size=2 — עכשיו המערך מלא (size = capacity).', [5, 8], {}, { 1: GOOD }),
+      arr('push_back(3): מלא! מכפילים ל-capacity=4, מעתיקים את 5 ו-8 למערך החדש (O(n))...', [5, 8, E, E], { 0: 'הועתק', 1: 'הועתק' }, { 0: ACTIVE, 1: ACTIVE }),
+      arr('...ואז כותבים את 3. size=3. ההעתקה היקרה קורית רק כשמתמלאים.', [5, 8, 3, E], {}, { 2: GOOD }),
+      arr('push_back(1): יש מקום → O(1). size=4, שוב מלא.', [5, 8, 3, 1], {}, { 3: GOOD }),
+      arr('push_back(9): מכפילים ל-8, מעתיקים, ומוסיפים. ההכפלות נדירות, ולכן הממוצע לכל הכנסה הוא O(1) משוערך.', [5, 8, 3, 1, 9, E, E, E], {}, { 4: GOOD })
+    ]
+  };
+
+  /* 12) BINARY SEARCH — lo / mid / hi on a sorted array */
+  const A = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91];
+  const binarySearchOp = {
+    title: 'חיפוש בינארי — מחפשים 23', titleHe: 'Binary search',
+    frames: [
+      arr('מערך ממוין. מחפשים את 23. חיפוש בינארי מסתכל תמיד באמצע ומוותר על חצי מהמערך בכל צעד.', A, { 0: 'lo', 9: 'hi' }, {}),
+      arr('mid = 0 + (9-0)/2 = 4 → הערך 16. משווים: 23 > 16 → נלך לחצי הימני.', A, { 0: 'lo', 4: 'mid', 9: 'hi' }, { 4: ACTIVE }),
+      arr('מזיזים lo ל-5 (מיד ימינה). התחום הימני בלבד נשאר. mid = 5 + (9-5)/2 = 7 → 56.', A, { 5: 'lo', 7: 'mid', 9: 'hi' }, { 7: ACTIVE }),
+      arr('23 < 56 → נלך לחצי השמאלי של התחום. מזיזים hi ל-6. mid = 5 + (6-5)/2 = 5 → 23.', A, { 5: 'lo / mid', 6: 'hi' }, { 5: ACTIVE }),
+      arr('23 = 23 → נמצא באינדקס 5! בדקנו רק 3 איברים במקום 10 → O(log n).', A, { 5: 'found' }, { 5: GOOD })
+    ]
+  };
+
   window.VIZ_OPERATIONS = [
-    stackOp, listInsertOp, listTraverseOp, bstInsertOp, bstSearchOp, heapInsertOp, heapExtractOp, bubbleOp
+    stackOp, queueOp, circularQueueOp, listInsertOp, listTraverseOp,
+    dynArrayOp, binarySearchOp,
+    bstInsertOp, bstSearchOp, heapInsertOp, heapExtractOp, bubbleOp
   ];
 })();
