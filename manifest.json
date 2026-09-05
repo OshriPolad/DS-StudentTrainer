@@ -1,0 +1,15 @@
+{
+  "_comment": "NOTE: This is the PWA (Progressive Web App) manifest. It tells the phone how to show the app when you tap 'Add to Home Screen' — the name, icon, colors, and that it should open full-screen like a real app.",
+  "name": "DS Exam Trainer",
+  "short_name": "DS Trainer",
+  "description": "Data Structures exam practice — multiple-choice questions with full explanations.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
