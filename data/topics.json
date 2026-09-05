@@ -2,9 +2,12 @@
   "_comment": "NOTE: This is the master list of topics. The app reads this file first, then loads each topic's question file listed below. To ADD a new topic: create a new JSON file in /data, then add an entry here. Nothing in the code needs to change.",
   "topics": [
     { "id": "time-complexity", "file": "data/time-complexity.json", "title": "Time Complexity", "titleHe": "זמן ריצה" },
+    { "id": "arrays",          "file": "data/arrays.json",          "title": "Arrays",          "titleHe": "מערכים" },
     { "id": "linked-lists",    "file": "data/linked-lists.json",    "title": "Linked Lists",    "titleHe": "רשימות מקושרות" },
+    { "id": "queues",          "file": "data/queues.json",          "title": "Queues",          "titleHe": "תורים" },
     { "id": "trees",           "file": "data/trees.json",           "title": "Trees & Heaps",   "titleHe": "עצים וערמות" },
     { "id": "sorting",         "file": "data/sorting.json",         "title": "Sorting",         "titleHe": "מיון" },
+    { "id": "searching",       "file": "data/searching.json",       "title": "Searching",       "titleHe": "חיפושים" },
     { "id": "hashing",         "file": "data/hashing.json",         "title": "Hashing",         "titleHe": "גיבוב" }
   ]
 }
