@@ -24,6 +24,18 @@ let quiz = null;       // the currently active Quiz object (or null on home)
 /* tiny helper: document.getElementById, shortened */
 const $ = (id) => document.getElementById(id);
 
+/* SECURITY NOTE: create an element and set its text via textContent (never
+   innerHTML). textContent treats the string as plain text, so even if a
+   question ever contained characters like < or a <script> tag, it is shown
+   literally and can NEVER execute. We build all dynamic UI this way to stay
+   safe against XSS, including if questions are ever loaded from a remote source. */
+function el(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text !== undefined) node.textContent = text;   // safe: plain text only
+  return node;
+}
+
 /* ---------- 3. STARTUP --------------------------------------------------- */
 /* NOTE: async because we fetch JSON files, which takes a moment. */
 async function init() {
@@ -84,12 +96,11 @@ function renderHome() {
   const list = $('topic-list');
   list.innerHTML = '';
   topicsData.forEach((topic) => {
-    const card = document.createElement('button');
-    card.className = 'topic-card';
-    card.innerHTML =
-      '<div class="t-title">' + topic.title + '</div>' +
-      '<div class="t-title-he">' + topic.titleHe + '</div>' +
-      '<div class="t-count">' + topic.questions.length + ' questions</div>';
+    // build the card with safe DOM nodes (no innerHTML) — see el() note above
+    const card = el('button', 'topic-card');
+    card.appendChild(el('div', 't-title', topic.title));
+    card.appendChild(el('div', 't-title-he', topic.titleHe));
+    card.appendChild(el('div', 't-count', topic.questions.length + ' questions'));
     // NOTE: clicking a card starts a quiz of just that topic.
     card.addEventListener('click', () => startQuiz(shuffle(topic.questions), topic.title));
     list.appendChild(card);
@@ -147,9 +158,10 @@ function renderQuestion() {
   optionsBox.innerHTML = '';
   const letters = ['A', 'B', 'C', 'D', 'E'];
   q.options.forEach((text, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'option';
-    btn.innerHTML = '<span class="letter">' + letters[i] + '</span><span>' + text + '</span>';
+    // safe DOM construction (no innerHTML) — the option text is set as textContent
+    const btn = el('button', 'option');
+    btn.appendChild(el('span', 'letter', letters[i]));
+    btn.appendChild(el('span', null, text));
     btn.addEventListener('click', () => handleAnswer(i));
     optionsBox.appendChild(btn);
   });
@@ -234,13 +246,16 @@ function renderProgress() {
   } catch (e) { /* ignore */ }
 
   const labels = Object.keys(best);
-  if (labels.length === 0) { box.innerHTML = ''; return; }
+  box.textContent = '';                       // clear safely
+  if (labels.length === 0) return;
 
-  let html = '<strong>Your best scores</strong>';
+  box.appendChild(el('strong', null, 'Your best scores'));
   labels.forEach((label) => {
-    html += '<div class="row"><span>' + label + '</span><span>' + best[label] + '%</span></div>';
+    const row = el('div', 'row');
+    row.appendChild(el('span', null, label));
+    row.appendChild(el('span', null, best[label] + '%'));
+    box.appendChild(row);
   });
-  box.innerHTML = html;
 }
 
 /* ---------- GO! ---------------------------------------------------------- */

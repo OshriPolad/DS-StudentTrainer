@@ -16,3 +16,19 @@ desktop.ini
 
 # Logs
 *.log
+
+# ---------------------------------------------------------------------------
+# SECRETS — never commit these. If you add a backend or API keys later,
+# keep them in a .env file (ignored here) and load them at runtime.
+# ---------------------------------------------------------------------------
+.env
+.env.*
+*.key
+*.pem
+*.p12
+secrets.json
+credentials.json
+
+# Dependencies (if you ever add npm packages)
+node_modules/
+
