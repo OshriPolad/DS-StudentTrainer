@@ -4,8 +4,10 @@
     { "id": "time-complexity", "file": "data/time-complexity.json", "title": "Time Complexity", "titleHe": "זמן ריצה" },
     { "id": "arrays",          "file": "data/arrays.json",          "title": "Arrays",          "titleHe": "מערכים" },
     { "id": "linked-lists",    "file": "data/linked-lists.json",    "title": "Linked Lists",    "titleHe": "רשימות מקושרות" },
+    { "id": "skip-lists",      "file": "data/skip-lists.json",      "title": "Skip Lists",      "titleHe": "רשימות דילוגים" },
     { "id": "queues",          "file": "data/queues.json",          "title": "Queues",          "titleHe": "תורים" },
     { "id": "trees",           "file": "data/trees.json",           "title": "Trees & Heaps",   "titleHe": "עצים וערמות" },
+    { "id": "advanced-trees",  "file": "data/advanced-trees.json",  "title": "Advanced Trees",  "titleHe": "עצים מתקדמים" },
     { "id": "sorting",         "file": "data/sorting.json",         "title": "Sorting",         "titleHe": "מיון" },
     { "id": "searching",       "file": "data/searching.json",       "title": "Searching",       "titleHe": "חיפושים" },
     { "id": "hashing",         "file": "data/hashing.json",         "title": "Hashing",         "titleHe": "גיבוב" }
