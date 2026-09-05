@@ -14,7 +14,7 @@
    ========================================================================= */
 
 (function () {
-  const ACTIVE = '#f59e0b', GOOD = '#22c55e', PATH = '#6366f1';
+  const ACTIVE = '#f59e0b', GOOD = '#22c55e', PATH = '#6366f1', WRONG = '#ef4444';
 
   const stack = (caption, values, highlight) =>
     ({ caption, kind: 'stack', model: { values: values.slice(), highlight: highlight || {} } });
@@ -212,9 +212,37 @@
     ]
   };
 
+  /* 13) AVL — single right rotation (LL case) */
+  const avlLL1 = { 30: { val: 30, left: 20, right: null }, 20: { val: 20, left: 10, right: null }, 10: { val: 10, left: null, right: null } };
+  const avlLL2 = { 20: { val: 20, left: 10, right: 30 }, 10: { val: 10, left: null, right: null }, 30: { val: 30, left: null, right: null } };
+  const avlSingleOp = {
+    title: 'AVL — רוטציה בודדת (מקרה LL)', titleHe: 'AVL single rotation',
+    frames: [
+      bst('אחרי הכנסת 10, הצומת 30 אינו מאוזן: מקדם האיזון שלו הוא +2 (כבד משמאל). זהו מקרה LL — כבד שמאל-שמאל.', avlLL1, 30, { 30: WRONG, 20: PATH, 10: PATH }),
+      bst('הפתרון למקרה LL: רוטציה ימנית בודדת סביב 30. הבן השמאלי 20 יעלה להיות השורש.', avlLL1, 30, { 30: WRONG, 20: ACTIVE }),
+      bst('בוצעה רוטציה ימנית: 20 הוא השורש, 10 בן שמאלי, 30 בן ימני. העץ מאוזן שוב.', avlLL2, 20, { 20: GOOD }),
+      bst('הגובה ירד מ-3 ל-2, וכל צומת שוב בתחום איזון {-1,0,+1}. כלל: כבד משמאל ⇒ מסובבים ימינה.', avlLL2, 20, {})
+    ]
+  };
+
+  /* 14) AVL — double rotation (LR case) */
+  const avlLR1 = { 30: { val: 30, left: 10, right: null }, 10: { val: 10, left: null, right: 20 }, 20: { val: 20, left: null, right: null } };
+  const avlLR2 = { 30: { val: 30, left: 20, right: null }, 20: { val: 20, left: 10, right: null }, 10: { val: 10, left: null, right: null } };
+  const avlLR3 = { 20: { val: 20, left: 10, right: 30 }, 10: { val: 10, left: null, right: null }, 30: { val: 30, left: null, right: null } };
+  const avlDoubleOp = {
+    title: 'AVL — רוטציה כפולה (מקרה LR)', titleHe: 'AVL double rotation',
+    frames: [
+      bst('30 כבד משמאל, אבל ההכנסה (20) היא בתת-העץ הימני של הבן השמאלי — זהו מקרה LR. רוטציה בודדת לא תספיק.', avlLR1, 30, { 30: WRONG, 10: PATH, 20: PATH }),
+      bst('שלב 1: רוטציה שמאלית על הבן 10. 20 עולה מעל 10, והמצב הופך למקרה LL "רגיל".', avlLR2, 30, { 20: ACTIVE, 30: WRONG }),
+      bst('שלב 2: כעת זה LL — רוטציה ימנית על 30. 20 הופך לשורש.', avlLR3, 20, { 20: GOOD }),
+      bst('מאוזן! מקרי LR ו-RL תמיד דורשים שתי רוטציות: קודם על הבן, ואז על הצומת.', avlLR3, 20, {})
+    ]
+  };
+
   window.VIZ_OPERATIONS = [
     stackOp, queueOp, circularQueueOp, listInsertOp, listTraverseOp,
     dynArrayOp, binarySearchOp,
-    bstInsertOp, bstSearchOp, heapInsertOp, heapExtractOp, bubbleOp
+    bstInsertOp, bstSearchOp, avlSingleOp, avlDoubleOp,
+    heapInsertOp, heapExtractOp, bubbleOp
   ];
 })();
