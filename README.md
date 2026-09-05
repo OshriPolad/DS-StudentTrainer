@@ -4,7 +4,8 @@
 
 ### מאמן למבחן מבני נתונים · Data Structures exam practice for CS students
 
-Multiple-choice questions with a **full explanation after every answer**.
+Multiple-choice questions **in Hebrew** with a **full explanation after every
+answer**, step-by-step animations, and a per-line time-complexity trainer.
 Runs on your phone and laptop, online or offline.
 
 ![Made with](https://img.shields.io/badge/made%20with-HTML%20%2B%20CSS%20%2B%20JS-6366f1)
@@ -33,15 +34,22 @@ can read it and understand how each piece fits together.
 
 ## 🚀 Features
 
-- **48 questions across 5 topics** — many show a C++ snippet and ask for its
-  running time (זמן ריצה), exactly like the exam.
-- **Learn-as-you-go explanations** — every question ends with the reasoning,
-  common traps, and the underlying rule.
-- **Bilingual by design** — English UI with Hebrew exam terms alongside
-  (e.g. *"Time Complexity (זמן ריצה)"*).
-- **Works on phone & laptop** — responsive layout from a single codebase.
-- **Installable & offline (PWA)** — "Add to Home Screen" turns it into an app
-  icon that works with no signal (built for studying anywhere).
+Three study modes, all in Hebrew (for Israeli CS students), with C++ code samples:
+
+- **📝 Quiz** — **86 questions across 5 topics** (time complexity, linked lists,
+  trees & heaps, sorting, hashing). Multiple-choice; every question ends with a
+  detailed explanation of *why*, including the common traps.
+- **🎬 Visualize** — **8 step-by-step animations** (stack, linked-list insert &
+  traverse, BST insert & search, min-heap insert & extract, bubble sort). Step
+  through each stage with an explanation of what's happening and why.
+- **⏱️ Complexity trainer** — read a C++ snippet and pick the running time of
+  **each line**; then a line-by-line review marks each ✓ / ✗ with a full
+  explanation and the overall complexity.
+- **Hebrew, done right (RTL)** — questions, options, and explanations are in
+  Hebrew and render right-to-left, while C++ code and Big-O notation stay
+  left-to-right (handled with Unicode bidi isolates).
+- **Works on phone & laptop**, responsive from a single codebase.
+- **Installable & offline (PWA)** — "Add to Home Screen" for studying anywhere.
 - **Progress tracking** — your best score per topic, saved locally.
 - **Zero dependencies** — no frameworks, no build step, no external services.
 
@@ -59,15 +67,19 @@ can read it and understand how each piece fits together.
 
 ```
 ds-exam-trainer/
-├── index.html          # single page; defines 3 screens (home, quiz, results)
+├── index.html          # single page; 3 modes: Quiz, Visualize, Complexity
 ├── css/
 │   └── style.css       # all styling; theme colors are variables at the top
 ├── js/
 │   ├── quiz.js         # the Quiz class — pure logic, no DOM (the "brain")
-│   └── app.js          # UI controller — loads data, draws screens (the "hands")
+│   ├── app.js          # controller + router; the bidi() Hebrew/RTL helper
+│   ├── viz.js          # animation engine + SVG renderers (the player)
+│   ├── viz-ops.js      # animation CONTENT — the frames for each structure
+│   └── complexity.js   # the per-line time-complexity trainer
 ├── data/
 │   ├── topics.json     # master topic list (loaded first)
-│   └── *.json          # one question file per topic
+│   ├── <topic>.json    # one question file per topic (Hebrew content)
+│   └── complexity.json # per-line complexity problems
 ├── manifest.json       # PWA metadata
 ├── sw.js               # service worker (offline cache)
 ├── icons/              # app icons
