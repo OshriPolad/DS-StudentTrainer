@@ -29,7 +29,9 @@ const Complexity = (function () {
   async function init() {
     try {
       const data = await fetch('data/complexity.json').then((r) => r.json());
-      problems = data.problems;
+      // sort so the list is always easy → medium → hard (stable within each level)
+      const rank = { easy: 0, medium: 1, hard: 2 };
+      problems = data.problems.slice().sort((a, b) => (rank[a.difficulty] ?? 9) - (rank[b.difficulty] ?? 9));
     } catch (e) {
       $('cx-list').textContent = 'לא ניתן לטעון את התרגילים (הריצו שרת מקומי — ראו README).';
       return;
