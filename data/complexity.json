@@ -168,6 +168,201 @@
           "explanation": "המלכודת הקלאסית. j מוכרז מחוץ ללולאה ולעולם אינו מאותחל מחדש — הוא רק גדל, לכל היותר n פעמים בסך הכול. לכן לולאת ה־while הפנימית רצה לכל היותר n צעדים לאורך כל האיטרציות יחד, ולא בכל איטרציה בנפרד. לולאה חיצונית O(n) + פנימית O(n) בסך הכול = O(n). זהו טיעון של ניתוח משוערך."
         }
       ]
+    },
+    {
+      "id": "cx-9",
+      "title": "קל — לולאה עם חסם קבוע",
+      "difficulty": "easy",
+      "overall": "O(1)",
+      "overallExplanation": "הלולאה רצה מספר קבוע של פעמים (100), ללא תלות כלל ב-n ← O(1).",
+      "lines": [
+        {
+          "code": "for (int i = 0; i < 100; i++) sum += arr[i];",
+          "options": ["O(1)", "O(n)", "O(log n)", "O(n^2)"],
+          "answer": 0,
+          "explanation": "מלכודת נפוצה! הלולאה רצה 100 פעמים — מספר קבוע שאינו תלוי ב-n, ולכן זו עבודה קבועה: O(1). מה שקובע הוא האם חסם הלולאה הוא n או מספר קבוע. כאן החסם הוא 100 (קבוע) ← O(1). אילו היה כתוב i < n, זה היה O(n)."
+        }
+      ]
+    },
+    {
+      "id": "cx-10",
+      "title": "קל — שתי לולאות נפרדות",
+      "difficulty": "easy",
+      "overall": "O(n)",
+      "overallExplanation": "שתי לולאות נפרדות מתחברות בחיבור: O(n) + O(n) = O(n). רק לולאות מקוננות מוכפלות.",
+      "lines": [
+        {
+          "code": "for (int i = 0; i < n; i++) cout << arr[i];",
+          "options": ["O(1)", "O(n)", "O(log n)", "O(n^2)"],
+          "answer": 1,
+          "explanation": "לולאה אחת שרצה n פעמים ← O(n)."
+        },
+        {
+          "code": "for (int j = 0; j < n; j++) cout << arr[j] * 2;",
+          "options": ["O(1)", "O(n)", "O(log n)", "O(n^2)"],
+          "answer": 1,
+          "explanation": "עוד לולאה אחת שרצה n פעמים ← O(n). שימו לב שהיא באה אחרי הראשונה, לא בתוכה."
+        }
+      ]
+    },
+    {
+      "id": "cx-11",
+      "title": "קל — חצייה בכל צעד",
+      "difficulty": "easy",
+      "overall": "O(log n)",
+      "overallExplanation": "המונח הדומיננטי הוא הלולאה שמחלקת ב-2 בכל צעד ← O(log n).",
+      "lines": [
+        {
+          "code": "int x = n;",
+          "options": ["O(1)", "O(n)", "O(log n)", "O(n^2)"],
+          "answer": 0,
+          "explanation": "השמה אחת ← O(1)."
+        },
+        {
+          "code": "while (x > 1) x = x / 2;",
+          "options": ["O(n)", "O(log n)", "O(1)", "O(n log n)"],
+          "answer": 1,
+          "explanation": "x מתחלק ב-2 בכל צעד: n, n/2, n/4, ... עד שמגיע ל-1. מספר החלוקות הוא log₂(n) ← O(log n). חלוקה או הכפלה ב-2 בכל צעד = לוגריתמי (בדיוק כמו חיפוש בינארי)."
+        }
+      ]
+    },
+    {
+      "id": "cx-12",
+      "title": "בינוני — לולאה מקוננת עם חסם פנימי קבוע",
+      "difficulty": "medium",
+      "overall": "O(n)",
+      "overallExplanation": "לולאה חיצונית O(n) כפול לולאה פנימית קבועה O(1) ← O(n). חסם פנימי קבוע לא מוסיף גורם n.",
+      "lines": [
+        {
+          "code": "int c = 0;",
+          "options": ["O(1)", "O(n)", "O(log n)", "O(n^2)"],
+          "answer": 0,
+          "explanation": "השמה אחת ← O(1)."
+        },
+        {
+          "code": "for (int i = 0; i < n; i++) for (int j = 0; j < 100; j++) c++;",
+          "options": ["O(n)", "O(n^2)", "O(log n)", "O(n log n)"],
+          "answer": 0,
+          "explanation": "נראה כמו O(n²) בגלל שתי הלולאות, אבל הלולאה הפנימית רצה 100 פעמים — קבוע, לא n! לכן סך הפעולות הוא n × 100 = O(n). רק כאשר גם הלולאה הפנימית תלויה ב-n מקבלים O(n²)."
+        },
+        {
+          "code": "return c;",
+          "options": ["O(1)", "O(n)", "O(log n)", "O(n^2)"],
+          "answer": 0,
+          "explanation": "החזרת ערך ← O(1)."
+        }
+      ]
+    },
+    {
+      "id": "cx-13",
+      "title": "בינוני — לולאה מקוננת משולשת",
+      "difficulty": "medium",
+      "overall": "O(n^2)",
+      "overallExplanation": "הסכום המשולש 1+2+...+n הוא O(n²) — המונח הדומיננטי ← O(n²).",
+      "lines": [
+        {
+          "code": "for (int i = 0; i < n; i++) for (int j = 0; j <= i; j++) sum++;",
+          "options": ["O(n)", "O(n log n)", "O(n^2)", "O(2^n)"],
+          "answer": 2,
+          "explanation": "הלולאה הפנימית רצה i+1 פעמים, ו-i גדל: 1 + 2 + 3 + ... + n = n(n+1)/2 ← O(n²). גם אם הלולאה הפנימית לא רצה n פעמים מלאות בכל פעם, סכום של סדרה חשבונית עד n הוא ריבועי."
+        },
+        {
+          "code": "cout << sum;",
+          "options": ["O(1)", "O(n)", "O(log n)", "O(n^2)"],
+          "answer": 0,
+          "explanation": "הדפסה בודדת ← O(1)."
+        }
+      ]
+    },
+    {
+      "id": "cx-14",
+      "title": "בינוני — שני גדלים שונים (n ו-m)",
+      "difficulty": "medium",
+      "overall": "O(n*m)",
+      "overallExplanation": "מילוי רשת בגודל n×m הוא O(n·m). אין להניח ש-m שווה ל-n.",
+      "lines": [
+        {
+          "code": "for (int i = 0; i < n; i++) for (int j = 0; j < m; j++) grid[i][j] = 0;",
+          "options": ["O(n + m)", "O(n * m)", "O(n^2)", "O(n log m)"],
+          "answer": 1,
+          "explanation": "הלולאה הפנימית רצה m פעמים עבור כל אחת מ-n האיטרציות החיצוניות ← n × m = O(n·m). אם במקרה m שווה ל-n זה מצטמצם ל-O(n²), אבל כל עוד הם שני גדלים שונים משאירים n·m."
+        },
+        {
+          "code": "return;",
+          "options": ["O(1)", "O(n)", "O(m)", "O(n*m)"],
+          "answer": 0,
+          "explanation": "פקודת return בודדת ← O(1)."
+        }
+      ]
+    },
+    {
+      "id": "cx-15",
+      "title": "מתקדם — לוגריתמי כפול ליניארי",
+      "difficulty": "hard",
+      "overall": "O(n log n)",
+      "overallExplanation": "לולאה חיצונית לוגריתמית כפול לולאה פנימית ליניארית ← O(n log n).",
+      "lines": [
+        {
+          "code": "for (int i = 1; i <= n; i *= 2) for (int j = 0; j < n; j++) work();",
+          "options": ["O(n^2)", "O(n log n)", "O(n)", "O(log n)"],
+          "answer": 1,
+          "explanation": "הלולאה החיצונית מכפילה את i ב-2, ולכן רצה log₂(n) פעמים. הלולאה הפנימית רצה n פעמים במלואה עבור כל איטרציה חיצונית. מכפילים: log n × n = O(n log n). שימו לב שזה שונה מהמקרה שבו הלולאה הפנימית מצטמצמת — כאן היא תמיד n."
+        },
+        {
+          "code": "cout << x;",
+          "options": ["O(1)", "O(n)", "O(log n)", "O(n^2)"],
+          "answer": 0,
+          "explanation": "הדפסה בודדת ← O(1)."
+        }
+      ]
+    },
+    {
+      "id": "cx-16",
+      "title": "מתקדם — מיון ואז מעבר (מציאת כפילות)",
+      "difficulty": "hard",
+      "overall": "O(n log n)",
+      "overallExplanation": "סך הכול O(n log n) + O(n) + O(1). המיון דומיננטי ← O(n log n).",
+      "lines": [
+        {
+          "code": "sort(a, a + n);",
+          "options": ["O(n)", "O(n log n)", "O(n^2)", "O(log n)"],
+          "answer": 1,
+          "explanation": "std::sort הוא מיון מבוסס-השוואות בזמן O(n log n)."
+        },
+        {
+          "code": "for (int i = 0; i + 1 < n; i++) if (a[i] == a[i+1]) return true;",
+          "options": ["O(n)", "O(n log n)", "O(n^2)", "O(log n)"],
+          "answer": 0,
+          "explanation": "מעבר יחיד על המערך הממוין, כשמשווים כל איבר לשכנו ← O(n)."
+        },
+        {
+          "code": "return false;",
+          "options": ["O(1)", "O(n)", "O(log n)", "O(n^2)"],
+          "answer": 0,
+          "explanation": "החזרת ערך ← O(1). (זהו האלגוריתם היעיל למציאת כפילות: ממיינים, ואז סורקים שכנים.)"
+        }
+      ]
+    },
+    {
+      "id": "cx-17",
+      "title": "מתקדם — הדפוס ההרמוני (מסננת)",
+      "difficulty": "hard",
+      "overall": "O(n log n)",
+      "overallExplanation": "הדפוס ההרמוני (צעד בגודל i בלולאה הפנימית) נותן O(n log n), למרות המראה של O(n²).",
+      "lines": [
+        {
+          "code": "for (int i = 1; i <= n; i++) for (int j = i; j <= n; j += i) c++;",
+          "options": ["O(n^2)", "O(n log n)", "O(n)", "O(n sqrt(n))"],
+          "answer": 1,
+          "explanation": "מלכודת קשה! הלולאה הפנימית קופצת בצעדים של i, ולכן רצה בערך n/i פעמים. סוכמים על פני כל i: n/1 + n/2 + n/3 + ... + n/n = n·(1 + 1/2 + 1/3 + ... + 1/n). הסכום בסוגריים הוא הטור ההרמוני, שערכו בערך ln(n), ולכן הסך הכול הוא O(n log n) — ולא O(n²)! זהו בדיוק זמן הריצה של מסננת אֶרַטוֹסתֶנֶס."
+        },
+        {
+          "code": "cout << c;",
+          "options": ["O(1)", "O(n)", "O(log n)", "O(n^2)"],
+          "answer": 0,
+          "explanation": "הדפסה בודדת ← O(1)."
+        }
+      ]
     }
   ]
 }
