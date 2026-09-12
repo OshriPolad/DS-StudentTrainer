@@ -48,7 +48,7 @@ let QUESTIONS_BY_ID = {};   // id -> question object, for the "mistakes only" mo
 
 /* ---------- NAVIGATION between the three modes -------------------------- */
 /* Each mode has one "landing" screen id. */
-const MODE_LANDING = { learn: 'learn', home: 'home', viz: 'viz', complexity: 'complexity', cheatsheet: 'cheatsheet' };
+const MODE_LANDING = { learn: 'learn', home: 'home', viz: 'viz', complexity: 'complexity', assemble: 'assemble', cheatsheet: 'cheatsheet' };
 
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach((s) => s.classList.add('hidden'));
@@ -111,6 +111,7 @@ async function init() {
   // boot the other modes (defined in their own files)
   if (window.Viz) Viz.init();
   if (window.Complexity) Complexity.init();
+  if (window.Assemble) Assemble.init();
   if (window.Learn) Learn.init();
 }
 
@@ -159,11 +160,16 @@ function renderQuestion() {
   const optionsBox = $('q-options');
   optionsBox.textContent = '';
   const letters = ['A', 'B', 'C', 'D', 'E'];
-  q.options.forEach((text, i) => {
+  // Shuffle the DISPLAY order of the options so the correct answer isn't
+  // always in the same position (the source data often lists it first).
+  // quiz.displayOrder maps a display slot -> the option's ORIGINAL index,
+  // which is what quiz.answer / correctIndex are expressed in.
+  quiz.displayOrder = shuffle(q.options.map((_, i) => i));
+  quiz.displayOrder.forEach((origIndex, pos) => {
     const btn = el('button', 'option');
-    btn.appendChild(el('span', 'letter', letters[i]));
-    btn.appendChild(el('span', null, bidi(text)));
-    btn.addEventListener('click', () => handleAnswer(i));
+    btn.appendChild(el('span', 'letter', letters[pos]));
+    btn.appendChild(el('span', null, bidi(q.options[origIndex])));
+    btn.addEventListener('click', () => handleAnswer(origIndex));  // pass the ORIGINAL index
     optionsBox.appendChild(btn);
   });
 
@@ -177,10 +183,12 @@ function handleAnswer(choiceIndex) {
   // Track mistakes: add on a wrong answer, clear once answered correctly.
   if (result.isCorrect) clearMistake(qId); else addMistake(qId);
   const optionButtons = $('q-options').querySelectorAll('.option');
-  optionButtons.forEach((btn, i) => {
+  optionButtons.forEach((btn, pos) => {
+    // btn is in DISPLAY order; map back to the original index to compare.
+    const orig = quiz.displayOrder[pos];
     btn.disabled = true;
-    if (i === result.correctIndex) btn.classList.add('correct');
-    if (i === result.chosenIndex && !result.isCorrect) btn.classList.add('wrong');
+    if (orig === result.correctIndex) btn.classList.add('correct');
+    if (orig === result.chosenIndex && !result.isCorrect) btn.classList.add('wrong');
   });
   $('q-score').textContent = 'ניקוד: ' + quiz.score;
   const verdict = $('feedback-verdict');

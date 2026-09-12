@@ -37,6 +37,7 @@
       <button class="nav-btn active" data-mode="home">📝 שאלות</button>
       <button class="nav-btn" data-mode="viz">🎬 הדמיות</button>
       <button class="nav-btn" data-mode="complexity">⏱️ סיבוכיות</button>
+      <button class="nav-btn" data-mode="assemble">🧩 הרכבת קוד</button>
       <button class="nav-btn" data-mode="cheatsheet">📄 דף נוסחאות</button>
     </nav>
   </header>
@@ -138,6 +139,42 @@
           <button id="cx-retry" class="btn btn-primary btn-block">תרגיל נוסף</button>
         </div>
         <button id="cx-back" class="btn btn-ghost btn-block">← כל התרגילים</button>
+      </div>
+    </section>
+
+    <!-- ======================= ASSEMBLE THE ALGORITHM ======================= -->
+    <section id="assemble" class="screen hidden">
+      <p class="intro">
+        הרכיבו את האלגוריתם בעצמכם: השורות מוצגות <em>מעורבבות</em>. הקישו עליהן
+        לפי הסדר הנכון כדי לבנות את הקוד, ואז לחצו "בדיקה" — ותקבלו סקירה שורה-אחר-שורה
+        עם הסבר <em>למה</em> כל שורה נמצאת במקומה.
+      </p>
+      <!-- problem picker -->
+      <div id="as-list" class="cx-list"></div>
+
+      <!-- the trainer (hidden until a problem is picked) -->
+      <div id="as-trainer" class="as-trainer hidden">
+        <div class="cx-head">
+          <span id="as-title" class="cx-title"></span>
+          <span id="as-progress" class="cx-progress"></span>
+        </div>
+        <div id="as-desc" class="as-desc"></div>
+
+        <!-- BUILD: your ordered solution + the shuffled pool -->
+        <div id="as-build">
+          <div class="as-label">הסדר שלך (הקישו שורה כדי להסיר):</div>
+          <div id="as-solution" class="as-solution"></div>
+
+          <div class="as-label">שורות מעורבבות (הקישו כדי להוסיף):</div>
+          <div id="as-pool" class="as-pool"></div>
+
+          <button id="as-check" class="btn btn-primary btn-block" disabled>בדיקה →</button>
+        </div>
+
+        <!-- REVIEW: correct order, per-line ✓/✗ + why (assemble.js fills this) -->
+        <div id="as-review" class="as-review hidden"></div>
+
+        <button id="as-back" class="btn btn-ghost btn-block">← כל התרגילים</button>
       </div>
     </section>
 
@@ -274,6 +311,7 @@
   <script src="js/viz-ops.js" defer></script>
   <script src="js/viz.js" defer></script>
   <script src="js/complexity.js" defer></script>
+  <script src="js/assemble.js" defer></script>
   <script src="js/learn-content.js" defer></script>
   <script src="js/learn.js" defer></script>
   <script src="js/app.js" defer></script>

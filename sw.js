@@ -14,7 +14,7 @@
 
 /* NOTE: bump this version string whenever you change app files, so the
    service worker knows to refresh its cache instead of serving stale files. */
-const CACHE_VERSION = 'ds-trainer-v10';
+const CACHE_VERSION = 'ds-trainer-v12';
 
 /* The files that make up the whole app. */
 const FILES_TO_CACHE = [
@@ -26,6 +26,7 @@ const FILES_TO_CACHE = [
   './js/viz.js',
   './js/viz-ops.js',
   './js/complexity.js',
+  './js/assemble.js',
   './js/learn-content.js',
   './js/learn.js',
   './manifest.json',
@@ -40,7 +41,8 @@ const FILES_TO_CACHE = [
   './data/sorting.json',
   './data/searching.json',
   './data/hashing.json',
-  './data/complexity.json'
+  './data/complexity.json',
+  './data/assemble.json'
 ];
 
 /* INSTALL: pre-cache everything. */

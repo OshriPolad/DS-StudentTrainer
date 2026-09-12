@@ -267,6 +267,13 @@ body {
 .t-title,
 .t-title-he,
 .t-count,
+.as-desc,
+.as-label,
+.as-empty,
+.as-overall-line,
+.as-overall-big,
+.as-why,
+.as-yours,
 .progress-summary .row {
   unicode-bidi: plaintext;
   text-align: start;
@@ -371,3 +378,74 @@ b.ltr, span.ltr { display: inline-block; }
   border: 1px solid var(--surface-2); border-radius: 999px; padding: 6px 12px; cursor: pointer;
 }
 .lp-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+/* =========================================================================
+   v5 ADDITIONS — "Assemble the Algorithm" mode (tap-to-place / Parsons).
+   ========================================================================= */
+.as-desc { color: var(--text-dim); font-size: 0.9rem; margin-bottom: 16px; }
+.as-label { font-size: 0.82rem; font-weight: 700; color: var(--primary); margin: 14px 0 8px; }
+.as-empty { color: var(--text-dim); font-size: 0.85rem; padding: 10px 4px; }
+
+/* shared code look: ALWAYS left-to-right, regardless of the RTL page */
+.as-code {
+  font-family: "SF Mono", "Fira Code", Consolas, monospace;
+  font-size: 0.85rem; color: var(--text);
+  direction: ltr; text-align: left;
+  white-space: pre-wrap; word-break: break-word; line-height: 1.5;
+}
+
+/* the ordered solution the user is building */
+.as-solution {
+  min-height: 48px; display: flex; flex-direction: column; gap: 8px;
+  background: var(--code-bg); border: 1px dashed var(--surface-2);
+  border-radius: 10px; padding: 10px; margin-bottom: 8px;
+}
+.as-sol-row {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  background: var(--surface); border: 2px solid var(--primary);
+  border-radius: 8px; padding: 10px 12px; cursor: pointer;
+  color: var(--text); font: inherit; text-align: left;
+}
+.as-sol-row:hover { background: var(--surface-2); }
+.as-num {
+  flex: 0 0 24px; height: 24px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--primary); color: #fff; font-size: 0.78rem; font-weight: 700;
+}
+.as-sol-row .as-code { flex: 1; }
+.as-remove { color: var(--text-dim); font-weight: 700; flex: 0 0 auto; }
+
+/* the shuffled pool of remaining lines */
+.as-pool { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
+.as-pool-item {
+  width: 100%; background: var(--surface); border: 2px solid var(--surface-2);
+  border-radius: 8px; padding: 10px 12px; cursor: pointer;
+  color: var(--text); font: inherit; text-align: left;
+  transition: border-color 0.1s ease, transform 0.08s ease;
+}
+.as-pool-item:hover { border-color: var(--primary); transform: translateY(-1px); }
+
+/* review phase */
+.as-overall {
+  background: var(--surface); border: 1px solid var(--surface-2);
+  border-radius: var(--radius); padding: 18px; margin-bottom: 14px;
+}
+.as-overall-big { font-size: 1.2rem; font-weight: 800; margin-bottom: 8px; }
+.as-overall-big.ok { color: var(--correct); }
+.as-overall-big.no { color: var(--primary); }
+.as-overall-line { color: var(--text); line-height: 1.55; }
+
+.as-rev-card {
+  background: var(--surface); border: 1px solid var(--surface-2);
+  border-left: 4px solid var(--surface-2);
+  border-radius: 10px; padding: 12px 14px; margin-bottom: 10px;
+}
+.as-rev-card.ok { border-left-color: var(--correct); }
+.as-rev-card.no { border-left-color: var(--wrong); }
+.as-rev-head { display: flex; align-items: center; gap: 10px; }
+.as-rev-head .as-code { flex: 1; }
+.as-mark { font-weight: 800; flex: 0 0 auto; }
+.as-mark.ok { color: var(--correct); }
+.as-mark.no { color: var(--wrong); }
+.as-yours { font-size: 0.82rem; color: var(--text-dim); margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.as-why { color: var(--text); line-height: 1.55; margin-top: 8px; font-size: 0.92rem; }
