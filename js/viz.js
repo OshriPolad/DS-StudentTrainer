@@ -213,7 +213,7 @@ const Viz = (function () {
     list.textContent = '';
     OPERATIONS.forEach((op, i) => {
       const card = el('button', 'topic-card');
-      card.appendChild(el('div', 't-title', op.title));
+      card.appendChild(el('div', 't-title', bidi(op.title)));
       if (op.titleHe) card.appendChild(el('div', 't-title-he', op.titleHe));
       card.appendChild(el('div', 't-count', op.frames.length + ' שלבים'));
       card.addEventListener('click', () => open(i));
@@ -224,7 +224,7 @@ const Viz = (function () {
   function open(i) {
     const op = OPERATIONS[i];
     frames = op.frames; idx = 0;
-    $('viz-title').textContent = op.title;
+    $('viz-title').textContent = bidi(op.title);
     $('viz-list').classList.add('hidden');
     $('viz-player').classList.remove('hidden');
     draw();

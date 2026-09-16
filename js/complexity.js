@@ -47,7 +47,7 @@ const Complexity = (function () {
     list.textContent = '';
     problems.forEach((p, i) => {
       const card = el('button', 'topic-card');
-      card.appendChild(el('div', 't-title', p.title));
+      card.appendChild(el('div', 't-title', bidi(p.title)));
       card.appendChild(el('div', 't-count', p.lines.length + (p.lines.length === 1 ? ' שורה · ' : ' שורות · ') + (DIFF[p.difficulty] || p.difficulty)));
       card.addEventListener('click', () => open(i));
       list.appendChild(card);
@@ -60,7 +60,7 @@ const Complexity = (function () {
     answers = new Array(P.lines.length).fill(null);
     phase = 'answer';
     cur = 0;
-    $('cx-title').textContent = P.title;
+    $('cx-title').textContent = bidi(P.title);
     $('cx-list').classList.add('hidden');
     $('cx-trainer').classList.remove('hidden');
     $('cx-review').classList.add('hidden');

@@ -22,21 +22,85 @@ function el(tag, className, text) {
   return node;
 }
 
-/* BIDI HELPER: Hebrew is right-to-left, but embedded code / math / Big-O
-   (e.g. "5 < 15", "O(n log n)", "i ≤ √n") is left-to-right. Without help, the
-   bidi algorithm mirrors '<' '>' and reorders numbers, so "5 < 15" can show as
-   "5 > 15". This wraps each run of non-Hebrew characters that contains a
-   letter/digit in Unicode isolate marks (U+2066 … U+2069), forcing it LTR.
-   Used everywhere we display Hebrew prose that may contain code or math. */
+/* BIDI HELPER (v3): Hebrew is right-to-left, but embedded code / math / Big-O
+   (e.g. "5 < 15", "k mod m = h(k)", "מקדם עומס ≥ 1") is left-to-right. Without
+   help, the bidi algorithm reorders numbers and mirrors symbols.
+   -------------------------------------------------------------------------
+   v1 wrapped whole non-Hebrew runs -> swept up Hebrew-clause punctuation.
+   v2 isolated tight single tokens -> a multi-part formula like "k mod m =
+   h(k)" split into SEPARATE isolates, which then reordered relative to each
+   other (adjacent isolates in an RTL paragraph get reordered too).
+   v3 (this one) isolates a whole COHERENT LTR run — letters, digits, and
+   math/comparison operators, optionally spanning internal spaces — as ONE
+   isolate, so a whole formula stays a single unit. It also keeps a lone
+   UNBALANCED bracket (its partner sits far away in the Hebrew clause)
+   OUTSIDE the isolate, so Unicode's automatic bracket-mirroring — which
+   only kicks in for characters resolved in the surrounding RTL context —
+   still pairs it correctly with its Hebrew-side partner.
+   ⁦…⁩ = LRI…PDI (Unicode isolate marks, U+2066 … U+2069). */
 function bidi(s) {
   if (typeof s !== 'string') return s;
-  // Isolate compact LTR code/math TOKENS — O(n), std::sort, log₂(n), 2i+1, (i-1)/2 —
-  // and leave clause punctuation (commas, ; = ← → —) in the RTL flow. Wrapping whole
-  // non-Hebrew runs (the old approach) let commas/parens between clauses reorder and
-  // land in the wrong place; isolating tight tokens fixes that. ⁦…⁩ = LRI…PDI.
-  var re = /[A-Za-z0-9√(\[][A-Za-z0-9()\[\]{}._\/:²³₀-₉√+ \-]*[A-Za-z0-9)\]²³₀-₉√]|[A-Za-z0-9²³₀-₉√]/g;
-  return s.replace(re, function (m) {
-    return /[A-Za-z0-9]/.test(m) ? '⁦' + m.trim() + '⁩' : m;
+
+  // Every character that can be part of an LTR formula/code run: letters,
+  // digits, comparison/math operators & arrows, Greek used in complexity
+  // notation, brackets, and code punctuation. Commas are deliberately
+  // EXCLUDED (Hebrew clause punctuation, e.g. "≥ 1, וה...") so they never
+  // get swallowed into a formula.
+  var SYM = 'A-Za-z0-9' +
+    '±×÷≠≤≥→←↔⇒⇐≈−' + // ± × ÷ ≠ ≤ ≥ → ← ↔ ⇒ ⇐ ≈ −
+    '=<>+\\-*/^!%°√∞' +                                                 // = < > + - * / ^ ! % ° √ ∞
+    'ΘΩΣΔαβθπ' +                               // Θ Ω Σ Δ α β θ π
+    '._:;()\\[\\]{}\'"~@#&|\\\\' +
+    '²³⁰-₟';                                                       // ² ³ + sub/superscript block
+
+  // "Real content" -- a match containing at least one of these is worth
+  // isolating; a lone punctuation fragment (e.g. a stray '-' used as a
+  // Hebrew dash) is left alone in the RTL flow.
+  var CONTENT_RE = /[A-Za-z0-9±×÷≠≤≥→←↔⇒⇐≈−ΘΩΣΔαβθπ²³⁰-₟]/;
+
+  // A run always starts and ends on a SYM char (never a bare space); spaces
+  // may appear INSIDE it, so a multi-word formula ("k mod m = h(k)") stays
+  // ONE isolate instead of fragmenting into several that then reorder.
+  var RUN_RE = new RegExp('[' + SYM + '](?:[' + SYM + ' ]*[' + SYM + '])?', 'g');
+
+  var OPEN = '([{', CLOSE = ')]}';
+  var PAIR = { '(': ')', '[': ']', '{': '}', ')': '(', ']': '[', '}': '{' };
+  var SOFT_TRAIL = { '.': 1, ':': 1, ';': 1 };  // NOT '!' -- that's often factorial (n!)
+
+  function count(ch, str, a, b) {
+    var n = 0;
+    for (var i = a; i < b; i++) if (str[i] === ch) n++;
+    return n;
+  }
+
+  // Peel any EDGE bracket (opening or closing) whose partner is missing
+  // from the current span -- it belongs to the Hebrew clause, not this
+  // formula -- plus sentence-final . : ; and any space exposed by that.
+  function trimEdges(str) {
+    var start = 0, end = str.length, changed = true;
+    while (changed && end > start) {
+      changed = false;
+      var lastCh = str[end - 1];
+      if (OPEN.indexOf(lastCh) !== -1 || CLOSE.indexOf(lastCh) !== -1) {
+        if (count(lastCh, str, start, end) > count(PAIR[lastCh], str, start, end)) { end--; changed = true; continue; }
+      } else if (SOFT_TRAIL[lastCh] || lastCh === ' ') {
+        end--; changed = true; continue;
+      }
+      var firstCh = str[start];
+      if (OPEN.indexOf(firstCh) !== -1 || CLOSE.indexOf(firstCh) !== -1) {
+        if (count(firstCh, str, start, end) > count(PAIR[firstCh], str, start, end)) { start++; changed = true; continue; }
+      } else if (firstCh === ' ') {
+        start++; changed = true; continue;
+      }
+    }
+    return { lead: str.slice(0, start), core: str.slice(start, end), trail: str.slice(end) };
+  }
+
+  return s.replace(RUN_RE, function (m) {
+    if (!CONTENT_RE.test(m)) return m;
+    var t = trimEdges(m);
+    if (!t.core) return m;
+    return t.lead + '⁦' + t.core + '⁩' + t.trail;
   });
 }
 
@@ -121,8 +185,8 @@ function renderHome() {
   list.textContent = '';
   topicsData.forEach((topic) => {
     const card = el('button', 'topic-card');
-    card.appendChild(el('div', 't-title', topic.title));
-    card.appendChild(el('div', 't-title-he', topic.titleHe));
+    card.appendChild(el('div', 't-title', bidi(topic.title)));
+    card.appendChild(el('div', 't-title-he', bidi(topic.titleHe)));
     card.appendChild(el('div', 't-count', topic.questions.length + ' שאלות'));
     card.addEventListener('click', () => startQuiz(shuffle(topic.questions), topic.title));
     list.appendChild(card);
@@ -195,7 +259,9 @@ function handleAnswer(choiceIndex) {
   verdict.textContent = result.isCorrect ? '✓ נכון!' : '✗ לא מדויק';
   verdict.className = 'feedback-verdict ' + (result.isCorrect ? 'ok' : 'no');
   $('feedback-explanation').textContent = bidi(result.explanation);
-  $('feedback').classList.remove('hidden');
+  const feedbackBox = $('feedback');
+  feedbackBox.className = 'feedback ' + (result.isCorrect ? 'ok' : 'no');
+  feedbackBox.classList.remove('hidden');
 }
 
 function goNext() {

@@ -61,7 +61,7 @@ const Learn = (function () {
       const card = el('button', 'lesson-card');
       if (done.has(lesson.id)) card.classList.add('done');
       const check = el('span', 'lesson-check', done.has(lesson.id) ? '✓' : String(i + 1));
-      const title = el('span', 'lesson-card-title', lesson.title);
+      const title = el('span', 'lesson-card-title', bidi(lesson.title));
       card.appendChild(check);
       card.appendChild(title);
       card.addEventListener('click', () => open(i));
@@ -74,7 +74,7 @@ const Learn = (function () {
     curLesson = i;
     const lesson = LESSONS[i];
     $('lesson-num').textContent = 'שיעור ' + (i + 1) + ' / ' + LESSONS.length;
-    $('lesson-title').textContent = lesson.title;
+    $('lesson-title').textContent = bidi(lesson.title);
 
     fillParas($('lesson-concept'), lesson.concept);
     fillParas($('lesson-complexity'), lesson.complexity);
@@ -113,7 +113,7 @@ const Learn = (function () {
     if (ops.length > 1) {
       tabs.classList.remove('hidden');
       ops.forEach((op, k) => {
-        const b = el('button', 'lp-tab', op.title);
+        const b = el('button', 'lp-tab', bidi(op.title));
         b.addEventListener('click', () => loadOp(ops, k));
         tabs.appendChild(b);
       });

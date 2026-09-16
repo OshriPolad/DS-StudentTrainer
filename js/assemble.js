@@ -57,7 +57,7 @@ const Assemble = (function () {
     list.textContent = '';
     problems.forEach((p, i) => {
       const card = el('button', 'topic-card');
-      card.appendChild(el('div', 't-title', p.title));
+      card.appendChild(el('div', 't-title', bidi(p.title)));
       card.appendChild(el('div', 't-count',
         p.lines.length + (p.lines.length === 1 ? ' שורה · ' : ' שורות · ') + (DIFF[p.difficulty] || p.difficulty)));
       card.addEventListener('click', () => open(i));
@@ -71,7 +71,7 @@ const Assemble = (function () {
     // keep each line's correct index so we can compare after building
     shuffled = shuffleArr(P.lines.map((line, idx) => ({ code: line.code, why: line.why, idx: idx })));
     solution = [];
-    $('as-title').textContent = P.title;
+    $('as-title').textContent = bidi(P.title);
     $('as-desc').textContent = bidi(P.description || '');
     $('as-list').classList.add('hidden');
     $('as-trainer').classList.remove('hidden');

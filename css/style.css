@@ -1,42 +1,65 @@
 /* =========================================================================
    style.css — ALL the visual styling for the app.
    NOTE: organized top-to-bottom as:
-     1. CSS variables (colors/spacing) — change these to re-theme the whole app.
-     2. Base / reset.
-     3. Layout (header, container, footer).
+     1. CSS variables (colors/spacing/shadows) — change these to re-theme
+        the whole app in one place.
+     2. Base / reset / fonts.
+     3. Layout (header, nav, container, footer).
      4. Components (buttons, cards, code blocks, options, feedback).
      5. Responsive tweaks for small phone screens.
+     6. Hebrew / RTL support.
+     7+  Per-mode additions (cheat sheet, learn journey, assemble, etc).
    ========================================================================= */
 
 /* ---------- 1. THEME VARIABLES ------------------------------------------ */
 /* NOTE: define a color once here, use it everywhere via var(--name).
    Want a different look? Edit these values only. */
 :root {
-  --bg:            #0f172a;   /* page background (dark navy) */
-  --surface:       #1e293b;   /* cards / raised panels */
-  --surface-2:     #334155;   /* hover / secondary surface */
-  --text:          #e2e8f0;   /* main text */
-  --text-dim:      #94a3b8;   /* secondary text */
-  --primary:       #6366f1;   /* accent (indigo) */
-  --primary-dark:  #4f46e5;
-  --correct:       #22c55e;   /* green for right answers */
-  --wrong:         #ef4444;   /* red for wrong answers */
-  --code-bg:       #0b1120;   /* code block background */
+  --bg:            #090b13;   /* page background — deep, rich near-black navy */
+  --bg-soft:       #0d1019;   /* very subtle secondary bg (used for gradients) */
+  --surface:       #141824;   /* cards / raised panels */
+  --surface-2:     #1c2233;   /* hover / secondary surface */
+  --surface-3:     #252c42;   /* further-elevated surface (current row, etc.) */
+  --border:        rgba(255,255,255,0.08);   /* hairline card border */
+  --border-strong: rgba(255,255,255,0.16);
+  --text:          #f2f4fa;   /* main text */
+  --text-dim:      #8891a8;   /* secondary text */
+  --text-faint:    #5b6478;   /* tertiary / meta text */
+  --primary:       #7c6ef0;   /* accent (refined indigo-violet) */
+  --primary-light: #9b8ffa;
+  --primary-dark:  #5c4cd6;
+  --primary-glow:  rgba(124,110,240,0.35);
+  --accent-gold:   #e8b974;   /* premium secondary accent — used sparingly */
+  --correct:       #34d399;   /* green for right answers */
+  --wrong:         #f7685b;   /* red for wrong answers */
+  --code-bg:       #05060c;   /* code block background */
+  --radius-lg:     18px;
   --radius:        14px;
+  --radius-sm:     10px;
   --gap:           16px;
+  --shadow-sm:     0 2px 10px rgba(0,0,0,0.28);
+  --shadow-md:     0 10px 28px rgba(0,0,0,0.38), 0 2px 8px rgba(0,0,0,0.28);
+  --shadow-glow:   0 0 0 1px rgba(255,255,255,0.05), 0 12px 32px rgba(0,0,0,0.45);
+  --font-ui:       "Heebo", -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-mono:     "JetBrains Mono", "Fira Code", "SF Mono", Consolas, monospace;
 }
 
-/* ---------- 2. BASE / RESET --------------------------------------------- */
+/* ---------- 2. BASE / RESET / FONTS -------------------------------------- */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+html { background: var(--bg); }
+
 body {
-  font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  background: var(--bg);
+  font-family: var(--font-ui);
+  background:
+    radial-gradient(900px 480px at 50% -120px, rgba(124,110,240,0.16), transparent 60%),
+    var(--bg);
   color: var(--text);
   line-height: 1.6;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* utility: hide a screen/element. app.js toggles this class. */
@@ -46,13 +69,48 @@ body {
 
 /* ---------- 3. LAYOUT ---------------------------------------------------- */
 .app-header {
-  background: linear-gradient(135deg, var(--primary-dark), #7c3aed);
-  padding: 18px 16px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+  background: linear-gradient(120deg, #4a3ac9 0%, #6b4fe0 50%, #8654e6 100%);
+  padding: 20px 18px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.45);
+  position: relative;
 }
-.header-inner { max-width: 720px; margin: 0 auto; display: flex;
-  justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
-.app-header h1 { font-size: 1.25rem; color: #fff; }
+/* subtle bottom hairline so the header reads as a distinct, elevated layer */
+.app-header::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+  background: rgba(255,255,255,0.14);
+}
+.header-inner { max-width: 760px; margin: 0 auto; display: flex;
+  justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+
+.brand { display: flex; flex-direction: column; gap: 1px; }
+.app-header h1 {
+  font-size: 1.32rem; font-weight: 800; color: #fff; letter-spacing: -0.01em;
+  display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;
+}
+
+/* small creator credit, placed at the visual opposite end of the header
+   from the title (flex + space-between handles left/right automatically
+   for both RTL and LTR — no hardcoded side). Minimal: a tiny monogram
+   badge + name, the kind of signature you'd want visible in a portfolio
+   screenshot without competing with the app's own branding. */
+.creator-credit {
+  display: flex; align-items: center; gap: 8px;
+  opacity: 0.92;
+}
+.cc-badge {
+  flex: 0 0 auto; width: 26px; height: 26px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent-gold), #c98f4a);
+  color: #2a1a06; font-size: 0.66rem; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+  letter-spacing: 0;
+}
+.cc-text { display: flex; flex-direction: column; line-height: 1.15; }
+.cc-label {
+  font-size: 0.58rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase;
+  color: rgba(255,255,255,0.62);
+}
+.cc-name { font-size: 0.8rem; font-weight: 700; color: #fff; }
 
 .countdown {
   background: rgba(255,255,255,0.15);
@@ -60,96 +118,122 @@ body {
   font-size: 0.85rem; font-weight: 600; color: #fff; white-space: nowrap;
 }
 
-.container { max-width: 720px; width: 100%; margin: 0 auto;
-  padding: 20px 16px; flex: 1; }
+.container { max-width: 760px; width: 100%; margin: 0 auto;
+  padding: 22px 16px 32px; flex: 1; }
 
-.app-footer { text-align: center; color: var(--text-dim);
-  font-size: 0.8rem; padding: 16px; }
+.app-footer { text-align: center; color: var(--text-faint);
+  font-size: 0.78rem; padding: 20px 16px 28px; }
 
-.intro { color: var(--text-dim); margin-bottom: 20px; }
+.intro { color: var(--text-dim); margin-bottom: 22px; }
 
 /* ---------- 4. COMPONENTS ----------------------------------------------- */
 
 /* --- Topic cards (home screen) --- */
 .topic-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap); margin-bottom: var(--gap); }
 .topic-card {
-  background: var(--surface); border: 1px solid var(--surface-2);
-  border-radius: var(--radius); padding: 18px; cursor: pointer;
-  transition: transform 0.12s ease, border-color 0.12s ease; text-align: left;
-  color: var(--text); font: inherit;
+  background: linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0) 40%), var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 18px; cursor: pointer;
+  transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+  text-align: left; color: var(--text); font: inherit;
+  box-shadow: var(--shadow-sm);
 }
-.topic-card:hover { transform: translateY(-2px); border-color: var(--primary); }
-.topic-card .t-title { font-size: 1.05rem; font-weight: 600; }
-.topic-card .t-title-he { font-size: 0.8rem; color: var(--text-dim); }
-.topic-card .t-count { font-size: 0.8rem; color: var(--primary); margin-top: 8px; }
+.topic-card:hover { transform: translateY(-3px); border-color: rgba(124,110,240,0.55); box-shadow: var(--shadow-md); }
+.topic-card .t-title { font-size: 1.05rem; font-weight: 700; }
+.topic-card .t-title-he { font-size: 0.8rem; color: var(--text-dim); margin-top: 1px; }
+.topic-card .t-count { font-size: 0.78rem; color: var(--primary-light); margin-top: 10px; font-weight: 600; }
 
 /* --- Buttons --- */
-.btn { font: inherit; font-weight: 600; border: none; border-radius: var(--radius);
-  padding: 14px 18px; cursor: pointer; transition: background 0.12s ease, opacity 0.12s ease; }
-.btn-primary { background: var(--primary); color: #fff; }
-.btn-primary:hover { background: var(--primary-dark); }
+.btn { font: inherit; font-weight: 700; border: none; border-radius: var(--radius);
+  padding: 14px 18px; cursor: pointer; transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease, background 0.12s ease; }
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary-light), var(--primary) 55%, var(--primary-dark));
+  color: #fff; box-shadow: 0 6px 18px var(--primary-glow), inset 0 1px 0 rgba(255,255,255,0.18);
+}
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 10px 24px var(--primary-glow), inset 0 1px 0 rgba(255,255,255,0.2); }
+.btn-primary:active { transform: translateY(0); }
 .btn-ghost { background: transparent; color: var(--text-dim); }
-.btn-ghost:hover { color: var(--text); }
+.btn-ghost:hover { color: var(--text); background: rgba(255,255,255,0.04); }
 .btn-block { display: block; width: 100%; margin-top: 12px; }
 
 /* --- Quiz bar / progress --- */
 .quiz-bar { display: flex; justify-content: space-between; font-size: 0.85rem;
   color: var(--text-dim); margin-bottom: 8px; }
-.q-score { font-weight: 600; color: var(--text); }
-.progress-track { height: 6px; background: var(--surface-2); border-radius: 999px; overflow: hidden; margin-bottom: 20px; }
-.progress-fill { height: 100%; width: 0%; background: var(--primary); transition: width 0.25s ease; }
+.q-score { font-weight: 700; color: var(--text); }
+.progress-track { height: 7px; background: var(--surface-2); border-radius: 999px; overflow: hidden; margin-bottom: 22px; }
+.progress-fill {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--primary-dark), var(--primary-light));
+  box-shadow: 0 0 10px var(--primary-glow);
+  transition: width 0.3s ease;
+}
 
-.question-topic { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em;
-  color: var(--primary); margin-bottom: 6px; }
-.question-text { font-size: 1.15rem; margin-bottom: 16px; }
+.question-topic { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.07em;
+  color: var(--primary-light); margin-bottom: 8px; font-weight: 700; }
+.question-text { font-size: 1.18rem; font-weight: 600; margin-bottom: 18px; letter-spacing: -0.005em; }
 
 /* --- Code block (C++ snippets) --- */
 .code-block {
-  background: var(--code-bg); border: 1px solid var(--surface-2);
-  border-radius: 10px; padding: 14px 16px; margin-bottom: 18px;
+  background: var(--code-bg); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 15px 16px; margin-bottom: 18px;
   overflow-x: auto;  /* NOTE: lets long code scroll sideways instead of breaking the layout */
-  font-family: "SF Mono", "Fira Code", Consolas, monospace;
-  font-size: 0.85rem; color: #e2e8f0; line-height: 1.5;
+  font-family: var(--font-mono);
+  font-size: 0.85rem; color: #e7e9f3; line-height: 1.55;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
 }
 .code-block code { white-space: pre; }
 
 /* --- Answer options --- */
 .options { display: flex; flex-direction: column; gap: 10px; }
 .option {
-  background: var(--surface); border: 2px solid var(--surface-2);
-  border-radius: 10px; padding: 14px 16px; text-align: left; cursor: pointer;
-  color: var(--text); font: inherit; transition: border-color 0.1s ease, background 0.1s ease;
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm); padding: 14px 16px; text-align: left; cursor: pointer;
+  color: var(--text); font: inherit; transition: border-color 0.12s ease, background 0.12s ease, transform 0.1s ease;
   display: flex; align-items: center; gap: 12px;
 }
-.option:hover:not(:disabled) { border-color: var(--primary); }
-.option .letter { font-weight: 700; color: var(--primary); min-width: 20px; }
+.option:hover:not(:disabled) { border-color: var(--primary); background: var(--surface-2); }
+.option .letter {
+  flex: 0 0 auto; width: 24px; height: 24px; border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 0.78rem; color: var(--primary-light);
+  background: rgba(124,110,240,0.14);
+}
 /* states applied by app.js after answering */
-.option.correct { border-color: var(--correct); background: rgba(34,197,94,0.12); }
-.option.wrong   { border-color: var(--wrong);   background: rgba(239,68,68,0.12); }
+.option.correct { border-color: var(--correct); background: rgba(52,211,153,0.12); }
+.option.correct .letter { background: rgba(52,211,153,0.22); color: var(--correct); }
+.option.wrong   { border-color: var(--wrong);   background: rgba(247,104,91,0.12); }
+.option.wrong .letter { background: rgba(247,104,91,0.22); color: var(--wrong); }
 .option:disabled { cursor: default; }
 
 /* --- Feedback / explanation --- */
-.feedback { margin-top: 20px; background: var(--surface); border-radius: var(--radius);
-  padding: 18px; border: 1px solid var(--surface-2); }
-.feedback-verdict { font-weight: 700; font-size: 1.05rem; margin-bottom: 10px; }
+.feedback { margin-top: 22px; background: var(--surface); border-radius: var(--radius-lg);
+  padding: 18px; border: 1px solid var(--border); border-inline-start: 4px solid var(--primary);
+  box-shadow: var(--shadow-sm); }
+.feedback-verdict { font-weight: 800; font-size: 1.05rem; margin-bottom: 10px; }
 .feedback-verdict.ok  { color: var(--correct); }
 .feedback-verdict.no  { color: var(--wrong); }
+.feedback.ok  { border-inline-start-color: var(--correct); }
+.feedback.no  { border-inline-start-color: var(--wrong); }
 .feedback-explanation { color: var(--text); }
 
 /* --- Results screen --- */
-.results-score { font-size: 3rem; font-weight: 800; text-align: center; margin: 20px 0 8px; }
-.results-message { text-align: center; color: var(--text-dim); margin-bottom: 20px; }
+.results-score { font-size: 3.1rem; font-weight: 800; text-align: center; margin: 22px 0 8px;
+  background: linear-gradient(135deg, var(--primary-light), var(--primary));
+  -webkit-background-clip: text; background-clip: text; color: transparent; }
+.results-message { text-align: center; color: var(--text-dim); margin-bottom: 22px; }
 
 /* --- Progress summary (home) --- */
-.progress-summary { margin-top: 24px; font-size: 0.85rem; color: var(--text-dim); }
+.progress-summary { margin-top: 26px; font-size: 0.85rem; color: var(--text-dim); }
+.progress-summary strong { color: var(--text); font-size: 0.9rem; }
 .progress-summary .row { display: flex; justify-content: space-between;
-  padding: 6px 0; border-bottom: 1px solid var(--surface-2); }
+  padding: 8px 0; border-bottom: 1px solid var(--border); }
 
 /* ---------- 5. RESPONSIVE (small phones) -------------------------------- */
 @media (max-width: 460px) {
   .topic-grid { grid-template-columns: 1fr; }  /* NOTE: stack cards in one column on narrow screens */
-  .app-header h1 { font-size: 1.1rem; }
+  .app-header h1 { font-size: 1.12rem; }
   .question-text { font-size: 1.05rem; }
+  .cc-label { display: none; }  /* keep the header tidy on very narrow phones */
 }
 
 /* =========================================================================
@@ -158,41 +242,42 @@ body {
 
 /* ---------- Top navigation (mode switcher) ---------- */
 .app-nav {
-  max-width: 720px;
-  margin: 12px auto 0;
+  max-width: 760px;
+  margin: 14px auto 0;
   display: flex;
-  gap: 8px;
+  gap: 6px;
   overflow-x: auto;            /* scroll on very narrow phones instead of wrapping */
+  padding-bottom: 2px;
 }
 .nav-btn {
-  font: inherit; font-weight: 600; white-space: nowrap;
-  background: rgba(255,255,255,0.12); color: #fff;
-  border: none; border-radius: 999px; padding: 8px 16px; cursor: pointer;
-  transition: background 0.12s ease;
+  font: inherit; font-weight: 600; font-size: 0.92rem; white-space: nowrap;
+  background: rgba(255,255,255,0.10); color: rgba(255,255,255,0.88);
+  border: 1px solid transparent; border-radius: 999px; padding: 9px 16px; cursor: pointer;
+  transition: background 0.14s ease, color 0.14s ease, box-shadow 0.14s ease;
 }
-.nav-btn:hover { background: rgba(255,255,255,0.22); }
-.nav-btn.active { background: #fff; color: var(--primary-dark); }
+.nav-btn:hover { background: rgba(255,255,255,0.18); }
+.nav-btn.active { background: #fff; color: var(--primary-dark); box-shadow: 0 4px 14px rgba(0,0,0,0.25); }
 
 /* ---------- Visualize mode ---------- */
 .viz-player { }
 .viz-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 12px; text-align: center; }
 .viz-stage {
-  background: var(--code-bg); border: 1px solid var(--surface-2);
-  border-radius: var(--radius); padding: 12px; margin-bottom: 14px;
+  background: var(--code-bg); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 14px; margin-bottom: 14px;
   min-height: 200px; display: flex; align-items: center; justify-content: center;
-  overflow-x: auto;
+  overflow-x: auto; box-shadow: var(--shadow-sm);
 }
 .viz-stage svg { max-width: 100%; height: auto; }
 .viz-caption {
-  background: var(--surface); border: 1px solid var(--surface-2);
-  border-left: 4px solid var(--primary);
-  border-radius: 10px; padding: 14px 16px; margin-bottom: 14px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-inline-start: 4px solid var(--primary);
+  border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 14px;
   min-height: 60px; color: var(--text); line-height: 1.55;
 }
 .viz-controls { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .viz-controls .btn { flex: 0 0 auto; }
 .viz-step { color: var(--text-dim); font-size: 0.85rem; font-weight: 600; }
-.btn:disabled { opacity: 0.4; cursor: default; }
+.btn:disabled { opacity: 0.4; cursor: default; transform: none !important; box-shadow: none !important; }
 
 /* ---------- Complexity trainer ---------- */
 .cx-list { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 12px; }
@@ -201,28 +286,28 @@ body {
 .cx-progress { color: var(--text-dim); font-size: 0.85rem; font-weight: 600; }
 
 .cx-code {
-  background: var(--code-bg); border: 1px solid var(--surface-2);
-  border-radius: 10px; padding: 10px; margin-bottom: 16px; overflow-x: auto;
+  background: var(--code-bg); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 10px; margin-bottom: 16px; overflow-x: auto;
 }
 .cx-row {
   display: flex; align-items: center; gap: 12px;
-  padding: 6px 8px; border-radius: 8px; white-space: nowrap;
+  padding: 7px 8px; border-radius: 8px; white-space: nowrap;
 }
-.cx-row.current { background: rgba(99,102,241,0.15); outline: 1px solid var(--primary); }
-.cx-row.correct { background: rgba(34,197,94,0.10); }
-.cx-row.wrong   { background: rgba(239,68,68,0.10); }
+.cx-row.current { background: rgba(124,110,240,0.16); outline: 1px solid var(--primary); }
+.cx-row.correct { background: rgba(52,211,153,0.10); }
+.cx-row.wrong   { background: rgba(247,104,91,0.10); }
 
 .cx-slot {
   flex: 0 0 96px; text-align: right;
-  font-family: "SF Mono", Consolas, monospace; font-size: 0.8rem;
-  color: var(--text-dim); border-right: 2px solid var(--surface-2); padding-right: 10px;
+  font-family: var(--font-mono); font-size: 0.8rem;
+  color: var(--text-dim); border-right: 2px solid var(--border); padding-right: 10px;
 }
-.cx-slot.filled { color: var(--primary); font-weight: 700; }
+.cx-slot.filled { color: var(--primary-light); font-weight: 700; }
 .cx-slot.verdict { font-weight: 700; }
 .cx-slot.verdict.ok { color: var(--correct); border-right-color: var(--correct); }
 .cx-slot.verdict.no { color: var(--wrong);   border-right-color: var(--wrong); }
 .cx-line {
-  font-family: "SF Mono", "Fira Code", Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 0.85rem; color: var(--text); white-space: pre;
 }
 
@@ -235,11 +320,12 @@ body {
 
 .cx-review { margin-top: 8px; }
 .cx-overall {
-  background: var(--surface); border: 1px solid var(--surface-2);
-  border-radius: var(--radius); padding: 18px; margin-bottom: 12px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 18px; margin-bottom: 12px;
+  box-shadow: var(--shadow-sm);
 }
 .cx-overall-line { color: var(--text-dim); font-size: 0.9rem; }
-.cx-overall-big { font-size: 1.3rem; font-weight: 800; color: var(--primary); margin: 6px 0 10px; }
+.cx-overall-big { font-size: 1.3rem; font-weight: 800; color: var(--primary-light); margin: 6px 0 10px; }
 
 @media (max-width: 460px) {
   .cx-slot { flex-basis: 78px; }
@@ -289,24 +375,26 @@ body {
    ========================================================================= */
 
 /* review-mistakes button (stands out from the primary/ghost buttons) */
-.btn-review { background: #b45309; color: #fff; }
-.btn-review:hover { background: #92400e; }
+.btn-review { background: linear-gradient(135deg, var(--accent-gold), #c9863f); color: #2a1a06;
+  box-shadow: 0 6px 18px rgba(232,185,116,0.25), inset 0 1px 0 rgba(255,255,255,0.3); }
+.btn-review:hover { transform: translateY(-1px); box-shadow: 0 10px 22px rgba(232,185,116,0.3), inset 0 1px 0 rgba(255,255,255,0.32); }
 
 /* ---------- Cheat sheet ---------- */
 #cheatsheet .intro { text-align: start; }
 .cheat-h {
-  font-size: 1.05rem; font-weight: 700; color: var(--primary);
-  margin: 22px 0 10px; text-align: start;
+  font-size: 1.05rem; font-weight: 700; color: var(--primary-light);
+  margin: 24px 0 10px; text-align: start;
 }
-.cheat-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 6px; }
+.cheat-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 6px; border-radius: var(--radius-sm); }
 .cheat-table {
   width: 100%; border-collapse: collapse; font-size: 0.85rem;
-  background: var(--surface); border-radius: 10px; overflow: hidden;
+  background: var(--surface); border-radius: var(--radius-sm); overflow: hidden;
+  border: 1px solid var(--border);
 }
 .cheat-table th, .cheat-table td {
-  border: 1px solid var(--surface-2); padding: 8px 10px; text-align: start; vertical-align: top;
+  border: 1px solid var(--border); padding: 9px 11px; text-align: start; vertical-align: top;
 }
-.cheat-table thead th { background: var(--surface-2); color: var(--text); font-weight: 700; white-space: nowrap; }
+.cheat-table thead th { background: var(--surface-3); color: var(--text); font-weight: 700; white-space: nowrap; }
 .cheat-table td { color: var(--text); }
 .cheat-table tbody tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
 /* force code / Big-O fragments to stay left-to-right inside RTL cells */
@@ -315,12 +403,12 @@ b.ltr, span.ltr { display: inline-block; }
 
 .cheat-note { font-size: 0.8rem; color: var(--text-dim); margin: 4px 0 8px; text-align: start; }
 .cheat-growth {
-  font-family: "SF Mono", Consolas, monospace; font-size: 0.9rem;
-  background: var(--code-bg); border: 1px solid var(--surface-2);
-  border-radius: 8px; padding: 12px 14px; overflow-x: auto; color: var(--text);
+  font-family: var(--font-mono); font-size: 0.9rem;
+  background: var(--code-bg); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 13px 14px; overflow-x: auto; color: var(--text);
 }
 .cheat-facts { margin: 8px 18px 8px 0; padding: 0; }
-.cheat-facts li { margin: 8px 0; line-height: 1.55; text-align: start; }
+.cheat-facts li { margin: 9px 0; line-height: 1.55; text-align: start; }
 .cheat-facts b { color: var(--text); }
 
 /* =========================================================================
@@ -332,24 +420,26 @@ b.ltr, span.ltr { display: inline-block; }
 .learn-list { display: flex; flex-direction: column; gap: 10px; }
 .lesson-card {
   display: flex; align-items: center; gap: 14px; width: 100%;
-  background: var(--surface); border: 1px solid var(--surface-2);
-  border-radius: var(--radius); padding: 14px 16px; cursor: pointer;
+  background: linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0) 40%), var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 14px 16px; cursor: pointer;
   color: var(--text); font: inherit; text-align: start;
-  transition: transform 0.12s ease, border-color 0.12s ease;
+  transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+  box-shadow: var(--shadow-sm);
 }
-.lesson-card:hover { transform: translateY(-2px); border-color: var(--primary); }
+.lesson-card:hover { transform: translateY(-3px); border-color: rgba(124,110,240,0.55); box-shadow: var(--shadow-md); }
 .lesson-check {
   flex: 0 0 32px; height: 32px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  background: var(--surface-2); color: var(--text); font-weight: 700; font-size: 0.9rem;
+  background: var(--surface-3); color: var(--text); font-weight: 700; font-size: 0.9rem;
 }
-.lesson-card.done { border-color: var(--correct); }
-.lesson-card.done .lesson-check { background: var(--correct); color: #06210f; }
+.lesson-card.done { border-color: rgba(52,211,153,0.5); }
+.lesson-card.done .lesson-check { background: var(--correct); color: #06281a; }
 .lesson-card-title { font-weight: 600; unicode-bidi: plaintext; text-align: start; }
 
 /* lesson view */
 .lesson-head { display: flex; flex-direction: column; gap: 2px; margin-bottom: 16px; }
-.lesson-num { font-size: 0.8rem; color: var(--primary); font-weight: 700; }
+.lesson-num { font-size: 0.8rem; color: var(--primary-light); font-weight: 700; }
 .lesson-title { font-size: 1.25rem; font-weight: 800; unicode-bidi: plaintext; text-align: start; }
 
 .lesson-section { margin-bottom: 8px; }
@@ -358,8 +448,8 @@ b.ltr, span.ltr { display: inline-block; }
   unicode-bidi: plaintext; text-align: start;
 }
 .lesson-h {
-  font-size: 1.02rem; font-weight: 700; color: var(--primary);
-  margin: 20px 0 10px; text-align: start;
+  font-size: 1.02rem; font-weight: 700; color: var(--primary-light);
+  margin: 22px 0 10px; text-align: start;
 }
 .lesson-keypoints { margin: 0 18px 8px 0; padding: 0; }
 .lesson-keypoints li {
@@ -369,13 +459,13 @@ b.ltr, span.ltr { display: inline-block; }
 /* embedded animation inside a lesson */
 .lesson-anim {
   margin: 14px 0 6px; padding: 12px;
-  background: rgba(255,255,255,0.02); border: 1px solid var(--surface-2); border-radius: var(--radius);
+  background: rgba(255,255,255,0.025); border: 1px solid var(--border); border-radius: var(--radius-lg);
 }
 .lp-tabs { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 10px; }
 .lp-tab {
   font: inherit; font-size: 0.8rem; font-weight: 600; white-space: nowrap;
   background: var(--surface); color: var(--text-dim);
-  border: 1px solid var(--surface-2); border-radius: 999px; padding: 6px 12px; cursor: pointer;
+  border: 1px solid var(--border); border-radius: 999px; padding: 6px 12px; cursor: pointer;
 }
 .lp-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
 
@@ -383,12 +473,12 @@ b.ltr, span.ltr { display: inline-block; }
    v5 ADDITIONS — "Assemble the Algorithm" mode (tap-to-place / Parsons).
    ========================================================================= */
 .as-desc { color: var(--text-dim); font-size: 0.9rem; margin-bottom: 16px; }
-.as-label { font-size: 0.82rem; font-weight: 700; color: var(--primary); margin: 14px 0 8px; }
+.as-label { font-size: 0.82rem; font-weight: 700; color: var(--primary-light); margin: 14px 0 8px; }
 .as-empty { color: var(--text-dim); font-size: 0.85rem; padding: 10px 4px; }
 
 /* shared code look: ALWAYS left-to-right, regardless of the RTL page */
 .as-code {
-  font-family: "SF Mono", "Fira Code", Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 0.85rem; color: var(--text);
   direction: ltr; text-align: left;
   white-space: pre-wrap; word-break: break-word; line-height: 1.5;
@@ -397,20 +487,22 @@ b.ltr, span.ltr { display: inline-block; }
 /* the ordered solution the user is building */
 .as-solution {
   min-height: 48px; display: flex; flex-direction: column; gap: 8px;
-  background: var(--code-bg); border: 1px dashed var(--surface-2);
-  border-radius: 10px; padding: 10px; margin-bottom: 8px;
+  background: var(--code-bg); border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-sm); padding: 10px; margin-bottom: 8px;
 }
 .as-sol-row {
   display: flex; align-items: center; gap: 10px; width: 100%;
-  background: var(--surface); border: 2px solid var(--primary);
+  background: var(--surface); border: 1.5px solid var(--primary);
   border-radius: 8px; padding: 10px 12px; cursor: pointer;
   color: var(--text); font: inherit; text-align: left;
+  transition: background 0.12s ease;
 }
 .as-sol-row:hover { background: var(--surface-2); }
 .as-num {
   flex: 0 0 24px; height: 24px; border-radius: 50%;
   display: inline-flex; align-items: center; justify-content: center;
-  background: var(--primary); color: #fff; font-size: 0.78rem; font-weight: 700;
+  background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+  color: #fff; font-size: 0.78rem; font-weight: 700;
 }
 .as-sol-row .as-code { flex: 1; }
 .as-remove { color: var(--text-dim); font-weight: 700; flex: 0 0 auto; }
@@ -418,30 +510,31 @@ b.ltr, span.ltr { display: inline-block; }
 /* the shuffled pool of remaining lines */
 .as-pool { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
 .as-pool-item {
-  width: 100%; background: var(--surface); border: 2px solid var(--surface-2);
+  width: 100%; background: var(--surface); border: 1.5px solid var(--border);
   border-radius: 8px; padding: 10px 12px; cursor: pointer;
   color: var(--text); font: inherit; text-align: left;
-  transition: border-color 0.1s ease, transform 0.08s ease;
+  transition: border-color 0.1s ease, transform 0.08s ease, background 0.1s ease;
 }
-.as-pool-item:hover { border-color: var(--primary); transform: translateY(-1px); }
+.as-pool-item:hover { border-color: var(--primary); background: var(--surface-2); transform: translateY(-1px); }
 
 /* review phase */
 .as-overall {
-  background: var(--surface); border: 1px solid var(--surface-2);
-  border-radius: var(--radius); padding: 18px; margin-bottom: 14px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 18px; margin-bottom: 14px;
+  box-shadow: var(--shadow-sm);
 }
 .as-overall-big { font-size: 1.2rem; font-weight: 800; margin-bottom: 8px; }
 .as-overall-big.ok { color: var(--correct); }
-.as-overall-big.no { color: var(--primary); }
+.as-overall-big.no { color: var(--primary-light); }
 .as-overall-line { color: var(--text); line-height: 1.55; }
 
 .as-rev-card {
-  background: var(--surface); border: 1px solid var(--surface-2);
-  border-left: 4px solid var(--surface-2);
-  border-radius: 10px; padding: 12px 14px; margin-bottom: 10px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-inline-start: 4px solid var(--border-strong);
+  border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 10px;
 }
-.as-rev-card.ok { border-left-color: var(--correct); }
-.as-rev-card.no { border-left-color: var(--wrong); }
+.as-rev-card.ok { border-inline-start-color: var(--correct); }
+.as-rev-card.no { border-inline-start-color: var(--wrong); }
 .as-rev-head { display: flex; align-items: center; gap: 10px; }
 .as-rev-head .as-code { flex: 1; }
 .as-mark { font-weight: 800; flex: 0 0 auto; }
