@@ -14,7 +14,7 @@
 
 /* NOTE: bump this version string whenever you change app files, so the
    service worker knows to refresh its cache instead of serving stale files. */
-const CACHE_VERSION = 'ds-trainer-v13';
+const CACHE_VERSION = 'ds-trainer-v14';
 
 /* The files that make up the whole app. */
 const FILES_TO_CACHE = [

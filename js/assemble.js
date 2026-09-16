@@ -25,6 +25,22 @@ const Assemble = (function () {
   let shuffled = [];         // the line objects in their shuffled pool order
   let solution = [];         // the line objects the user has placed, in order
   const DIFF = { easy: 'קל', medium: 'בינוני', hard: 'קשה' };
+  const PROGRESS_KEY = 'ds-trainer-as-progress';  // { [problemId]: bestRightCount }
+
+  /* ---------- best-score-per-problem storage (for the done/attempted badges) ---------- */
+  function loadProgress() {
+    try { return JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}'); }
+    catch (e) { return {}; }
+  }
+  function saveAttempt(id, right) {
+    try {
+      const p = loadProgress();
+      if (!(id in p) || p[id] < right) {
+        p[id] = right;
+        localStorage.setItem(PROGRESS_KEY, JSON.stringify(p));
+      }
+    } catch (e) { /* ignore */ }
+  }
 
   /* local shuffle so this module has no ordering dependency on other files */
   function shuffleArr(arr) {
@@ -51,12 +67,37 @@ const Assemble = (function () {
     $('as-check').addEventListener('click', check);
   }
 
+  /* ---- progress summary (how many problems solved perfectly) ---- */
+  function renderProgressSummary() {
+    const box = $('as-progress-summary');
+    if (!box) return;
+    const prog = loadProgress();
+    const total = problems.length;
+    const done = problems.filter((p) => (prog[p.id] || 0) === p.lines.length).length;
+    box.textContent = '';
+    box.appendChild(el('div', 'lp-count', done + ' מתוך ' + total + ' תרגילים הושלמו במלואם'));
+    const track = el('div', 'progress-track');
+    const fill = el('div', 'progress-fill');
+    fill.style.width = (total ? (done / total * 100) : 0) + '%';
+    track.appendChild(fill);
+    box.appendChild(track);
+  }
+
   /* ---- the picker of problems ---- */
   function renderPicker() {
+    renderProgressSummary();
     const list = $('as-list');
     list.textContent = '';
+    const prog = loadProgress();
     problems.forEach((p, i) => {
       const card = el('button', 'topic-card');
+      const best = prog[p.id];
+      if (best !== undefined) {
+        const perfect = best === p.lines.length;
+        if (perfect) card.classList.add('done');
+        card.appendChild(el('span', 'tc-status ' + (perfect ? 'done' : 'attempted'),
+          perfect ? '✓' : (best + '/' + p.lines.length)));
+      }
       card.appendChild(el('div', 't-title', bidi(p.title)));
       card.appendChild(el('div', 't-count',
         p.lines.length + (p.lines.length === 1 ? ' שורה · ' : ' שורות · ') + (DIFF[p.difficulty] || p.difficulty)));
@@ -141,6 +182,7 @@ const Assemble = (function () {
       if (solution[pos] && solution[pos].code === line.code) right++;
     });
     const allRight = right === P.lines.length;
+    saveAttempt(P.id, right);
 
     // overall banner
     const banner = el('div', 'as-overall');
@@ -191,6 +233,7 @@ const Assemble = (function () {
   function backToList() {
     $('as-trainer').classList.add('hidden');
     $('as-list').classList.remove('hidden');
+    renderPicker();   // refresh done/attempted badges
   }
 
   return { init: init };

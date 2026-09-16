@@ -25,6 +25,22 @@ const Complexity = (function () {
   let rowSlots = [];         // references to each line's left slot element
   let rowEls = [];           // references to each line's row element
   const DIFF = { easy: 'קל', medium: 'בינוני', hard: 'קשה' };  // difficulty labels in Hebrew
+  const PROGRESS_KEY = 'ds-trainer-cx-progress';  // { [problemId]: bestRightCount }
+
+  /* ---------- best-score-per-problem storage (for the done/attempted badges) ---------- */
+  function loadProgress() {
+    try { return JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}'); }
+    catch (e) { return {}; }
+  }
+  function saveAttempt(id, right) {
+    try {
+      const p = loadProgress();
+      if (!(id in p) || p[id] < right) {
+        p[id] = right;
+        localStorage.setItem(PROGRESS_KEY, JSON.stringify(p));
+      }
+    } catch (e) { /* ignore */ }
+  }
 
   async function init() {
     try {
@@ -41,12 +57,37 @@ const Complexity = (function () {
     $('cx-retry').addEventListener('click', backToList);
   }
 
+  /* ---- progress summary (how many problems solved perfectly) ---- */
+  function renderProgressSummary() {
+    const box = $('cx-progress-summary');
+    if (!box) return;
+    const prog = loadProgress();
+    const total = problems.length;
+    const done = problems.filter((p) => (prog[p.id] || 0) === p.lines.length).length;
+    box.textContent = '';
+    box.appendChild(el('div', 'lp-count', done + ' מתוך ' + total + ' תרגילים הושלמו במלואם'));
+    const track = el('div', 'progress-track');
+    const fill = el('div', 'progress-fill');
+    fill.style.width = (total ? (done / total * 100) : 0) + '%';
+    track.appendChild(fill);
+    box.appendChild(track);
+  }
+
   /* ---- the picker of problems ---- */
   function renderPicker() {
+    renderProgressSummary();
     const list = $('cx-list');
     list.textContent = '';
+    const prog = loadProgress();
     problems.forEach((p, i) => {
       const card = el('button', 'topic-card');
+      const best = prog[p.id];
+      if (best !== undefined) {
+        const perfect = best === p.lines.length;
+        if (perfect) card.classList.add('done');
+        card.appendChild(el('span', 'tc-status ' + (perfect ? 'done' : 'attempted'),
+          perfect ? '✓' : (best + '/' + p.lines.length)));
+      }
       card.appendChild(el('div', 't-title', bidi(p.title)));
       card.appendChild(el('div', 't-count', p.lines.length + (p.lines.length === 1 ? ' שורה · ' : ' שורות · ') + (DIFF[p.difficulty] || p.difficulty)));
       card.addEventListener('click', () => open(i));
@@ -178,6 +219,7 @@ const Complexity = (function () {
 
     // score line by line
     const right = answers.reduce((n, a, i) => n + (a === P.lines[i].answer ? 1 : 0), 0);
+    saveAttempt(P.id, right);
 
     const rev = $('cx-review');
     rev.classList.remove('hidden');
@@ -192,6 +234,7 @@ const Complexity = (function () {
     $('cx-trainer').classList.add('hidden');
     $('cx-review').classList.add('hidden');
     $('cx-list').classList.remove('hidden');
+    renderPicker();   // refresh done/attempted badges
   }
 
   return { init: init };

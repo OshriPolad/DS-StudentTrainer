@@ -33,7 +33,12 @@
   <!-- ============================ HEADER + NAV ============================ -->
   <header class="app-header">
     <div class="header-inner">
-      <h1>DS Trainer <span class="he">מאמן מבני נתונים</span></h1>
+      <!-- NOTE: this document's base direction is LTR (only #learn/#cheatsheet
+           force dir="rtl" locally) — Hebrew text looks right-to-left purely via
+           unicode-bidi:plaintext on individual text blocks, not via a global
+           dir="rtl". So for LAYOUT (flexbox order, not text), "first child" is
+           the physical LEFT and "last child" is the physical RIGHT. The credit
+           is listed FIRST so it lands at the visual top-left as requested. -->
       <div class="creator-credit">
         <div class="cc-badge">OP</div>
         <div class="cc-text">
@@ -41,6 +46,7 @@
           <span class="cc-name">Oshri Polad</span>
         </div>
       </div>
+      <h1>DS Trainer <span class="he">מאמן מבני נתונים</span></h1>
     </div>
     <!-- NOTE: these buttons switch modes. app.js listens for clicks by data-mode. -->
     <nav class="app-nav">
@@ -128,6 +134,8 @@
         קִראו את קוד ה-C++ ובחרו את זמן הריצה של <em>כל שורה</em>.
         אחרי השורה האחרונה מתקבל סקירה שורה-אחר-שורה.
       </p>
+      <!-- progress summary: how many problems solved perfectly so far -->
+      <div id="cx-progress-summary" class="progress-summary-box"></div>
       <!-- problem picker -->
       <div id="cx-list" class="cx-list"></div>
 
@@ -160,6 +168,8 @@
         לפי הסדר הנכון כדי לבנות את הקוד, ואז לחצו "בדיקה" — ותקבלו סקירה שורה-אחר-שורה
         עם הסבר <em>למה</em> כל שורה נמצאת במקומה.
       </p>
+      <!-- progress summary: how many problems solved perfectly so far -->
+      <div id="as-progress-summary" class="progress-summary-box"></div>
       <!-- problem picker -->
       <div id="as-list" class="cx-list"></div>
 

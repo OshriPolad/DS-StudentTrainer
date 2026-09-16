@@ -542,3 +542,75 @@ b.ltr, span.ltr { display: inline-block; }
 .as-mark.no { color: var(--wrong); }
 .as-yours { font-size: 0.82rem; color: var(--text-dim); margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
 .as-why { color: var(--text); line-height: 1.55; margin-top: 8px; font-size: 0.92rem; }
+
+/* =========================================================================
+   v6 ADDITIONS — mastery tracking (Complexity + Assemble) & premium polish.
+   ========================================================================= */
+
+/* ---------- per-problem progress badge (Complexity/Assemble pickers) ----------
+   Reuses the SAME progress-bar markup/classes as Learn Journey (.lp-count,
+   .progress-track, .progress-fill) so all three "how much have I done"
+   headers look and feel identical — one consistent design language. */
+.progress-summary-box { margin-bottom: 16px; }
+
+.topic-card { position: relative; }
+.topic-card.done { border-color: rgba(52,211,153,0.5); }
+.tc-status {
+  /* NOTE: this document's computed direction is LTR (see the header-inner
+     comment in index.html) — inset-inline-START is the physical LEFT here,
+     which is the free corner since Hebrew titles hug the right via
+     unicode-bidi:plaintext. Using -end would collide with that text. */
+  position: absolute; top: 10px; inset-inline-start: 10px;
+  min-width: 24px; height: 24px; padding: 0 7px; border-radius: 999px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem; font-weight: 800; line-height: 1;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+.tc-status.done { background: linear-gradient(135deg, #4de3a8, var(--correct)); color: #06281a; }
+.tc-status.attempted { background: rgba(232,185,116,0.18); color: var(--accent-gold); border: 1px solid rgba(232,185,116,0.35); }
+
+/* ---------- global premium polish pass ---------- */
+
+/* themed scrollbars — default OS scrollbars look out of place on a custom
+   dark UI; this keeps every scroll surface (nav, code blocks, page) on-brand */
+* { scrollbar-width: thin; scrollbar-color: var(--surface-3) transparent; }
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 999px; }
+*::-webkit-scrollbar-thumb:hover { background: var(--border-strong); }
+
+/* themed text selection */
+::selection { background: var(--primary); color: #fff; }
+
+/* accessible, on-brand keyboard focus ring (replaces the default blue outline) */
+:focus-visible { outline: 2px solid var(--primary-light); outline-offset: 2px; border-radius: 6px; }
+
+/* tactile press feedback on every interactive surface */
+.btn:active:not(:disabled),
+.topic-card:active,
+.lesson-card:active,
+.option:active:not(:disabled),
+.as-sol-row:active,
+.as-pool-item:active {
+  transform: scale(0.97);
+}
+
+/* richer "lifted glass" hover shadow for cards (uses the --shadow-glow
+   token, defined from the start but previously unused) */
+.topic-card:hover, .lesson-card:hover { box-shadow: var(--shadow-glow); }
+
+/* sticky header: on long pages (a full Learn Journey lesson, the cheat
+   sheet) the mode switcher stays reachable without scrolling back up */
+.app-header { position: sticky; top: 0; z-index: 100; }
+
+/* gentle entrance for every screen switch — replaces the instant "pop" of
+   toggling .hidden with a soft fade + rise, restarts automatically each
+   time a screen goes from display:none back to visible */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.screen { animation: fadeInUp 0.32s ease; }
+@media (prefers-reduced-motion: reduce) {
+  .screen { animation: none; }
+}
